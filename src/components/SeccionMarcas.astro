@@ -130,9 +130,12 @@ const porFilas = (lista: readonly string[]) =>
     /* El fondo de la sección es gris; la pestaña activa y su panel son blancos
        y se adelantan sobre él. Un solo token para que no se desincronicen. */
     --panel: #fff;
+    /* Un solo gris para la sección y para la barra de pestañas: con dos tonos
+       distintos quedaba una costura horizontal en el borde. */
+    --fondo: #e9e9e7;
     /* Radio compartido por la pestaña y por sus filetes cóncavos. */
     --r: clamp(1rem, 2vw, 1.75rem);
-    background: #e9e9e7;
+    background: var(--fondo);
   }
 
   .marcas__intro {
@@ -160,7 +163,7 @@ const porFilas = (lista: readonly string[]) =>
   .marcas__pestanas {
     display: flex;
     align-items: stretch;
-    background: #e2e2e0;
+    background: var(--fondo);
     padding-left: clamp(1rem, 9vw, 10rem);
   }
 

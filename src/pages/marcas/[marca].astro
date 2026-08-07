@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import HeroMarca from '../../components/HeroMarca.astro';
 import SeccionContacto from '../../components/SeccionContacto.astro';
 import Flecha from '../../components/Flecha.astro';
+import BotonDescarga from '../../components/BotonDescarga.astro';
 import { marcas } from '../../config/site';
 
 export function getStaticPaths() {
@@ -48,23 +49,7 @@ const portada = fotos[0] ?? '/marcas/fotos/novara.webp';
 
     <div class="marca__catalogo">
       <p class="marca__rotulo">{marca.catalogo.etiqueta}</p>
-      {
-        marca.catalogo.archivo ? (
-          <a class="marca__descargar" href={marca.catalogo.archivo} download>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
-              <path d="M12 3v12M7 11l5 5 5-5M5 21h14" />
-            </svg>
-            <span>Descargar<br />catálogo</span>
-          </a>
-        ) : (
-          <span class="marca__descargar" aria-disabled="true" title="Catálogo pendiente">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
-              <path d="M12 3v12M7 11l5 5 5-5M5 21h14" />
-            </svg>
-            <span>Descargar<br />catálogo</span>
-          </span>
-        )
-      }
+      <BotonDescarga href={marca.catalogo.archivo} inactivo={!marca.catalogo.archivo} />
     </div>
   </section>
 
@@ -158,41 +143,6 @@ const portada = fotos[0] ?? '/marcas/fotos/novara.webp';
 
   .marca__catalogo {
     align-content: start;
-  }
-
-  /* Píldora del catálogo. Sin archivo se dibuja igual pero inactiva, para no
-     dejar una descarga que no existe. */
-  .marca__descargar {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1.4rem 0.75rem 1.1rem;
-    border: 1px solid var(--color-brand-300);
-    border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 300;
-    letter-spacing: 0.1em;
-    line-height: 1.35;
-    text-transform: uppercase;
-    transition:
-      border-color 0.25s ease,
-      background-color 0.25s ease;
-  }
-
-  a.marca__descargar:hover {
-    border-color: var(--color-ink);
-    background: var(--color-brand-50);
-  }
-
-  .marca__descargar[aria-disabled='true'] {
-    opacity: 0.45;
-    cursor: not-allowed;
-  }
-
-  .marca__descargar svg {
-    width: 1.1rem;
-    height: 1.1rem;
-    flex: 0 0 auto;
   }
 
   .galeria {
