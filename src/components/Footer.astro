@@ -10,7 +10,7 @@ const year = new Date().getFullYear();
     <span>Design &amp; development by</span>
     {
       site.creditos.url ? (
-        <a href={site.creditos.url} rel="noopener">
+        <a href={site.creditos.url} target="_blank" rel="noopener">
           <img src="/theconcept.svg" alt={site.creditos.texto} width="160" height="17" />
         </a>
       ) : (

@@ -13,7 +13,7 @@ export const site = {
   phone: '+56 9 0000 0000',
   direccion: ['Av. del Valle Norte 937 Oficina 454', 'Huechuraba — Ciudad Empresarial', 'Santiago, Chile'],
   address: 'Av. del Valle Norte 937 Oficina 454, Huechuraba, Santiago, Chile',
-  creditos: { texto: 'the—concept.studio', url: '' },
+  creditos: { texto: 'the—concept.studio', url: 'https://the-concept.studio/' },
   // TODO: URLs reales de los perfiles.
   social: [
     { red: 'linkedin' as const, url: '#', nombre: 'LinkedIn' },
