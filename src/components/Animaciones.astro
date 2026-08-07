@@ -130,23 +130,60 @@
       // Con el menú abierto el scroll del fondo está bloqueado.
       document.documentElement.dataset.menu !== 'abierto';
 
-    window.addEventListener(
-      'wheel',
-      (evento) => {
-        if (!activo() || evento.ctrlKey) return;
-        // Respeta cualquier subárbol que scrollee por su cuenta.
-        if ((evento.target as HTMLElement)?.closest?.('[data-scroll-propio]')) return;
+    /* El trackpad ya trae inercia propia: interpolar encima suma dos
+       suavizados y se siente pesado. Sólo suavizamos la rueda discreta, que es
+       la que llega a saltos. Un notch de rueda manda deltas grandes y enteros;
+       el trackpad, muchos deltas chicos y a menudo fraccionarios. */
+    const pareceTrackpad = (evento: WheelEvent) =>
+      evento.deltaMode === 0 &&
+      (Math.abs(evento.deltaY) < 40 || !Number.isInteger(evento.deltaY));
 
-        evento.preventDefault();
-        objetivo = Math.min(limite(), Math.max(0, objetivo + enPixeles(evento)));
+    let ultimoTrackpad = 0;
+    let suavizadoInstalado = false;
 
-        if (!animando) {
-          animando = true;
-          requestAnimationFrame(paso);
+    const alRodar = (evento: WheelEvent) => {
+      if (!activo() || evento.ctrlKey) return;
+      // Respeta cualquier subárbol que scrollee por su cuenta.
+      if ((evento.target as HTMLElement)?.closest?.('[data-scroll-propio]')) return;
+
+      if (pareceTrackpad(evento)) {
+        ultimoTrackpad = performance.now();
+        // Si veníamos interpolando, cortamos: el gesto manda.
+        if (animando) {
+          animando = false;
+          objetivo = actual = window.scrollY;
         }
-      },
-      { passive: false },
-    );
+        return; // scroll nativo
+      }
+
+      // Dentro de un gesto de trackpad puede colarse algún delta grande.
+      if (performance.now() - ultimoTrackpad < 700) return;
+
+      evento.preventDefault();
+      objetivo = Math.min(limite(), Math.max(0, objetivo + enPixeles(evento)));
+
+      if (!animando) {
+        animando = true;
+        requestAnimationFrame(paso);
+      }
+    };
+
+    /* Arrancamos con un listener pasivo que sólo clasifica el dispositivo. El
+       no pasivo (que obliga al navegador a esperar al JS antes de scrollear)
+       se instala recién si aparece una rueda discreta, así quien use trackpad
+       no paga ese coste nunca. */
+    const clasificar = (evento: WheelEvent) => {
+      if (pareceTrackpad(evento)) {
+        ultimoTrackpad = performance.now();
+        return;
+      }
+      if (suavizadoInstalado) return;
+      suavizadoInstalado = true;
+      window.removeEventListener('wheel', clasificar);
+      window.addEventListener('wheel', alRodar, { passive: false });
+    };
+
+    window.addEventListener('wheel', clasificar, { passive: true });
 
     // Teclado, anclas, arrastre de la barra: nos resincronizamos con la
     // posición real en vez de pelearnos con ella.
