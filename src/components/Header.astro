@@ -1,0 +1,392 @@
+---
+import Logo from './Logo.astro';
+import IconoRed from './IconoRed.astro';
+import { site, nav } from '../config/site';
+
+interface Props {
+  /** `overlay` = transparente sobre el hero. `solid` = fondo blanco. */
+  variant?: 'overlay' | 'solid';
+  /** Sólo en la home: el logo arranca oculto porque el titular se convierte
+   *  en él al hacer scroll. En el resto de las páginas se ve desde el inicio. */
+  morph?: boolean;
+}
+
+const { variant = 'solid', morph = false } = Astro.props;
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+// Siempre hay un ítem destacado: la página actual si estamos en una, y si no
+// el primero, como en el diseño. Al pasar el mouse manda el hover.
+const actual = nav.findIndex((item) => item.href === path);
+const destacado = actual >= 0 ? actual : 0;
+---
+
+{/* Sin JS no hay morph que revele el logo: se muestra desde el inicio. */}
+<noscript>
+  <style>
+    .site-header[data-morph-inicial='oculto'] .site-header__logo {
+      opacity: 1 !important;
+      pointer-events: auto !important;
+    }
+  </style>
+</noscript>
+
+<header class="site-header" data-variant={variant} data-morph-inicial={morph ? 'oculto' : undefined}>
+  <div class="site-header__bar">
+    <a class="site-header__logo" id="header-logo" href="/" aria-label={site.name}>
+      <Logo />
+    </a>
+
+    <button
+      type="button"
+      class="site-header__toggle"
+      id="menu-toggle"
+      aria-expanded="false"
+      aria-controls="menu-overlay"
+    >
+      <span class="sr-only">Abrir menú</span>
+      <span class="site-header__lines" aria-hidden="true">
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+  </div>
+</header>
+
+<div class="menu" id="menu-overlay" hidden>
+  <div class="menu__bar">
+    <a class="menu__logo" href="/" aria-label={site.name}>
+      <Logo />
+    </a>
+    <button type="button" class="menu__close" id="menu-close">
+      <span class="sr-only">Cerrar menú</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18"></path>
+      </svg>
+    </button>
+  </div>
+
+  <nav class="menu__nav" aria-label="Principal">
+    <ul>
+      {
+        nav.map((item, i) => (
+          <li style={`--i:${i}`}>
+            <a
+              href={item.href}
+              aria-current={path === item.href ? 'page' : undefined}
+              class:list={[i === destacado && 'es-destacado']}
+            >
+              <span class="menu__fuerte">{item.fuerte}</span>{' '}
+              <span class="menu__suave">{item.suave}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+
+  <div class="menu__foot">
+    {
+      site.social.map((red) => (
+        <a href={red.url} rel="noopener" aria-label={red.nombre}>
+          <IconoRed red={red.red} />
+        </a>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .site-header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 40;
+  }
+
+  /* El menú lleva su propia barra: la del header se transparentaría detrás. */
+  :root[data-menu='abierto'] .site-header {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .site-header__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: clamp(1.5rem, 3.5vh, 2.25rem) clamp(1.5rem, 8.4vw, 10rem);
+  }
+
+  .site-header__logo {
+    height: clamp(1.5rem, 2.2vw, 2.25rem);
+  }
+
+  .site-header[data-variant='overlay'] {
+    color: #fff;
+    transition: color 0.3s ease;
+  }
+
+  /* Sobre las secciones claras el blanco no se lee. */
+  .site-header[data-variant='overlay'][data-tema='oscuro'] {
+    color: var(--color-ink);
+  }
+
+  /* Sólo en la home el logo arranca invisible: el hero sube --logo-opacity
+     durante el scroll. En el resto de las páginas la variable no existe y el
+     valor de reserva lo deja visible. */
+  .site-header[data-morph-inicial='oculto'] {
+    --logo-opacity: 0;
+  }
+
+  .site-header[data-variant='overlay'] .site-header__logo {
+    opacity: var(--logo-opacity, 1);
+  }
+
+  .site-header[data-morph-inicial='oculto'] .site-header__logo {
+    pointer-events: none;
+  }
+
+  .site-header[data-morph-inicial='oculto'][data-morph='done'] .site-header__logo {
+    pointer-events: auto;
+  }
+
+  .site-header[data-variant='solid'] {
+    color: var(--color-ink);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .site-header__toggle {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    cursor: pointer;
+  }
+
+  .site-header__lines {
+    display: grid;
+    gap: 0.625rem;
+    width: 2.75rem;
+  }
+
+  .site-header__lines span {
+    display: block;
+    height: 2.5px;
+    background: currentColor;
+    border-radius: 2px;
+    transition: transform 0.3s ease;
+  }
+
+  .site-header__toggle:hover .site-header__lines span:first-child {
+    transform: translateX(-3px);
+  }
+
+  .site-header__toggle:hover .site-header__lines span:last-child {
+    transform: translateX(3px);
+  }
+
+  /* --- Overlay de menú --- */
+  /* Translúcido: la página se sigue intuyendo detrás, como en el diseño. */
+  .menu {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    background: rgba(19, 19, 17, 0.9);
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  .menu[data-open='true'] {
+    opacity: 1;
+  }
+
+  .menu__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: clamp(1.5rem, 3.5vh, 2.25rem) clamp(1.5rem, 8.4vw, 10rem);
+  }
+
+  .menu__logo {
+    height: clamp(1.5rem, 2.2vw, 2.25rem);
+  }
+
+  .menu__close {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    cursor: pointer;
+  }
+
+  .menu__close svg {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .menu__nav {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: flex-end;
+    padding-inline: clamp(1.5rem, 8.4vw, 10rem);
+  }
+
+  .menu__nav ul {
+    text-align: right;
+  }
+
+  .menu__nav a {
+    display: inline-block;
+    padding-block: clamp(0.15rem, 0.6vh, 0.4rem);
+    font-size: clamp(1.75rem, 4.65vw, 4.25rem);
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+    color: rgba(255, 255, 255, 0.32);
+    /* La subrayada del diseño, dibujada para poder separarla del texto. */
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: 100% calc(100% - 0.12em);
+    background-size: 0 3px;
+    opacity: 0;
+    transform: translateY(0.75rem);
+    transition:
+      opacity 0.45s ease,
+      transform 0.45s ease,
+      color 0.25s ease,
+      background-size 0.35s ease;
+  }
+
+  .menu[data-open='true'] .menu__nav a {
+    opacity: 1;
+    transform: none;
+    transition-delay: calc(0.06s * var(--i) + 0.1s);
+  }
+
+  .menu__nav a:hover,
+  .menu__nav a:focus-visible,
+  .menu__nav a.es-destacado {
+    color: #fff;
+    background-size: 100% 3px;
+  }
+
+  /* Mientras el puntero recorre la lista, el destacado por defecto cede. */
+  .menu__nav ul:hover a.es-destacado:not(:hover) {
+    color: rgba(255, 255, 255, 0.32);
+    background-size: 0 3px;
+  }
+
+  .menu__fuerte {
+    font-weight: 500;
+  }
+
+  .menu__suave {
+    font-weight: 300;
+  }
+
+  .menu__foot {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1.1rem;
+    padding: clamp(1.5rem, 4vh, 3rem) clamp(1.5rem, 8.4vw, 10rem)
+      clamp(3rem, 15vh, 8rem);
+  }
+
+  .menu__foot a {
+    width: 1.6rem;
+    height: 1.6rem;
+    color: rgba(255, 255, 255, 0.85);
+    transition: color 0.25s ease;
+  }
+
+  .menu__foot a:hover {
+    color: #fff;
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById('menu-toggle');
+  const cerrar = document.getElementById('menu-close');
+  const menu = document.getElementById('menu-overlay');
+
+  if (toggle && cerrar && menu) {
+    let ultimoFoco: HTMLElement | null = null;
+
+    const abrir = () => {
+      ultimoFoco = document.activeElement as HTMLElement;
+      menu.hidden = false;
+      // Un frame de gracia para que la transición de opacidad se vea.
+      requestAnimationFrame(() => menu.setAttribute('data-open', 'true'));
+      toggle.setAttribute('aria-expanded', 'true');
+      document.documentElement.dataset.menu = 'abierto';
+      document.body.style.overflow = 'hidden';
+      cerrar.focus();
+    };
+
+    const cerrarMenu = () => {
+      menu.removeAttribute('data-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      delete document.documentElement.dataset.menu;
+      document.body.style.overflow = '';
+      const ocultar = () => {
+        menu.hidden = true;
+      };
+      menu.addEventListener('transitionend', ocultar, { once: true });
+      // Respaldo por si la transición no dispara (reduced motion).
+      setTimeout(ocultar, 400);
+      ultimoFoco?.focus();
+    };
+
+    toggle.addEventListener('click', abrir);
+    cerrar.addEventListener('click', cerrarMenu);
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !menu.hidden) cerrarMenu();
+    });
+  }
+
+  // El header es blanco sólo mientras tiene una sección oscura debajo.
+  const cabecera = document.querySelector<HTMLElement>('.site-header[data-variant="overlay"]');
+
+  if (cabecera) {
+    // Cualquier sección con fondo oscuro debe llevar `data-fondo="oscuro"` o
+    // estar en esta lista, o el logo se vuelve tinta sobre negro.
+    const oscuras = Array.from(
+      document.querySelectorAll<HTMLElement>(
+        '.hero, .cita, .proyectos, .portada, [data-fondo="oscuro"]',
+      ),
+    );
+
+    const linea = () => cabecera.offsetHeight / 2;
+
+    const revisar = () => {
+      const y = linea();
+      const sobreOscuro = oscuras.some((zona) => {
+        const caja = zona.getBoundingClientRect();
+        return caja.top <= y && caja.bottom >= y;
+      });
+      cabecera.dataset.tema = sobreOscuro ? 'claro' : 'oscuro';
+    };
+
+    let pedido = false;
+    const alScroll = () => {
+      if (pedido) return;
+      pedido = true;
+      requestAnimationFrame(() => {
+        pedido = false;
+        revisar();
+      });
+    };
+
+    revisar();
+    window.addEventListener('scroll', alScroll, { passive: true });
+    window.addEventListener('resize', revisar);
+  }
+</script>

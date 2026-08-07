@@ -1,0 +1,92 @@
+---
+// Portada de páginas interiores: foto a sangre y titular abajo a la izquierda,
+// con la misma mezcla de pesos de la marca.
+interface Props {
+  imagen: string;
+  alt: string;
+  lineas: readonly { readonly fuerte: string; readonly suave: string }[];
+  ancho?: number;
+  alto?: number;
+}
+
+const { imagen, alt, lineas, ancho = 1900, alto = 943 } = Astro.props;
+---
+
+<section class="portada">
+  <img class="portada__foto" src={imagen} alt={alt} width={ancho} height={alto} fetchpriority="high" />
+  <div class="portada__scrim" aria-hidden="true"></div>
+
+  <h1 class="portada__titulo" data-anima="portada">
+    {
+      lineas.map((linea) => (
+        <span class="portada__linea">
+          <span class="portada__fuerte">{linea.fuerte}</span>{' '}
+          <span class="portada__suave">{linea.suave}</span>
+        </span>
+      ))
+    }
+  </h1>
+</section>
+
+<style>
+  .portada {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: 0 clamp(1.5rem, 6vw, 7rem) clamp(6rem, 20vh, 14rem)
+      clamp(1.5rem, 17.2vw, 19rem);
+    overflow: hidden;
+    background: #14140f;
+    color: #fff;
+  }
+
+  .portada__foto {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .portada__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.35) 0%,
+      rgba(0, 0, 0, 0.12) 45%,
+      rgba(0, 0, 0, 0.3) 100%
+    );
+  }
+
+  .portada__titulo {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    font-size: clamp(2.25rem, 4.55vw, 4.75rem);
+    line-height: 1.14;
+    letter-spacing: -0.01em;
+    text-shadow: 0 2px 30px rgba(0, 0, 0, 0.35);
+  }
+
+  .portada__fuerte {
+    font-weight: 500;
+  }
+
+  .portada__suave {
+    font-weight: 300;
+  }
+
+  @media (max-width: 767px) {
+    .portada {
+      padding-bottom: 26vh;
+    }
+
+    .portada__titulo {
+      font-size: 9vw;
+    }
+  }
+</style>

@@ -1,0 +1,91 @@
+---
+// Bloque con el marco de trazo fino: esquina superior izquierda redondeada y
+// canto izquierdo inclinado ~15°. El marco va aparte del contenido para poder
+// sesgarlo sin torcer el texto.
+interface Props {
+  id?: string;
+  antetitulo: string;
+  /** Dónde se apoya el texto dentro del marco. */
+  alineacion?: 'izquierda' | 'derecha';
+}
+
+const { id, antetitulo, alineacion = 'izquierda' } = Astro.props;
+---
+
+<section class="bloque" id={id} data-alineacion={alineacion}>
+  <div class="bloque__marco" aria-hidden="true"></div>
+
+  <div class="bloque__contenido" data-anima="grupo">
+    <p class="bloque__antetitulo">{antetitulo}</p>
+    <p class="bloque__texto"><slot /></p>
+    <slot name="extra" />
+  </div>
+</section>
+
+<style>
+  .bloque {
+    --inclinacion: -15deg;
+    --radio: clamp(2rem, 3.5vw, 3.5rem);
+
+    position: relative;
+    /* El marco sangra por los dos costados a propósito: sin recortar aquí
+       generaba scroll horizontal en toda la página. `clip` en vez de `hidden`
+       para no crear un contenedor de scroll. */
+    overflow: clip;
+    padding-block: clamp(3.5rem, 7vw, 7rem) clamp(5rem, 12vw, 12rem);
+    padding-inline: clamp(1.5rem, 6vw, 7rem);
+  }
+
+  .bloque__marco {
+    position: absolute;
+    /* La esquina arranca al 9.5% del ancho y el sesgo la lleva hacia afuera al
+       bajar. Sangra por la derecha para que sólo se vean estos dos cantos. */
+    inset: 0 -25% 0 9.5%;
+    transform: skewX(var(--inclinacion));
+    transform-origin: top left;
+    border-top: 1px solid var(--color-brand-200);
+    border-left: 1px solid var(--color-brand-200);
+    border-top-left-radius: var(--radio);
+    pointer-events: none;
+  }
+
+  .bloque__contenido {
+    position: relative;
+  }
+
+  .bloque[data-alineacion='izquierda'] .bloque__contenido {
+    margin-left: clamp(1rem, 10vw, 11rem);
+  }
+
+  .bloque[data-alineacion='derecha'] .bloque__contenido {
+    margin-left: clamp(1rem, 53vw, 60rem);
+  }
+
+  .bloque__antetitulo {
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 300;
+    color: var(--color-muted);
+  }
+
+  .bloque__texto {
+    margin: clamp(1.5rem, 3vw, 2.5rem) 0 0;
+    max-width: 36ch;
+    font-size: clamp(1.25rem, 2.38vw, 2.15rem);
+    font-weight: 500;
+    line-height: 1.42;
+    letter-spacing: -0.01em;
+  }
+
+  /* En pantallas chicas la inclinación se come el ancho útil. */
+  @media (max-width: 860px) {
+    .bloque {
+      --inclinacion: -7deg;
+    }
+
+    .bloque[data-alineacion='izquierda'] .bloque__contenido,
+    .bloque[data-alineacion='derecha'] .bloque__contenido {
+      margin-left: clamp(1.5rem, 8vw, 4rem);
+    }
+  }
+</style>

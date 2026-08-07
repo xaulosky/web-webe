@@ -1,0 +1,429 @@
+---
+import Flecha from './Flecha.astro';
+import { marcas } from '../config/site';
+
+// La primera marca es la que abre destacada. El diseño muestra 5 pestañas
+// (enea queda fuera de esta barra aunque sí está en el hero).
+const pestanas = marcas.slice(0, 5);
+const destacada = 0;
+
+// De a tres por fila, como el diseño. Agrupar en el marcado (en vez de dejar
+// que el flex parta solo) evita que el separador quede colgando al final de
+// una línea, y que un grid alinee columnas y abra huecos entre palabras.
+const porFilas = (lista: readonly string[]) =>
+  lista.reduce<string[][]>((filas, categoria, i) => {
+    if (i % 3 === 0) filas.push([]);
+    filas[filas.length - 1].push(categoria);
+    return filas;
+  }, []);
+---
+
+<section class="marcas" id="marcas">
+  <div class="marcas__intro" data-anima="grupo">
+    <p class="marcas__antetitulo">our brands</p>
+    <p class="marcas__texto">
+      Trabajamos con marcas reconocidas por su calidad, innovación y
+      confiabilidad, priorizando relaciones de largo plazo que aseguren
+      continuidad y respaldo en cada proyecto.
+    </p>
+  </div>
+
+  <div class="marcas__pestanas" role="tablist" aria-label="Marcas">
+    {
+      pestanas.map((marca, i) => (
+        <button
+          type="button"
+          class="marcas__pestana"
+          role="tab"
+          data-marca={i}
+          data-slug={marca.slug}
+          aria-selected={i === destacada}
+        >
+          <img
+            src={`/marcas/${marca.archivo}`}
+            alt={marca.nombre}
+            width={marca.ancho}
+            height={marca.alto}
+            loading="lazy"
+            decoding="async"
+          />
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="marcas__detalle">
+    <div class="marcas__ficha">
+      <p class="marcas__antetitulo">marcas destacadas</p>
+
+      {
+        pestanas.map((marca, i) => (
+          <div class="marcas__cuerpo" data-panel={i} data-activo={i === destacada ? '' : undefined}>
+            <img
+              class="marcas__wordmark"
+              src={`/marcas/${marca.archivo}`}
+              alt={marca.nombre}
+              width={marca.ancho}
+              height={marca.alto}
+              loading="lazy"
+              decoding="async"
+            />
+            <p class="marcas__descripcion">
+              {marca.descripcion || 'Descripción pendiente.'}
+            </p>
+            {marca.categorias.length > 0 && (
+              <div class="marcas__categorias">
+                {porFilas(marca.categorias).map((fila) => (
+                  <ul>
+                    {fila.map((categoria) => (
+                      <li>{categoria}</li>
+                    ))}
+                  </ul>
+                ))}
+              </div>
+            )}
+          </div>
+        ))
+      }
+
+      <a class="marcas__todas" href="/marcas">
+        Todas las marcas
+        <Flecha />
+      </a>
+    </div>
+
+    <div class="marcas__medio" data-anima>
+      {
+        pestanas.map((marca, i) => (
+          <img
+            class="marcas__foto"
+            src={marca.foto || '/marcas/fotos/novara.webp'}
+            alt={`Espacio equipado con ${marca.nombre}`}
+            width="1039"
+            height="702"
+            loading="lazy"
+            decoding="async"
+            data-panel={i}
+            data-activo={i === destacada ? '' : undefined}
+          />
+        ))
+      }
+
+      <a class="marcas__ver" id="marcas-ver" href={`/marcas/${pestanas[destacada].slug}`}>
+        <span class="sr-only">Ver marca</span>
+        <svg class="marcas__ver-aro" viewBox="0 0 100 100" aria-hidden="true">
+          <defs>
+            <path id="aro-ver-marca" fill="none" d="M 50,50 m -36,0 a 36,36 0 1,1 72,0 a 36,36 0 1,1 -72,0" />
+          </defs>
+          <text><textPath href="#aro-ver-marca">VER MARCA — VER MARCA — </textPath></text>
+        </svg>
+        <svg class="marcas__ver-flecha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 7h10v10M7 17L17 7"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .marcas {
+    /* El fondo de la sección es gris; la pestaña activa y su panel son blancos
+       y se adelantan sobre él. Un solo token para que no se desincronicen. */
+    --panel: #fff;
+    /* Radio compartido por la pestaña y por sus filetes cóncavos. */
+    --r: clamp(1rem, 2vw, 1.75rem);
+    background: #e9e9e7;
+  }
+
+  .marcas__intro {
+    padding: clamp(4rem, 9vw, 9rem) clamp(1.5rem, 8vw, 9rem) clamp(4rem, 8vw, 8rem)
+      clamp(1.5rem, 16.2vw, 18rem);
+  }
+
+  .marcas__antetitulo {
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 300;
+    color: var(--color-muted);
+  }
+
+  .marcas__texto {
+    margin: clamp(1.5rem, 3vw, 2.5rem) 0 0;
+    max-width: 22ch;
+    font-size: clamp(1.4rem, 2.6vw, 2.4rem);
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+  }
+
+  /* --- Barra de pestañas --- */
+  .marcas__pestanas {
+    display: flex;
+    align-items: stretch;
+    background: #e2e2e0;
+    padding-left: clamp(1rem, 9vw, 10rem);
+  }
+
+  .marcas__pestana {
+    position: relative;
+    flex: 1;
+    display: grid;
+    place-items: center;
+    padding: clamp(1.25rem, 2.6vw, 2.5rem) clamp(0.5rem, 2vw, 2rem);
+    cursor: pointer;
+    transition: opacity 0.25s ease;
+  }
+
+  .marcas__pestana img {
+    width: clamp(3.5rem, 8vw, 8.5rem);
+    height: auto;
+    opacity: 0.45;
+    transition: opacity 0.25s ease;
+  }
+
+  .marcas__pestana:hover img {
+    opacity: 0.7;
+  }
+
+  /* La activa es una pestaña de carpeta: fondo claro, esquinas superiores
+     redondeadas y filetes cóncavos que la enganchan con la barra. */
+  .marcas__pestana[aria-selected='true'] {
+    background: var(--panel);
+    border-radius: var(--r) var(--r) 0 0;
+  }
+
+  .marcas__pestana[aria-selected='true'] img {
+    opacity: 1;
+  }
+
+  .marcas__pestana[aria-selected='true']::before,
+  .marcas__pestana[aria-selected='true']::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: var(--r);
+    height: var(--r);
+  }
+
+  .marcas__pestana[aria-selected='true']::before {
+    right: 100%;
+    background: radial-gradient(
+      circle at 0 0,
+      transparent var(--r),
+      var(--panel) calc(var(--r) + 0.5px)
+    );
+  }
+
+  .marcas__pestana[aria-selected='true']::after {
+    left: 100%;
+    background: radial-gradient(
+      circle at 100% 0,
+      transparent var(--r),
+      var(--panel) calc(var(--r) + 0.5px)
+    );
+  }
+
+  /* --- Ficha de la marca destacada --- */
+  .marcas__detalle {
+    display: grid;
+    /* Proporciones del diseño: columna 20.7%, canaleta 8.4%, foto 55%. */
+    grid-template-columns: 24.5% 1fr;
+    gap: 10%;
+    align-items: start;
+    padding: clamp(3rem, 6vw, 6rem) 3.3% clamp(4rem, 8vw, 8rem) 12.4%;
+    background: var(--panel);
+  }
+
+  .marcas__cuerpo {
+    display: none;
+  }
+
+  .marcas__cuerpo[data-activo] {
+    display: block;
+  }
+
+  .marcas__wordmark {
+    width: clamp(9rem, 19vw, 20rem);
+    height: auto;
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .marcas__descripcion {
+    margin: clamp(1.5rem, 3vw, 2.5rem) 0 0;
+    max-width: 34ch;
+    font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+    font-weight: 300;
+    line-height: 1.85;
+  }
+
+  .marcas__categorias {
+    display: grid;
+    gap: 0.35rem;
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+    font-size: 0.8125rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .marcas__categorias ul {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .marcas__categorias li:not(:last-child)::after {
+    content: '·';
+    margin-inline: 0.5em;
+  }
+
+  .marcas__todas {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: clamp(2.5rem, 6vw, 5rem);
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid currentColor;
+    font-size: 0.8125rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: gap 0.25s ease;
+  }
+
+  .marcas__todas:hover {
+    gap: 1.2rem;
+  }
+
+  .marcas__todas :global(.flecha) {
+    width: 1.1rem;
+    opacity: 0.55;
+  }
+
+  .marcas__medio {
+    position: relative;
+    display: grid;
+  }
+
+  .marcas__foto {
+    grid-area: 1 / 1;
+    width: 100%;
+    height: auto;
+    border-radius: clamp(1rem, 2vw, 1.75rem);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.45s ease,
+      visibility 0.45s;
+  }
+
+  .marcas__foto[data-activo] {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Chapa "ver marca" sobre la foto. */
+  .marcas__ver {
+    position: absolute;
+    top: 50%;
+    left: 24%;
+    display: grid;
+    place-items: center;
+    width: clamp(5rem, 8vw, 7.5rem);
+    aspect-ratio: 1;
+    color: #fff;
+    background: rgba(20, 20, 15, 0.28);
+    border-radius: 50%;
+    backdrop-filter: blur(2px);
+    transform: translate(-50%, -50%);
+    transition: background-color 0.3s ease;
+  }
+
+  .marcas__ver:hover {
+    background: rgba(20, 20, 15, 0.45);
+  }
+
+  .marcas__ver-aro,
+  .marcas__ver-flecha {
+    grid-area: 1 / 1;
+  }
+
+  .marcas__ver-aro {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 1.6px;
+    animation: aro-gira 20s linear infinite;
+  }
+
+  .marcas__ver-flecha {
+    width: 24%;
+    height: 24%;
+  }
+
+  @keyframes aro-gira {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (max-width: 900px) {
+    .marcas__detalle {
+      grid-template-columns: 1fr;
+    }
+
+    /* En móvil la foto va arriba del texto, como en el diseño. */
+    .marcas__medio {
+      order: -1;
+    }
+
+    /* En móvil la barra es un carrusel: la activa queda centrada y las vecinas
+       asoman por los costados. */
+    .marcas__pestanas {
+      overflow-x: auto;
+      padding-inline: 25%;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+    }
+
+    .marcas__pestanas::-webkit-scrollbar {
+      display: none;
+    }
+
+    .marcas__pestana {
+      flex: 0 0 50%;
+      scroll-snap-align: center;
+    }
+  }
+</style>
+
+<script>
+  const seccion = document.querySelector<HTMLElement>('.marcas');
+
+  if (seccion) {
+    const pestanas = Array.from(seccion.querySelectorAll<HTMLElement>('[data-marca]'));
+    const paneles = Array.from(seccion.querySelectorAll<HTMLElement>('[data-panel]'));
+    const ver = document.getElementById('marcas-ver') as HTMLAnchorElement | null;
+
+    const mostrar = (indice: number) => {
+      // La chapa "ver marca" tiene que seguir a la pestaña activa.
+      const slug = pestanas[indice]?.dataset.slug;
+      if (ver && slug) ver.href = `/marcas/${slug}`;
+
+      pestanas.forEach((pestana, i) => {
+        pestana.setAttribute('aria-selected', String(i === indice));
+      });
+      for (const panel of paneles) {
+        panel.toggleAttribute('data-activo', Number(panel.dataset.panel) === indice);
+      }
+    };
+
+    pestanas.forEach((pestana, i) => {
+      pestana.addEventListener('click', () => {
+        mostrar(i);
+        // En móvil la barra scrollea: dejar la elegida centrada.
+        pestana.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+      });
+    });
+  }
+</script>

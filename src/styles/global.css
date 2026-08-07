@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+/* Tokens del sitio. El diseño es esencialmente monocromo: el color lo pone
+   el video/las fotos, no la UI. */
+@theme {
+  --color-brand-50: #f7f7f6;
+  --color-brand-100: #ececea;
+  --color-brand-200: #d9d9d6;
+  --color-brand-300: #b8b8b3;
+  --color-brand-400: #8e8e88;
+  --color-brand-500: #6b6b65;
+  --color-brand-600: #4d4d48;
+  --color-brand-700: #2e2e2b;
+  --color-brand-800: #1c1c1a;
+  --color-brand-900: #111110;
+
+  --color-ink: #14140f;
+  --color-muted: #6b6b65;
+
+  --font-sans: "Parkinsans Variable", system-ui, -apple-system, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+
+  /* Los dos únicos pesos de la marca. */
+  --font-weight-light: 300;
+  --font-weight-medium: 500;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--color-ink);
+  background: #fff;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ancho de contenido compartido por todas las secciones. */
+.container-page {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+/* --- Revelado al entrar en pantalla ---
+   Sólo se oculta si hay JS (la clase la pone un script en línea en el head),
+   así sin JS todo se ve. */
+.con-js [data-anima]:not([data-anima='grupo']),
+.con-js [data-anima-hijo] {
+  opacity: 0;
+  transform: translateY(1.5rem);
+  transition:
+    opacity 0.75s cubic-bezier(0.22, 0.61, 0.36, 1) var(--retardo, 0ms),
+    transform 0.75s cubic-bezier(0.22, 0.61, 0.36, 1) var(--retardo, 0ms);
+}
+
+.con-js [data-anima][data-visible],
+.con-js [data-anima-hijo][data-visible] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Los titulares de portada no esperan al scroll: entran al cargar. */
+.con-js [data-anima='portada'] {
+  animation: entrar-portada 1s cubic-bezier(0.22, 0.61, 0.36, 1) 0.15s both;
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+@keyframes entrar-portada {
+  from {
+    opacity: 0;
+    transform: translateY(1.75rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .con-js [data-anima],
+  .con-js [data-anima-hijo] {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

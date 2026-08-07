@@ -1,0 +1,28 @@
+---
+// Flecha de marca (flecharderecha.svg). El original trae fill #2d2d2d y una
+// capa al 50%; aquí hereda el color y la opacidad la decide quien la usa.
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<svg
+  class:list={['flecha', className]}
+  viewBox="0 0 21.84 19.04"
+  fill="currentColor"
+  aria-hidden="true"
+>
+  <path
+    d="M21.84,10.99v-.2s0-2.54,0-2.54v-.2c0-.66-.35-1.28-.91-1.62L10.42,0v1.89c0,.66.35,1.28.91,1.62l7.75,4.74H0s0,2.54,0,2.54h19.08s-7.75,4.74-7.75,4.74c-.57.35-.91.96-.91,1.62v1.89s10.51-6.42,10.51-6.42c.57-.35.91-.96.91-1.62Z"
+  ></path>
+</svg>
+
+<style>
+  .flecha {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+</style>

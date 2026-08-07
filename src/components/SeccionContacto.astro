@@ -1,0 +1,196 @@
+---
+import Marquesina from './Marquesina.astro';
+import IconoRed from './IconoRed.astro';
+import Flecha from './Flecha.astro';
+import { site, marquesinaContacto } from '../config/site';
+
+const mapa = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.address)}`;
+---
+
+<section class="contacto" id="contacto">
+  <Marquesina frases={marquesinaContacto} />
+
+  <div class="contacto__titular" data-anima>
+    <p>
+      <strong>Conversemos</strong> sobre tu <strong>próximo proyecto.</strong><br />
+      Comencemos con un <a href={`mailto:${site.email}`}>{site.email}</a>
+    </p>
+  </div>
+
+  <div class="contacto__cuerpo">
+    <div class="contacto__pie">
+      <ul class="contacto__redes">
+        {
+          site.social.map((red) => (
+            <li>
+              <a href={red.url} rel="noopener" aria-label={red.nombre}>
+                <IconoRed red={red.red} />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <address class="contacto__direccion">
+        {site.direccion.map((linea) => <span>{linea}</span>)}
+      </address>
+    </div>
+
+    <div class="contacto__detalle" data-anima="grupo">
+      <p class="contacto__intro">
+        Nos gustaría conocer tus ideas, entender tus necesidades y explorar
+        juntos las mejores soluciones para tu proyecto.
+      </p>
+
+      <p class="contacto__showroom">
+        Reserva una visita a nuestro showroom
+        <a class="contacto__agenda" href="/contacto">
+          Agenda aquí
+          <Flecha />
+        </a>
+      </p>
+
+      <a class="contacto__mapa" href={mapa} target="_blank" rel="noopener">
+        <span>Ver ubicación en Google Maps</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contacto {
+    padding-bottom: clamp(3rem, 6vw, 6rem);
+    overflow: hidden;
+  }
+
+  .contacto__titular {
+    padding: clamp(1rem, 3vw, 3rem) clamp(1.5rem, 6vw, 7rem) 0 clamp(1.5rem, 16.5vw, 19rem);
+  }
+
+  .contacto__titular p {
+    margin: 0;
+    font-size: clamp(1.35rem, 2.7vw, 2.55rem);
+    font-weight: 300;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+
+  .contacto__titular strong {
+    font-weight: 500;
+  }
+
+  .contacto__titular a {
+    font-weight: 500;
+    border-bottom: 2px solid currentColor;
+    padding-bottom: 0.1em;
+  }
+
+  .contacto__cuerpo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 5vw, 5rem);
+    padding: clamp(2.5rem, 6vw, 6rem) clamp(1.5rem, 6vw, 7rem) 0
+      clamp(1.5rem, 16.5vw, 19rem);
+  }
+
+  /* Las redes y la dirección se apoyan abajo, como en el diseño. */
+  .contacto__pie {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .contacto__redes {
+    display: flex;
+    gap: 0.9rem;
+  }
+
+  .contacto__redes a {
+    display: block;
+    width: 1.75rem;
+    height: 1.75rem;
+    transition: opacity 0.25s ease;
+  }
+
+  .contacto__redes a:hover {
+    opacity: 0.6;
+  }
+
+  .contacto__direccion {
+    display: grid;
+    font-style: normal;
+    font-size: 0.8125rem;
+    font-weight: 300;
+    line-height: 1.7;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .contacto__intro {
+    margin: 0;
+    max-width: 42ch;
+    font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* El enlace va en su propia línea, debajo del texto. */
+  .contacto__showroom {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: clamp(2rem, 4vw, 3.5rem) 0 0;
+    font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+    font-weight: 300;
+  }
+
+  .contacto__agenda {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.35rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid currentColor;
+    transition: gap 0.25s ease;
+  }
+
+  .contacto__agenda:hover {
+    gap: 1rem;
+  }
+
+  .contacto__agenda :global(.flecha) {
+    width: 0.9rem;
+    opacity: 0.55;
+  }
+
+  /* Marcador de posición del mapa hasta tener el asset definitivo. */
+  .contacto__mapa {
+    display: grid;
+    place-items: center;
+    margin-top: clamp(2rem, 4vw, 3.5rem);
+    aspect-ratio: 745 / 350;
+    border-radius: clamp(0.75rem, 1.2vw, 1.15rem);
+    background: var(--color-brand-100);
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    transition: background-color 0.25s ease;
+  }
+
+  .contacto__mapa:hover {
+    background: var(--color-brand-200);
+  }
+
+  @media (max-width: 900px) {
+    .contacto__cuerpo {
+      grid-template-columns: 1fr;
+    }
+
+    .contacto__pie {
+      order: 2;
+    }
+  }
+</style>

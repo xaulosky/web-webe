@@ -1,0 +1,63 @@
+---
+import '@fontsource-variable/parkinsans';
+import '../styles/global.css';
+
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Animaciones from '../components/Animaciones.astro';
+import { site } from '../config/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** `overlay` para páginas que abren con el hero a pantalla completa. */
+  header?: 'overlay' | 'solid';
+  /** Sólo la home: el logo del navbar nace del titular al hacer scroll. */
+  logoMorph?: boolean;
+}
+
+const {
+  title,
+  description = site.description,
+  header = 'solid',
+  logoMorph = false,
+} = Astro.props;
+const fullTitle = title ? `${title} | ${site.name}` : `${site.name} — ${site.tagline}`;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+    {/* En línea y sin defer: marca que hay JS antes del primer pintado, para
+        que el revelado no provoque un parpadeo de contenido visible. */}
+    <script is:inline>
+      document.documentElement.classList.add('con-js');
+    </script>
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <a
+      href="#contenido"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded focus:bg-brand-900 focus:px-4 focus:py-2 focus:text-white"
+    >
+      Saltar al contenido
+    </a>
+    <Header variant={header} morph={logoMorph} />
+    <main id="contenido" class:list={['flex-1', header === 'solid' && 'pt-24']}>
+      <slot />
+    </main>
+    <Footer />
+    <Animaciones />
+  </body>
+</html>

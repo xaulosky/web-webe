@@ -1,0 +1,115 @@
+---
+// El panel blanco que sube por la derecha y se monta sobre la sección anterior:
+// el "sacado" es la esquina superior izquierda redondeada recortando la foto o
+// el video de arriba, más un filete que redondea la esquina del bloque oscuro.
+interface Props {
+  id?: string;
+  antetitulo: string;
+}
+
+const { id, antetitulo } = Astro.props;
+---
+
+<section class="sacado" id={id}>
+  <div class="sacado__izquierda" data-anima>
+    <slot name="izquierda" />
+  </div>
+
+  <div class="sacado__panel" data-anima="grupo">
+    <p class="sacado__antetitulo">{antetitulo}</p>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .sacado {
+    --radio: clamp(2.5rem, 4.2vw, 4.75rem);
+    /* Cuánto sube el panel. El borde inferior del bloque de arriba queda
+       exactamente a esta distancia del techo de la sección. */
+    --solape: 28vh;
+
+    position: relative;
+    /* Por encima de un hero pegajoso, que al ser sticky pinta como posicionado. */
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 53% 47%;
+    margin-top: calc(-1 * var(--solape));
+  }
+
+  /* Filete que redondea la esquina inferior derecha del bloque de arriba, donde
+     se encuentra con el canto izquierdo del panel. */
+  .sacado::before {
+    content: '';
+    position: absolute;
+    top: calc(var(--solape) - var(--radio));
+    right: 47%;
+    width: var(--radio);
+    height: var(--radio);
+    background: radial-gradient(
+      circle at 0 0,
+      transparent var(--radio),
+      #fff calc(var(--radio) + 0.5px)
+    );
+  }
+
+  /* La columna izquierda arranca por debajo del solape para no tapar el hero. */
+  .sacado__izquierda {
+    padding: calc(var(--solape) + clamp(2rem, 5vw, 5rem)) clamp(1.5rem, 5vw, 5rem)
+      clamp(2rem, 5vw, 5rem) clamp(1.5rem, 8vw, 9rem);
+  }
+
+  .sacado__izquierda:empty {
+    padding: 0;
+  }
+
+  .sacado__panel {
+    background: #fff;
+    border-top-left-radius: var(--radio);
+    padding: clamp(2.5rem, 5vw, 5rem) clamp(1.5rem, 3.2vw, 3.5rem)
+      clamp(4rem, 9vw, 9rem) clamp(2rem, 4vw, 4.5rem);
+  }
+
+  .sacado__antetitulo {
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 300;
+    color: var(--color-muted);
+  }
+
+  /* En móvil el sacado se refleja: el panel entra por la izquierda y la muesca
+     queda arriba a la derecha, donde la foto sigue bajando. */
+  @media (max-width: 860px) {
+    .sacado {
+      --radio: clamp(1.75rem, 9vw, 3.25rem);
+      --solape: 14vh;
+      grid-template-columns: 81% 19%;
+      grid-template-areas:
+        'panel hueco'
+        'izquierda izquierda';
+    }
+
+    .sacado__panel {
+      grid-area: panel;
+      border-radius: 0 var(--radio) 0 0;
+      padding: clamp(2.5rem, 9vw, 4rem) clamp(1.5rem, 6vw, 2.5rem)
+        clamp(2rem, 6vw, 3rem);
+    }
+
+    .sacado__izquierda {
+      grid-area: izquierda;
+      padding: 0 clamp(1.5rem, 6vw, 2.5rem) clamp(2rem, 8vw, 3rem);
+    }
+
+    /* Espejo del filete: redondea la esquina inferior izquierda del bloque
+       de arriba, donde se topa con el canto derecho del panel. */
+    .sacado::before {
+      right: auto;
+      left: 81%;
+      background: radial-gradient(
+        circle at 100% 0,
+        transparent var(--radio),
+        #fff calc(var(--radio) + 0.5px)
+      );
+    }
+  }
+</style>

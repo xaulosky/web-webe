@@ -1,0 +1,172 @@
+---
+import { atributos } from '../config/site';
+
+// Acordeón de atributos: la primera fila abierta, como en el diseño.
+---
+
+<div class="acordeon">
+  {
+    atributos.map((atributo, i) => (
+      <div class="acordeon__fila" data-abierta={i === 0 ? '' : undefined}>
+        <h3>
+          <button type="button" aria-expanded={i === 0} aria-controls={`atributo-${i}`}>
+            <span class="acordeon__signo" aria-hidden="true"></span>
+            <span class="acordeon__titulo">{atributo.titulo}</span>
+          </button>
+        </h3>
+        {/* El texto se ve siempre: cerrado va recortado a dos líneas y el
+            botón lo despliega completo. */}
+        <div class="acordeon__cuerpo" id={`atributo-${i}`}>
+          <p>{atributo.texto}</p>
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .acordeon {
+    border-top: 1px solid var(--color-brand-300);
+  }
+
+  .acordeon__fila {
+    display: grid;
+    grid-template-columns: 58% 1fr;
+    align-items: start;
+    border-bottom: 1px solid var(--color-brand-300);
+    transition: background-color 0.3s ease;
+  }
+
+  .acordeon__fila[data-abierta] {
+    background: #e9e9e7;
+  }
+
+  .acordeon__fila h3 {
+    margin: 0;
+    font-size: inherit;
+    font-weight: inherit;
+  }
+
+  .acordeon__fila button {
+    display: flex;
+    align-items: center;
+    gap: clamp(1.5rem, 5vw, 5.5rem);
+    width: 100%;
+    padding: clamp(1.25rem, 2.4vw, 2rem) clamp(1rem, 2vw, 2rem)
+      clamp(1.25rem, 2.4vw, 2rem) clamp(1.5rem, 8vw, 9rem);
+    text-align: left;
+    cursor: pointer;
+  }
+
+  /* El signo es CSS puro: dos trazos, y el vertical desaparece al abrirse. */
+  .acordeon__signo {
+    position: relative;
+    flex: 0 0 auto;
+    width: 0.85rem;
+    height: 0.85rem;
+  }
+
+  .acordeon__signo::before,
+  .acordeon__signo::after {
+    content: '';
+    position: absolute;
+    inset: 50% 0 auto;
+    height: 1px;
+    background: var(--color-ink);
+    transform: translateY(-50%);
+    transition: opacity 0.25s ease;
+  }
+
+  .acordeon__signo::after {
+    inset: 0 50% auto auto;
+    width: 1px;
+    height: 100%;
+    transform: translateX(50%);
+  }
+
+  .acordeon__fila[data-abierta] .acordeon__signo::after {
+    opacity: 0;
+  }
+
+  .acordeon__titulo {
+    font-size: clamp(1.05rem, 1.5vw, 1.4rem);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .acordeon__cuerpo {
+    padding: clamp(1.25rem, 2.4vw, 2rem) clamp(1.5rem, 6vw, 7rem)
+      clamp(1.25rem, 2.4vw, 2rem) 0;
+  }
+
+  .acordeon__cuerpo p {
+    margin: 0;
+    max-width: 46ch;
+    font-size: clamp(0.85rem, 1.02vw, 1rem);
+    font-weight: 300;
+    line-height: 1.6;
+    color: #4d4d48;
+    /* Cerrado: dos líneas con puntos suspensivos. */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+
+  .acordeon__fila[data-abierta] .acordeon__cuerpo p {
+    -webkit-line-clamp: unset;
+    overflow: visible;
+  }
+
+  @media (max-width: 860px) {
+    .acordeon__fila {
+      grid-template-columns: 1fr;
+    }
+
+    .acordeon__fila button {
+      padding-inline: clamp(1.5rem, 6vw, 2.5rem);
+      gap: 1.25rem;
+    }
+
+    /* En móvil no cabe el adelanto de dos líneas: la fila cerrada muestra
+       sólo el título. */
+    .acordeon__cuerpo {
+      padding: 0 clamp(1.5rem, 6vw, 2.5rem) 0 clamp(3.5rem, 12vw, 5rem);
+    }
+
+    .acordeon__fila:not([data-abierta]) .acordeon__cuerpo {
+      display: none;
+    }
+
+    .acordeon__fila[data-abierta] .acordeon__cuerpo {
+      padding-bottom: clamp(1.25rem, 5vw, 2rem);
+    }
+  }
+</style>
+
+<script>
+  for (const acordeon of document.querySelectorAll<HTMLElement>('.acordeon')) {
+    const filas = Array.from(acordeon.querySelectorAll<HTMLElement>('.acordeon__fila'));
+
+    for (const fila of filas) {
+      const boton = fila.querySelector('button');
+      const cuerpo = fila.querySelector<HTMLElement>('.acordeon__cuerpo');
+      if (!boton || !cuerpo) continue;
+
+      boton.addEventListener('click', () => {
+        const abierta = fila.hasAttribute('data-abierta');
+
+        // Sólo una abierta a la vez, como en el diseño.
+        for (const otra of filas) {
+          otra.removeAttribute('data-abierta');
+          otra.querySelector('button')?.setAttribute('aria-expanded', 'false');
+        }
+
+        if (!abierta) {
+          fila.setAttribute('data-abierta', '');
+          boton.setAttribute('aria-expanded', 'true');
+        }
+      });
+    }
+  }
+</script>

@@ -1,0 +1,284 @@
+---
+import { proyectos } from '../config/site';
+
+const campos = [
+  [
+    ['Proyecto', 'proyecto'],
+    ['Ubicación', 'ubicacion'],
+  ],
+  [
+    ['Superficie', 'superficie'],
+    ['Puestos de trabajo', 'puestos'],
+  ],
+  [
+    ['Alcance', 'alcance'],
+    ['Arquitectura', 'arquitectura'],
+  ],
+  [
+    ['Marcas', 'marcas'],
+    ['Año', 'ano'],
+  ],
+] as const;
+---
+
+<section class="proyectos" id="proyectos">
+  <video
+    class="proyectos__video"
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="none"
+    poster="/media/hero-poster.jpg"
+    aria-hidden="true"
+    tabindex="-1"
+  >
+    <source src="/media/hero.mp4" type="video/mp4" />
+  </video>
+  <div class="proyectos__scrim" aria-hidden="true"></div>
+
+  <p class="proyectos__antetitulo">proyectos destacados</p>
+
+  <ul class="proyectos__nube" data-anima="grupo">
+    {
+      proyectos.map((proyecto, i) => (
+        <li>
+          <button
+            type="button"
+            data-proyecto={i}
+            aria-current={i === 0 ? 'true' : undefined}
+          >
+            {proyecto.nombre}
+            <sup>({proyecto.numero})</sup>
+          </button>
+        </li>
+      ))
+    }
+  </ul>
+
+  <dl class="proyectos__ficha" data-anima="grupo">
+    {
+      campos.map((grupo) => (
+        <div class="proyectos__grupo">
+          {grupo.map(([etiqueta, clave]) => (
+            <div class="proyectos__fila">
+              <dt>{etiqueta}</dt>
+              <dd data-campo={clave}>{proyectos[0][clave]}</dd>
+            </div>
+          ))}
+        </div>
+      ))
+    }
+  </dl>
+</section>
+
+<style>
+  .proyectos {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: clamp(3rem, 6vh, 5rem) clamp(1.5rem, 4vw, 4rem) clamp(2rem, 5vh, 4rem);
+    overflow: hidden;
+    background: #14140f;
+    color: #fff;
+  }
+
+  .proyectos__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.3) brightness(0.62) contrast(1.04);
+  }
+
+  .proyectos__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.4) 0%,
+      rgba(0, 0, 0, 0.15) 45%,
+      rgba(0, 0, 0, 0.5) 100%
+    );
+  }
+
+  .proyectos__antetitulo {
+    position: relative;
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .proyectos__nube {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.1em clamp(1rem, 2.2vw, 2.25rem);
+    max-width: 68rem;
+    margin-top: clamp(1.5rem, 4vh, 3rem);
+    text-align: center;
+  }
+
+  .proyectos__nube button {
+    font-size: clamp(1.5rem, 2.55vw, 2.75rem);
+    font-weight: 300;
+    line-height: 1.28;
+    letter-spacing: -0.01em;
+    color: rgba(255, 255, 255, 0.42);
+    cursor: pointer;
+    transition: color 0.25s ease;
+  }
+
+  .proyectos__nube button sup {
+    font-size: 0.42em;
+    font-weight: 300;
+    vertical-align: 1.6em;
+    margin-left: 0.15em;
+  }
+
+  .proyectos__nube button:hover {
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  .proyectos__nube button[aria-current] {
+    font-weight: 500;
+    color: #fff;
+  }
+
+  /* --- Ficha del proyecto activo --- */
+  .proyectos__ficha {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(1rem, 3vw, 3rem);
+    width: 100%;
+    margin: auto 0 0;
+    padding-top: clamp(2rem, 5vh, 3rem);
+    font-size: clamp(0.75rem, 0.95vw, 0.9375rem);
+  }
+
+  .proyectos__grupo {
+    display: grid;
+    gap: 0.15rem;
+    padding-left: clamp(1rem, 3vw, 3rem);
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .proyectos__grupo:first-child {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .proyectos__fila {
+    display: grid;
+    grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+    gap: 0.35rem 1.25rem;
+  }
+
+  .proyectos__fila dt {
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .proyectos__fila dd {
+    margin: 0;
+    font-weight: 500;
+  }
+
+  @media (max-width: 860px) {
+    /* Sin este aire el rótulo queda debajo del header fijo. */
+    .proyectos {
+      padding-top: 7.5rem;
+    }
+
+    .proyectos__nube {
+      gap: 0.15em 1rem;
+    }
+
+    .proyectos__nube button {
+      font-size: 1.2rem;
+    }
+
+    /* La ficha pasa a tabla: etiqueta a la izquierda, dato a la derecha. */
+    .proyectos__ficha {
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .proyectos__grupo {
+      display: block;
+      width: 100%;
+      padding-left: 0;
+      border-left: 0;
+    }
+
+    .proyectos__fila {
+      grid-template-columns: 1fr auto;
+      gap: 0 1rem;
+      padding-block: 0.7rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .proyectos__grupo:first-child .proyectos__fila:first-child {
+      border-top: 1px solid rgba(255, 255, 255, 0.18);
+    }
+  }
+</style>
+
+<script>
+  const seccion = document.querySelector<HTMLElement>('.proyectos');
+
+  if (seccion) {
+    const botones = Array.from(seccion.querySelectorAll<HTMLElement>('[data-proyecto]'));
+    const celdas = Array.from(seccion.querySelectorAll<HTMLElement>('[data-campo]'));
+
+    // Los datos viajan en el HTML; aquí sólo se leen del módulo de config.
+    import('../config/site').then(({ proyectos }) => {
+      const elegir = (indice: number) => {
+        const proyecto = proyectos[indice];
+        if (!proyecto) return;
+        for (const boton of botones) {
+          const activo = Number(boton.dataset.proyecto) === indice;
+          if (activo) boton.setAttribute('aria-current', 'true');
+          else boton.removeAttribute('aria-current');
+        }
+        for (const celda of celdas) {
+          const clave = celda.dataset.campo as keyof typeof proyecto;
+          celda.textContent = String(proyecto[clave] ?? '—');
+        }
+      };
+
+      botones.forEach((boton, i) => {
+        boton.addEventListener('click', () => elegir(i));
+      });
+    });
+
+    // El video de fondo sólo corre cuando la sección está a la vista.
+    const video = seccion.querySelector<HTMLVideoElement>('.proyectos__video');
+    if (video && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const observador = new IntersectionObserver(
+        (entradas) => {
+          for (const entrada of entradas) {
+            if (entrada.isIntersecting) {
+              if (video.preload === 'none') video.preload = 'auto';
+              video.play().catch(() => {});
+            } else {
+              video.pause();
+            }
+          }
+        },
+        { rootMargin: '200px' },
+      );
+      observador.observe(seccion);
+    }
+  }
+</script>

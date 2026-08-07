@@ -1,0 +1,168 @@
+---
+// Dos mecanismos globales:
+//  1. Revelado: los elementos marcados con data-anima aparecen al entrar en
+//     pantalla. `data-anima="grupo"` escalona a sus hijos directos.
+//  2. Suavizado del scroll con rueda, sólo en escritorio.
+// Los dos se desactivan con prefers-reduced-motion.
+---
+
+<script>
+  const sinMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* ---------- 1. Revelado al entrar en pantalla ---------- */
+  const preparar = () => {
+    const objetivos: HTMLElement[] = [];
+
+    for (const marcado of document.querySelectorAll<HTMLElement>('[data-anima]')) {
+      if (marcado.dataset.anima === 'grupo') {
+        Array.from(marcado.children).forEach((hijo, i) => {
+          if (!(hijo instanceof HTMLElement)) return;
+          hijo.dataset.animaHijo = '';
+          hijo.style.setProperty('--retardo', `${i * 80}ms`);
+          objetivos.push(hijo);
+        });
+      } else {
+        objetivos.push(marcado);
+      }
+    }
+
+    if (sinMovimiento.matches) {
+      // Sin animación: se muestran de una y no se observa nada.
+      for (const el of objetivos) el.dataset.visible = '';
+      return;
+    }
+
+    // Comprobación por geometría en vez de IntersectionObserver: es
+    // determinista y, sobre todo, no puede dejar contenido invisible si el
+    // observador nunca llega a dispararse.
+    let pendientes = objetivos;
+
+    const revisar = () => {
+      const alto = window.innerHeight;
+      const umbral = alto * 0.88;
+      // Al tocar fondo ya no hay más scroll: lo que siga pendiente se revela,
+      // o quedaría varado en la franja inferior para siempre.
+      const enElFondo =
+        window.scrollY + alto >= document.documentElement.scrollHeight - 2;
+      const quedan: HTMLElement[] = [];
+
+      for (const el of pendientes) {
+        const caja = el.getBoundingClientRect();
+        // Visible si su borde superior entró y su borde inferior no pasó.
+        if (enElFondo || (caja.top < umbral && caja.bottom > 0)) {
+          el.dataset.visible = '';
+        } else {
+          quedan.push(el);
+        }
+      }
+
+      pendientes = quedan;
+
+      if (pendientes.length === 0) {
+        window.removeEventListener('scroll', revisar);
+        window.removeEventListener('resize', revisar);
+      }
+    };
+
+    // La primera comprobación tiene que esperar a que el layout esté asentado:
+    // si se corre al parsear, el documento todavía es corto, todo cae dentro
+    // del umbral y se revela de golpe.
+    const arrancar = () => {
+      window.addEventListener('scroll', revisar, { passive: true });
+      window.addEventListener('resize', revisar);
+      document.fonts.ready.then(revisar);
+      revisar();
+    };
+
+    if (document.readyState === 'complete') arrancar();
+    else window.addEventListener('load', arrancar, { once: true });
+  };
+
+  // El CSS oculta los elementos mientras html lleve `con-js`. Si este script
+  // reventara, hay que devolver la visibilidad: es preferible perder la
+  // animación antes que dejar contenido invisible.
+  try {
+    preparar();
+  } catch (error) {
+    document.documentElement.classList.remove('con-js');
+    console.error('Revelado desactivado:', error);
+  }
+
+  /* ---------- 2. Suavizado del scroll ---------- */
+  const conPuntero = window.matchMedia('(hover: hover) and (pointer: fine)');
+
+  // Sólo con mouse/trackpad: en táctil el scroll nativo ya tiene inercia y
+  // secuestrarlo empeora la sensación.
+  if (conPuntero.matches && !sinMovimiento.matches) {
+    const limite = () =>
+      Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+
+    // Cuánto se acerca al objetivo por frame. Más alto = más seco.
+    // Por debajo de ~0.2 el scroll se siente pesado.
+    const SUAVIDAD = 0.26;
+
+    let objetivo = window.scrollY;
+    let actual = objetivo;
+    let animando = false;
+
+    // deltaY no siempre viene en píxeles: en modo línea o página hay que
+    // convertirlo o el scroll queda ridículamente corto.
+    const enPixeles = (evento: WheelEvent) => {
+      if (evento.deltaMode === 1) return evento.deltaY * 16;
+      if (evento.deltaMode === 2) return evento.deltaY * window.innerHeight;
+      return evento.deltaY;
+    };
+
+    const paso = () => {
+      const resta = objetivo - actual;
+      actual += resta * SUAVIDAD;
+
+      if (Math.abs(resta) < 0.5) {
+        actual = objetivo;
+        animando = false;
+      }
+
+      window.scrollTo(0, actual);
+      if (animando) requestAnimationFrame(paso);
+    };
+
+    const activo = () =>
+      // Con el menú abierto el scroll del fondo está bloqueado.
+      document.documentElement.dataset.menu !== 'abierto';
+
+    window.addEventListener(
+      'wheel',
+      (evento) => {
+        if (!activo() || evento.ctrlKey) return;
+        // Respeta cualquier subárbol que scrollee por su cuenta.
+        if ((evento.target as HTMLElement)?.closest?.('[data-scroll-propio]')) return;
+
+        evento.preventDefault();
+        objetivo = Math.min(limite(), Math.max(0, objetivo + enPixeles(evento)));
+
+        if (!animando) {
+          animando = true;
+          requestAnimationFrame(paso);
+        }
+      },
+      { passive: false },
+    );
+
+    // Teclado, anclas, arrastre de la barra: nos resincronizamos con la
+    // posición real en vez de pelearnos con ella.
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!animando) {
+          objetivo = window.scrollY;
+          actual = objetivo;
+        }
+      },
+      { passive: true },
+    );
+
+    window.addEventListener('resize', () => {
+      objetivo = Math.min(limite(), objetivo);
+    });
+  }
+</script>

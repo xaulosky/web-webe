@@ -1,0 +1,179 @@
+---
+import { marcas } from '../config/site';
+
+// Portada de la página de marca: foto a sangre y una pestaña blanca abajo a la
+// izquierda con el wordmark. El resto de las marcas quedan fantasma sobre la
+// foto, a la misma altura, y llevan a su propia página.
+interface Props {
+  slug: string;
+  foto: string;
+}
+
+const { slug, foto } = Astro.props;
+const activa = marcas.find((marca) => marca.slug === slug)!;
+const otras = marcas.filter((marca) => marca.slug !== slug);
+---
+
+<section class="marca-portada" data-fondo="oscuro">
+  <img
+    class="marca-portada__foto"
+    src={foto}
+    alt={`Espacio equipado con ${activa.nombre}`}
+    width="1039"
+    height="702"
+    fetchpriority="high"
+  />
+  <div class="marca-portada__scrim" aria-hidden="true"></div>
+
+  <nav class="marca-portada__otras" aria-label="Otras marcas">
+    {
+      otras.map((marca) => (
+        <a href={`/marcas/${marca.slug}`}>
+          <img
+            src={`/marcas/${marca.archivo}`}
+            alt={marca.nombre}
+            width={marca.ancho}
+            height={marca.alto}
+            loading="lazy"
+          />
+        </a>
+      ))
+    }
+  </nav>
+
+  <div class="marca-portada__pestana" data-anima="portada">
+    <img
+      class="marca-portada__wordmark"
+      src={`/marcas/${activa.archivo}`}
+      alt={activa.nombre}
+      width={activa.ancho}
+      height={activa.alto}
+    />
+  </div>
+</section>
+
+<style>
+  .marca-portada {
+    --radio: clamp(1.75rem, 3.2vw, 3.5rem);
+
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: min(70vh, 42rem);
+    color: #fff;
+    background: #14140f;
+  }
+
+  .marca-portada__foto {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .marca-portada__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0.1));
+  }
+
+  /* Las marcas inactivas van sobre la foto, alineadas con la pestaña. */
+  .marca-portada__otras {
+    position: absolute;
+    right: clamp(1.5rem, 3vw, 3rem);
+    bottom: clamp(2.5rem, 5vw, 5rem);
+    left: 42%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: clamp(1rem, 2.5vw, 2.5rem);
+  }
+
+  .marca-portada__otras img {
+    width: clamp(3rem, 6vw, 6.5rem);
+    height: auto;
+    filter: brightness(0) invert(1);
+    opacity: 0.5;
+    transition: opacity 0.25s ease;
+  }
+
+  .marca-portada__otras a:hover img {
+    opacity: 0.9;
+  }
+
+  /* Pestaña de carpeta: blanca, esquinas superiores redondeadas y filetes
+     cóncavos que la enganchan con el blanco de la página. */
+  .marca-portada__pestana {
+    position: relative;
+    margin-left: clamp(1.5rem, 4.7vw, 5rem);
+    padding: clamp(1.75rem, 3.5vw, 3.5rem) clamp(2rem, 5vw, 5.5rem);
+    background: #fff;
+    border-radius: var(--radio) var(--radio) 0 0;
+  }
+
+  .marca-portada__pestana::before,
+  .marca-portada__pestana::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: var(--radio);
+    height: var(--radio);
+  }
+
+  .marca-portada__pestana::before {
+    right: 100%;
+    background: radial-gradient(
+      circle at 0 0,
+      transparent var(--radio),
+      #fff calc(var(--radio) + 0.5px)
+    );
+  }
+
+  .marca-portada__pestana::after {
+    left: 100%;
+    background: radial-gradient(
+      circle at 100% 0,
+      transparent var(--radio),
+      #fff calc(var(--radio) + 0.5px)
+    );
+  }
+
+  .marca-portada__wordmark {
+    display: block;
+    width: clamp(9rem, 21vw, 21rem);
+    height: auto;
+  }
+
+  @media (max-width: 860px) {
+    .marca-portada {
+      min-height: min(60vh, 30rem);
+    }
+
+    /* No caben cinco logos junto a la pestaña: pasan a scroll horizontal. */
+    .marca-portada__otras {
+      left: auto;
+      right: 0;
+      bottom: auto;
+      top: clamp(5rem, 12vh, 7rem);
+      justify-content: flex-start;
+      overflow-x: auto;
+      max-width: 100%;
+      padding-inline: clamp(1.5rem, 6vw, 2.5rem);
+      scrollbar-width: none;
+    }
+
+    .marca-portada__otras::-webkit-scrollbar {
+      display: none;
+    }
+
+    .marca-portada__otras img {
+      width: 4.25rem;
+    }
+
+    .marca-portada__pestana {
+      margin-left: clamp(1rem, 4vw, 2rem);
+      padding-inline: clamp(1.5rem, 6vw, 2.5rem);
+    }
+  }
+</style>

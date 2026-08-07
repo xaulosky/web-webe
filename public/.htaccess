@@ -1,0 +1,39 @@
+# Configuración Apache / cPanel. Se copia tal cual a dist/ en cada build.
+
+ErrorDocument 404 /404.html
+
+# Forzar HTTPS (descomentar cuando el certificado SSL esté activo en cPanel).
+# <IfModule mod_rewrite.c>
+#   RewriteEngine On
+#   RewriteCond %{HTTPS} !=on
+#   RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+# </IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  # Los assets de Astro llevan hash en el nombre: se pueden cachear para siempre.
+  <FilesMatch "\.(js|css|woff2|woff|ttf|svg|png|jpg|jpeg|webp|avif|ico)$">
+    ExpiresDefault "access plus 1 year"
+    Header set Cache-Control "public, immutable"
+  </FilesMatch>
+  # El HTML siempre se revalida para que los deploys se vean al instante.
+  <FilesMatch "\.html$">
+    ExpiresDefault "access plus 0 seconds"
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set X-Frame-Options "SAMEORIGIN"
+</IfModule>
+
+# Bloquear acceso a archivos sensibles que pudieran subirse por error.
+<FilesMatch "^(\.env|\.git.*|composer\.(json|lock)|package(-lock)?\.json)$">
+  Require all denied
+</FilesMatch>

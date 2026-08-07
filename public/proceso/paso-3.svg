@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 779 588" width="779" height="588" role="img" aria-label="Imagen pendiente del paso 3">
+  <rect width="779" height="588" fill="#e6e6e3"/>
+  <g fill="none" stroke="#c2c2bc" stroke-width="1.5">
+    <circle cx="260" cy="294" r="118"/>
+    <circle cx="500" cy="294" r="118"/>
+    <path stroke-dasharray="6 6" d="M96 176h588M96 412h588"/>
+  </g>
+  <text x="389.5" y="300" text-anchor="middle" fill="#94948e"
+        font-family="system-ui, sans-serif" font-size="20" letter-spacing="4">
+    IMAGEN PASO 3 — PENDIENTE
+  </text>
+</svg>

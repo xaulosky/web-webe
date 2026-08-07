@@ -1,0 +1,308 @@
+---
+import Base from '../../layouts/Base.astro';
+import HeroMarca from '../../components/HeroMarca.astro';
+import SeccionContacto from '../../components/SeccionContacto.astro';
+import Flecha from '../../components/Flecha.astro';
+import { marcas } from '../../config/site';
+
+export function getStaticPaths() {
+  return marcas.map((marca) => ({ params: { marca: marca.slug }, props: { marca } }));
+}
+
+const { marca } = Astro.props;
+
+// Con una sola foto no hay carrusel que mostrar.
+const fotos = marca.fotos.length > 0 ? marca.fotos : [marca.foto].filter(Boolean);
+const portada = fotos[0] ?? '/marcas/fotos/novara.webp';
+---
+
+<Base
+  title={marca.nombre}
+  description={marca.descripcion || `${marca.nombre}, marca representada por WEBE.`}
+  header="overlay"
+>
+  <HeroMarca slug={marca.slug} foto={portada} />
+
+  <section class="marca" data-anima="grupo">
+    <div class="marca__meta">
+      <div>
+        <p class="marca__rotulo">Partner</p>
+        <p class="marca__dato">{marca.nombre}</p>
+      </div>
+
+      {
+        marca.categorias.length > 0 && (
+          <div>
+            <p class="marca__rotulo">Mobiliario</p>
+            <ul class="marca__lista">
+              {marca.categorias.map((categoria) => (
+                <li>{categoria}</li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+    </div>
+
+    <p class="marca__texto">{marca.descripcion || 'Descripción pendiente.'}</p>
+
+    <div class="marca__catalogo">
+      <p class="marca__rotulo">{marca.catalogo.etiqueta}</p>
+      {
+        marca.catalogo.archivo ? (
+          <a class="marca__descargar" href={marca.catalogo.archivo} download>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+              <path d="M12 3v12M7 11l5 5 5-5M5 21h14" />
+            </svg>
+            <span>Descargar<br />catálogo</span>
+          </a>
+        ) : (
+          <span class="marca__descargar" aria-disabled="true" title="Catálogo pendiente">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+              <path d="M12 3v12M7 11l5 5 5-5M5 21h14" />
+            </svg>
+            <span>Descargar<br />catálogo</span>
+          </span>
+        )
+      }
+    </div>
+  </section>
+
+  <div class="galeria" data-anima>
+    <div class="galeria__marco">
+      {
+        fotos.map((url, i) => (
+          <img
+            src={url}
+            alt={`${marca.nombre} — imagen ${i + 1}`}
+            width="1039"
+            height="702"
+            loading="lazy"
+            decoding="async"
+            data-foto={i}
+            data-activa={i === 0 ? '' : undefined}
+          />
+        ))
+      }
+
+      {
+        fotos.length > 1 && (
+          <div class="galeria__puntos" role="tablist" aria-label="Imágenes">
+            {fotos.map((_, i) => (
+              <button
+                type="button"
+                role="tab"
+                data-ir={i}
+                aria-selected={i === 0}
+                aria-label={`Imagen ${i + 1}`}
+              />
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </div>
+
+  <p class="volver">
+    <a href="/">
+      <Flecha class="volver__flecha" />
+      Regresar a WEBE
+    </a>
+  </p>
+
+  <SeccionContacto />
+</Base>
+
+<style>
+  .marca {
+    display: grid;
+    grid-template-columns: 16% 46% 1fr;
+    gap: clamp(1.5rem, 3vw, 3rem);
+    padding: clamp(3rem, 6vw, 6rem) clamp(1.5rem, 4vw, 4rem) clamp(2rem, 5vw, 5rem)
+      clamp(1.5rem, 10vw, 11rem);
+  }
+
+  .marca__meta {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    align-content: start;
+  }
+
+  .marca__rotulo {
+    margin: 0 0 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .marca__dato,
+  .marca__lista li {
+    font-size: clamp(0.9rem, 1.05vw, 1.05rem);
+    font-weight: 300;
+    line-height: 1.65;
+  }
+
+  .marca__dato {
+    margin: 0;
+  }
+
+  .marca__texto {
+    margin: 0;
+    font-size: clamp(1.2rem, 1.95vw, 1.8rem);
+    font-weight: 300;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+  }
+
+  .marca__catalogo {
+    align-content: start;
+  }
+
+  /* Píldora del catálogo. Sin archivo se dibuja igual pero inactiva, para no
+     dejar una descarga que no existe. */
+  .marca__descargar {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.4rem 0.75rem 1.1rem;
+    border: 1px solid var(--color-brand-300);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    line-height: 1.35;
+    text-transform: uppercase;
+    transition:
+      border-color 0.25s ease,
+      background-color 0.25s ease;
+  }
+
+  a.marca__descargar:hover {
+    border-color: var(--color-ink);
+    background: var(--color-brand-50);
+  }
+
+  .marca__descargar[aria-disabled='true'] {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .marca__descargar svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    flex: 0 0 auto;
+  }
+
+  .galeria {
+    padding-inline: clamp(1.5rem, 4vw, 4rem) clamp(1.5rem, 4vw, 4rem);
+    padding-bottom: clamp(2rem, 5vw, 5rem);
+  }
+
+  .galeria__marco {
+    position: relative;
+    display: grid;
+    max-width: 68rem;
+    margin-inline: auto;
+  }
+
+  .galeria__marco img {
+    grid-area: 1 / 1;
+    width: 100%;
+    height: auto;
+    border-radius: clamp(1rem, 1.8vw, 1.75rem);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.45s ease,
+      visibility 0.45s;
+  }
+
+  .galeria__marco img[data-activa] {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .galeria__puntos {
+    position: absolute;
+    bottom: clamp(0.75rem, 1.5vw, 1.25rem);
+    left: 50%;
+    display: flex;
+    gap: 0.6rem;
+    transform: translateX(-50%);
+  }
+
+  .galeria__puntos button {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.55);
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+  }
+
+  .galeria__puntos button[aria-selected='true'] {
+    background: #fff;
+  }
+
+  .volver {
+    margin: 0;
+    padding: 0 clamp(1.5rem, 4vw, 4rem) clamp(3rem, 7vw, 7rem)
+      clamp(1.5rem, 10vw, 11rem);
+  }
+
+  .volver a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid currentColor;
+    font-size: 0.8125rem;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: gap 0.25s ease;
+  }
+
+  .volver a:hover {
+    gap: 1.1rem;
+  }
+
+  .volver :global(.volver__flecha) {
+    width: 1.1rem;
+    opacity: 0.55;
+    /* La flecha de marca apunta a la derecha; aquí se vuelve. */
+    transform: scaleX(-1);
+  }
+
+  @media (max-width: 900px) {
+    .marca {
+      grid-template-columns: 1fr;
+      gap: clamp(2rem, 7vw, 3rem);
+      padding-inline: clamp(1.5rem, 6vw, 2.5rem);
+    }
+
+    .volver {
+      padding-inline: clamp(1.5rem, 6vw, 2.5rem);
+    }
+  }
+</style>
+
+<script>
+  const marco = document.querySelector<HTMLElement>('.galeria__marco');
+
+  if (marco) {
+    const fotos = Array.from(marco.querySelectorAll<HTMLElement>('[data-foto]'));
+    const puntos = Array.from(marco.querySelectorAll<HTMLElement>('[data-ir]'));
+
+    puntos.forEach((punto, i) => {
+      punto.addEventListener('click', () => {
+        for (const foto of fotos) {
+          foto.toggleAttribute('data-activa', Number(foto.dataset.foto) === i);
+        }
+        puntos.forEach((otro, j) => otro.setAttribute('aria-selected', String(i === j)));
+      });
+    });
+  }
+</script>

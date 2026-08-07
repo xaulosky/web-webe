@@ -1,0 +1,53 @@
+---
+import { site } from '../config/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="pie">
+  <p>©{year} All rights reserved</p>
+  <p class="pie__creditos">
+    <span>Design &amp; development by</span>
+    {
+      site.creditos.url ? (
+        <a href={site.creditos.url} rel="noopener">
+          <img src="/theconcept.svg" alt={site.creditos.texto} width="160" height="17" />
+        </a>
+      ) : (
+        <img src="/theconcept.svg" alt={site.creditos.texto} width="160" height="17" />
+      )
+    }
+  </p>
+</footer>
+
+<style>
+  .pie {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.75rem 2rem;
+    padding: clamp(1rem, 2vw, 1.5rem) clamp(1.5rem, 3vw, 3rem);
+    background: var(--color-brand-50);
+    font-size: 0.75rem;
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .pie p {
+    margin: 0;
+  }
+
+  .pie__creditos {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  /* El SVG ya viene en #232323 al 70%: no hace falta recolorearlo. */
+  .pie__creditos img {
+    width: clamp(6.5rem, 9vw, 8.75rem);
+    height: auto;
+  }
+</style>

@@ -1,0 +1,214 @@
+---
+import Flecha from './Flecha.astro';
+import { proceso } from '../config/site';
+
+// Los tres pasos se renderizan siempre; el activo se marca con data-activo.
+// Así no hay salto de imagen al cambiar ni contenido que dependa del JS.
+---
+
+<div class="proceso">
+  <div class="proceso__medios" data-anima>
+    {
+      proceso.map((paso, i) => (
+        <img
+          src={paso.imagen}
+          alt={paso.alt}
+          width="779"
+          height="588"
+          loading="lazy"
+          decoding="async"
+          data-lamina={i}
+          data-activo={i === 0 ? '' : undefined}
+        />
+      ))
+    }
+  </div>
+
+  <div class="proceso__panel" data-anima="grupo">
+    <div class="proceso__barra" role="tablist" aria-label="Etapas del proceso">
+      {
+        proceso.map((paso, i) => (
+          <>
+            {i > 0 && <span class="proceso__linea" aria-hidden="true" />}
+            <button
+              type="button"
+              class="proceso__punto"
+              role="tab"
+              data-ir={i}
+              aria-selected={i === 0}
+              aria-label={`Etapa ${i + 1}: ${paso.titulo}`}
+            />
+          </>
+        ))
+      }
+    </div>
+
+    <p class="proceso__contador"><span id="proceso-actual">1</span>/{proceso.length}</p>
+
+    <div class="proceso__textos">
+      {
+        proceso.map((paso, i) => (
+          <div class="proceso__paso" data-lamina={i} data-activo={i === 0 ? '' : undefined}>
+            <h3>{paso.titulo}</h3>
+            <p>{paso.texto}</p>
+          </div>
+        ))
+      }
+    </div>
+
+    <button type="button" class="proceso__siguiente" id="proceso-siguiente">
+      <span class="sr-only">Siguiente etapa</span>
+      <Flecha />
+    </button>
+  </div>
+</div>
+
+<style>
+  .proceso {
+    display: grid;
+    grid-template-columns: 49% 30%;
+    gap: 11%;
+    align-items: start;
+  }
+
+  /* Las tres imágenes comparten celda: la altura la fija la más alta. */
+  .proceso__medios {
+    display: grid;
+  }
+
+  .proceso__medios img {
+    grid-area: 1 / 1;
+    width: 100%;
+    height: auto;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.5s ease,
+      visibility 0.5s;
+  }
+
+  .proceso__medios img[data-activo] {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .proceso__barra {
+    display: flex;
+    align-items: center;
+  }
+
+  .proceso__linea {
+    flex: 1;
+    height: 1px;
+    background: var(--color-brand-300);
+  }
+
+  .proceso__punto {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-brand-300);
+    cursor: pointer;
+    transition:
+      background-color 0.3s ease,
+      transform 0.3s ease;
+  }
+
+  .proceso__punto[aria-selected='true'] {
+    background: var(--color-ink);
+    transform: scale(1.55);
+  }
+
+  .proceso__contador {
+    margin: clamp(1.75rem, 3vw, 2.75rem) 0 0;
+    font-size: 0.875rem;
+    font-weight: 300;
+    color: var(--color-muted);
+  }
+
+  .proceso__textos {
+    display: grid;
+    margin-top: clamp(0.75rem, 1.5vw, 1.25rem);
+  }
+
+  .proceso__paso {
+    grid-area: 1 / 1;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.4s ease,
+      visibility 0.4s;
+  }
+
+  .proceso__paso[data-activo] {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .proceso__paso h3 {
+    margin: 0;
+    font-size: clamp(1.75rem, 2.8vw, 2.5rem);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .proceso__paso p {
+    margin: clamp(1rem, 2vw, 1.75rem) 0 0;
+    font-size: clamp(0.9375rem, 1.08vw, 1.0625rem);
+    font-weight: 300;
+    line-height: 1.72;
+    color: #333330;
+  }
+
+  .proceso__siguiente {
+    width: clamp(1.6rem, 2.3vw, 2.3rem);
+    margin-top: clamp(2rem, 4vw, 3.5rem);
+    color: var(--color-ink);
+    opacity: 0.5;
+    cursor: pointer;
+    transition:
+      opacity 0.25s ease,
+      transform 0.25s ease;
+  }
+
+  .proceso__siguiente:hover {
+    opacity: 1;
+    transform: translateX(4px);
+  }
+
+  @media (max-width: 860px) {
+    .proceso {
+      grid-template-columns: 1fr;
+      gap: clamp(2rem, 8vw, 3.5rem);
+    }
+  }
+</style>
+
+<script>
+  const raiz = document.querySelector<HTMLElement>('.proceso');
+  const siguiente = document.getElementById('proceso-siguiente');
+  const contador = document.getElementById('proceso-actual');
+
+  if (raiz && siguiente && contador) {
+    const laminas = Array.from(raiz.querySelectorAll<HTMLElement>('[data-lamina]'));
+    const puntos = Array.from(raiz.querySelectorAll<HTMLElement>('[data-ir]'));
+    const total = puntos.length;
+    let actual = 0;
+
+    const mostrar = (indice: number) => {
+      actual = (indice + total) % total;
+      for (const lamina of laminas) {
+        lamina.toggleAttribute('data-activo', Number(lamina.dataset.lamina) === actual);
+      }
+      puntos.forEach((punto, i) => {
+        punto.setAttribute('aria-selected', String(i === actual));
+      });
+      contador.textContent = String(actual + 1);
+    };
+
+    siguiente.addEventListener('click', () => mostrar(actual + 1));
+    for (const punto of puntos) {
+      punto.addEventListener('click', () => mostrar(Number(punto.dataset.ir)));
+    }
+  }
+</script>

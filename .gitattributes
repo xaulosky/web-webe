@@ -1,0 +1,15 @@
+# Normaliza los finales de línea: en el repo siempre LF, en el checkout lo que
+# corresponda al sistema. Evita diffs de archivos enteros al mezclar Windows.
+* text=auto eol=lf
+
+# Binarios: que git no intente convertirlos ni diferenciarlos como texto.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.mp4 binary
+*.webm binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.pdf binary

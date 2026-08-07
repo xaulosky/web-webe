@@ -1,0 +1,153 @@
+---
+import Base from '../layouts/Base.astro';
+import HeroPagina from '../components/HeroPagina.astro';
+import PanelSacado from '../components/PanelSacado.astro';
+import Acordeon from '../components/Acordeon.astro';
+import SeccionContacto from '../components/SeccionContacto.astro';
+import { cifras } from '../config/site';
+---
+
+<Base
+  title="We are"
+  description="WEBE nace de la unión de profesionales con experiencia en equipamiento corporativo."
+  header="overlay"
+>
+  <HeroPagina
+    imagen="/nosotros/hero.webp"
+    alt="Socios de WEBE en el showroom"
+    ancho={1900}
+    alto={943}
+    lineas={[
+      { fuerte: 'we', suave: 'care.' },
+      { fuerte: 'be', suave: 'happy.' },
+    ]}
+  />
+
+  <PanelSacado antetitulo="we believe">
+    <img
+      slot="izquierda"
+      class="nosotros__equipo"
+      src="/nosotros/equipo.webp"
+      alt="Los tres socios de WEBE"
+      width="1200"
+      height="1286"
+      loading="lazy"
+      decoding="async"
+    />
+
+    <p class="nosotros__creencia">
+      Creemos que un buen proyecto no depende únicamente del mobiliario, sino de
+      las decisiones que lo hacen posible. Por eso buscamos ser un partner
+      cercano, aportando experiencia, criterio y acompañamiento en cada etapa
+      del proceso.
+    </p>
+  </PanelSacado>
+
+  <section class="historia" data-anima="grupo">
+    <p class="historia__texto">
+      WEBE nace de la unión de profesionales con experiencia en distintas áreas
+      del equipamiento corporativo. Desde entonces ha evolucionado construyendo
+      relaciones de largo plazo con fabricantes internacionales y acompañando
+      proyectos de distintas escalas.
+    </p>
+
+    <ul class="historia__cifras">
+      {cifras.map((cifra) => <li>{cifra}</li>)}
+    </ul>
+  </section>
+
+  <section class="atributos">
+    <div class="atributos__encabezado" data-anima="grupo">
+      <p class="atributos__antetitulo">our attributes</p>
+      <h2>
+        Mas que promesas<br />
+        nuestra manera de trabajar
+      </h2>
+    </div>
+
+    <Acordeon />
+  </section>
+
+  <SeccionContacto />
+</Base>
+
+<style>
+  .nosotros__equipo {
+    width: 100%;
+    height: auto;
+    border-radius: clamp(1rem, 1.6vw, 1.5rem);
+  }
+
+  .nosotros__creencia {
+    margin: clamp(1.5rem, 3vw, 2.5rem) 0 0;
+    max-width: 26ch;
+    font-size: clamp(1.25rem, 2.1vw, 1.95rem);
+    font-weight: 300;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+  }
+
+  .historia {
+    display: grid;
+    grid-template-columns: 53% 47%;
+    padding: 0 clamp(1.5rem, 6vw, 7rem) clamp(4rem, 10vw, 10rem)
+      clamp(1.5rem, 8vw, 9rem);
+  }
+
+  .historia__texto {
+    margin: 0;
+    max-width: 30ch;
+    font-size: clamp(1.25rem, 2.1vw, 1.95rem);
+    font-weight: 300;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+  }
+
+  /* Dos columnas, llenando por filas como el diseño. */
+  .historia__cifras {
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
+    gap: 0.6rem clamp(1.5rem, 4vw, 4rem);
+    align-content: start;
+    font-size: clamp(0.75rem, 0.95vw, 0.9375rem);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .atributos {
+    padding-bottom: clamp(3rem, 7vw, 7rem);
+  }
+
+  .atributos__encabezado {
+    padding: 0 clamp(1.5rem, 6vw, 7rem) clamp(2.5rem, 6vw, 6rem)
+      clamp(1.5rem, 16.7vw, 18rem);
+  }
+
+  .atributos__antetitulo {
+    margin: 0 0 clamp(0.75rem, 1.5vw, 1.25rem);
+    font-size: 0.9375rem;
+    font-weight: 300;
+    color: var(--color-muted);
+  }
+
+  .atributos h2 {
+    margin: 0;
+    font-size: clamp(1.35rem, 2vw, 1.85rem);
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+
+  @media (max-width: 860px) {
+    .historia {
+      grid-template-columns: 1fr;
+      gap: clamp(2rem, 8vw, 3rem);
+      padding-inline: clamp(1.5rem, 6vw, 2.5rem);
+    }
+
+    .atributos__encabezado {
+      padding-inline: clamp(1.5rem, 6vw, 2.5rem);
+    }
+  }
+</style>
