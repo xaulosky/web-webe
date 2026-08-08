@@ -3,7 +3,7 @@ import { proyectos } from '../config/site';
 
 const campos = [
   [
-    ['Proyecto', 'proyecto'],
+    ['Proyecto', 'nombre'],
     ['Ubicación', 'ubicacion'],
   ],
   [
@@ -49,7 +49,7 @@ const campos = [
             aria-current={i === 0 ? 'true' : undefined}
           >
             {proyecto.nombre}
-            <sup>({proyecto.numero})</sup>
+            <sup>({proyecto.ano.slice(-2)})</sup>
           </button>
         </li>
       ))
@@ -63,7 +63,7 @@ const campos = [
           {grupo.map(([etiqueta, clave]) => (
             <div class="proyectos__fila">
               <dt>{etiqueta}</dt>
-              <dd data-campo={clave}>{proyectos[0][clave]}</dd>
+              <dd data-campo={clave}>{proyectos[0][clave] || '—'}</dd>
             </div>
           ))}
         </div>
@@ -119,14 +119,16 @@ const campos = [
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.1em clamp(1rem, 2.2vw, 2.25rem);
-    max-width: 68rem;
+    gap: 0.15em clamp(0.9rem, 1.8vw, 1.9rem);
+    /* Veinte proyectos con nombres largos: más ancho y menos cuerpo que en el
+       diseño original, que sólo mostraba ocho. */
+    max-width: 82rem;
     margin-top: clamp(1.5rem, 4vh, 3rem);
     text-align: center;
   }
 
   .proyectos__nube button {
-    font-size: clamp(1.5rem, 2.55vw, 2.75rem);
+    font-size: clamp(1.05rem, 1.75vw, 2rem);
     font-weight: 300;
     line-height: 1.28;
     letter-spacing: -0.01em;
@@ -180,6 +182,12 @@ const campos = [
     display: grid;
     grid-template-columns: minmax(0, auto) minmax(0, 1fr);
     gap: 0.35rem 1.25rem;
+  }
+
+  /* El alcance real llega a 95 caracteres: sin acotar el ancho, la fila de
+     cuatro grupos se desbordaba fuera de la sección. */
+  .proyectos__grupo {
+    max-width: 24rem;
   }
 
   .proyectos__fila dt {
@@ -253,7 +261,8 @@ const campos = [
         }
         for (const celda of celdas) {
           const clave = celda.dataset.campo as keyof typeof proyecto;
-          celda.textContent = String(proyecto[clave] ?? '—');
+          // Un dato vacío se muestra como raya, no como celda en blanco.
+          celda.textContent = String(proyecto[clave] || '—');
         }
       };
 

@@ -18,7 +18,9 @@
         Array.from(marcado.children).forEach((hijo, i) => {
           if (!(hijo instanceof HTMLElement)) return;
           hijo.dataset.animaHijo = '';
-          hijo.style.setProperty('--retardo', `${i * 80}ms`);
+          // Tope al escalonado: con listas largas (los 20 proyectos) un
+          // retardo lineal tardaba más de un segundo y medio en completarse.
+          hijo.style.setProperty('--retardo', `${Math.min(i, 8) * 70}ms`);
           objetivos.push(hijo);
         });
       } else {
