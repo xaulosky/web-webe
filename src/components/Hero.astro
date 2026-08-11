@@ -71,8 +71,9 @@ const { scrollTo = '#descubre' } = Astro.props;
       {
         marcas.map((marca) => (
           <li style={`--ancho:${marca.escala}`}>
+            {/* Sobre el video va la versión blanca oficial. */}
             <img
-              src={`/marcas/${marca.archivo}`}
+              src={`/marcas/${marca.blanco}`}
               alt={marca.nombre}
               width={marca.ancho}
               height={marca.alto}
@@ -271,12 +272,9 @@ const { scrollTo = '#descubre' } = Astro.props;
     width: clamp(2.75rem, calc(var(--ancho) * 1vw), 7rem);
   }
 
-  /* Los SVG vienen en gris fijo (#575757): brightness(0) los aplana a negro e
-     invert los pasa a blanco, y la opacidad da el gris apagado del diseño. */
   .hero__marcas img {
     width: 100%;
     height: auto;
-    filter: brightness(0) invert(1);
     opacity: 0.55;
   }
 

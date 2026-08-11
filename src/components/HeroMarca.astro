@@ -29,8 +29,9 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
     {
       otras.map((marca) => (
         <a href={`/marcas/${marca.slug}`}>
+          {/* Sobre la foto va la versión blanca oficial. */}
           <img
-            src={`/marcas/${marca.archivo}`}
+            src={`/marcas/${marca.blanco}`}
             alt={marca.nombre}
             width={marca.ancho}
             height={marca.alto}
@@ -93,7 +94,6 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
   .marca-portada__otras img {
     width: clamp(3rem, 6vw, 6.5rem);
     height: auto;
-    filter: brightness(0) invert(1);
     opacity: 0.5;
     transition: opacity 0.25s ease;
   }

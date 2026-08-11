@@ -2,9 +2,10 @@
 import Flecha from './Flecha.astro';
 import { marcas } from '../config/site';
 
-// La primera marca es la que abre destacada. El diseño muestra 5 pestañas
-// (enea queda fuera de esta barra aunque sí está en el hero).
-const pestanas = marcas.slice(0, 5);
+// La primera marca es la que abre destacada. El diseño dibujaba 5 pestañas
+// porque había 5 marcas; con las 8 actuales se muestran todas, o quedarían
+// marcas sin acceso desde aquí.
+const pestanas = marcas;
 const destacada = 0;
 
 // De a tres por fila, como el diseño. Agrupar en el marcado (en vez de dejar
