@@ -46,8 +46,11 @@ const { id, antetitulo } = Astro.props;
     flex-direction: column;
   }
 
+  /* Sube 1px para solaparse con el escalón: si no, queda una costura entre los
+     dos blancos. */
   .sacado__relleno {
     flex: 1;
+    margin-top: -1px;
     background: #fff;
   }
 

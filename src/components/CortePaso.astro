@@ -1,9 +1,10 @@
 ---
-// Corte entre el hero y la sección siguiente: un escalón estrecho y alto. Su
-// recorrido completo mide 52 unidades de ancho en 165 de alto —lo medido en el
-// diseño— con las dos uniones redondeadas en sentidos opuestos: convexa arriba,
-// donde empieza el panel blanco, y cóncava abajo, donde termina el bloque
-// oscuro.
+// Corte entre el hero y la sección siguiente. Su recorrido mide 123 unidades de
+// ancho en 165 de alto, con dos arcos circulares de radio 43 en sentidos
+// opuestos: cóncavo abajo, donde termina el bloque oscuro, y convexo arriba,
+// donde empieza el panel blanco. Entre ambos, un tramo recto a 26° de la
+// vertical. Se usan arcos (A) y no curvas cuadráticas para que las uniones sean
+// circulares de verdad.
 //
 // El escalón es un SVG de tamaño fijo y proporción intacta, y los tramos planos
 // se resuelven con cajas a cada lado. Estirarlo a todo el ancho deformaría los
@@ -13,22 +14,22 @@ interface Props {
   quiebre?: string;
 }
 
-const { quiebre = '56.5%' } = Astro.props;
+const { quiebre = '56.2%' } = Astro.props;
 ---
 
 <div class="corte" style={`--quiebre:${quiebre}`}>
   {/* Izquierda: transparente, se ve el hero. */}
   <svg
     class="corte__paso"
-    viewBox="0 0 80 165"
-    width="80"
+    viewBox="0 0 140 165"
+    width="140"
     height="165"
     preserveAspectRatio="none"
     aria-hidden="true"
     style="display:block"
   >
     <path
-      d="M0,165 L8,165 Q20,165 22,153.2 L46,11.8 Q48,0 60,0 L80,0 L80,165 Z"
+      d="M0,165 A43,43 0 0 0 43,119.9 L79.9,44.2 A43,43 0 0 1 123,0 L140,0 L140,165 Z"
       fill="#fff"
     ></path>
   </svg>
@@ -51,16 +52,19 @@ const { quiebre = '56.5%' } = Astro.props;
     top: 0;
     /* Su borde derecho cae justo en el quiebre. */
     right: calc(100% - var(--quiebre));
-    width: calc(var(--alto-paso) * 80 / 165);
+    width: calc(var(--alto-paso) * 140 / 165);
     height: 100%;
   }
 
+  /* Solapa 1px con el SVG: los dos bordes caen en coordenadas fraccionarias y
+     sin el solape el antialiasing deja una costura de un píxel entre ambos
+     blancos. */
   .corte__derecha {
     position: absolute;
     top: 0;
     right: 0;
-    bottom: 0;
-    left: var(--quiebre);
+    bottom: -1px;
+    left: calc(var(--quiebre) - 1px);
     background: #fff;
   }
 </style>
