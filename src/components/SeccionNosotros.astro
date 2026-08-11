@@ -1,6 +1,7 @@
 ---
-// El panel blanco sube por la derecha y se monta sobre el hero: el "sacado"
-// es la esquina superior izquierda redondeada recortando el video.
+import CorteDiagonal from './CorteDiagonal.astro';
+import Flecha from './Flecha.astro';
+
 interface Props {
   id?: string;
 }
@@ -9,61 +10,59 @@ const { id = 'descubre' } = Astro.props;
 ---
 
 <section class="nosotros" id={id}>
+  {/* El fondo blanco entra con la diagonal y sigue macizo hacia abajo. */}
+  <div class="nosotros__fondo" aria-hidden="true">
+    <CorteDiagonal />
+    <div class="nosotros__relleno"></div>
+  </div>
+
   <div class="nosotros__panel" data-anima="grupo">
     <p class="nosotros__antetitulo">Quiénes somos</p>
+
     <p class="nosotros__texto">
       Somos una empresa especializada en mobiliario y equipamiento de oficinas
       que entiende que los espacios influyen en la forma en que las personas
       trabajan, colaboran y se relacionan.
     </p>
+
     <a class="nosotros__cta" href="/nosotros">
       Descubre más.
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-        <path d="M5 12h14M13 6l6 6-6 6"></path>
-      </svg>
+      {/* El contenedor fija el tamaño: el SVG de marca es width:100% y una
+          regla con alcance de componente no lo alcanza desde aquí. */}
+      <span class="nosotros__cta-flecha"><Flecha /></span>
     </a>
   </div>
 </section>
 
 <style>
   .nosotros {
-    --radio: clamp(2.5rem, 4.2vw, 4.75rem);
-    /* Cuánto sube el panel sobre el hero. El borde inferior del bloque oscuro
-       queda exactamente a esta distancia del techo de la sección. */
-    --solape: 28vh;
+    /* Cuánto sube la sección sobre el hero: deja el vértice alto de la
+       diagonal al 78% de la ventana, como en el diseño. */
+    --solape: 22vh;
 
     position: relative;
     /* Por encima del hero pegajoso, que al ser sticky pinta como posicionado. */
     z-index: 1;
-    display: flex;
-    justify-content: flex-end;
     margin-top: calc(-1 * var(--solape));
   }
 
-  /* Filete que redondea la esquina inferior derecha del bloque oscuro, donde
-     se encuentra con el canto izquierdo del panel. */
-  .nosotros::before {
-    content: '';
+  .nosotros__fondo {
     position: absolute;
-    top: calc(var(--solape) - var(--radio));
-    right: 47%;
-    width: var(--radio);
-    height: var(--radio);
-    background: radial-gradient(
-      circle at 0 0,
-      transparent var(--radio),
-      #fff calc(var(--radio) + 0.5px)
-    );
+    inset: 0;
+    display: flex;
+    flex-direction: column;
   }
 
-  .nosotros__panel {
-    width: 47%;
+  .nosotros__relleno {
+    flex: 1;
     background: #fff;
-    border-top-left-radius: var(--radio);
-    /* Panel más bajo: el diseño lo quiere en poco más de la mitad del alto que
-       tenía, así que el aire vertical baja de 14rem a 6rem. */
-    padding: clamp(1.75rem, 2.6vw, 2.75rem) clamp(1.5rem, 3.2vw, 3.5rem)
-      clamp(2rem, 3.2vw, 3.25rem) clamp(2rem, 4vw, 4.5rem);
+  }
+
+  /* El contenido se apoya en la parte alta de la diagonal, a la derecha. */
+  .nosotros__panel {
+    position: relative;
+    margin-left: 58.5%;
+    padding: 7% 4% clamp(3rem, 6vw, 6rem) 0;
   }
 
   /* Mismo tamaño y color que los botones del sitio, como pide el diseño. */
@@ -78,7 +77,6 @@ const { id = 'descubre' } = Astro.props;
 
   .nosotros__texto {
     margin: clamp(1.5rem, 3vw, 2.5rem) 0 0;
-    max-width: 31ch;
     font-size: clamp(1.25rem, 2.25vw, 2.05rem);
     font-weight: 500;
     line-height: 1.42;
@@ -88,7 +86,7 @@ const { id = 'descubre' } = Astro.props;
   .nosotros__cta {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
     margin-top: clamp(2rem, 4vw, 3.5rem);
     padding-bottom: 0.35rem;
     border-bottom: 1px solid currentColor;
@@ -100,28 +98,25 @@ const { id = 'descubre' } = Astro.props;
   }
 
   .nosotros__cta:hover {
-    gap: 0.9rem;
+    gap: 1.1rem;
   }
 
-  .nosotros__cta svg {
+  .nosotros__cta-flecha {
+    display: block;
     width: 1rem;
-    height: 1rem;
+    opacity: 0.55;
   }
 
-  /* En móvil el panel ocupa todo el ancho: el sacado no tiene sentido. */
+  /* En móvil la diagonal queda muy plana para dividir columnas: el texto pasa
+     a ocupar todo el ancho, debajo del corte. */
   @media (max-width: 860px) {
     .nosotros {
-      --solape: 12vh;
-    }
-
-    .nosotros::before {
-      display: none;
+      --solape: 10vh;
     }
 
     .nosotros__panel {
-      width: 100%;
-      border-top-left-radius: clamp(1.75rem, 6vw, 3rem);
-      border-top-right-radius: clamp(1.75rem, 6vw, 3rem);
+      margin-left: 0;
+      padding: 11% clamp(1.5rem, 6vw, 2.5rem) clamp(2.5rem, 8vw, 4rem);
     }
   }
 </style>
