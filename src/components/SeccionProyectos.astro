@@ -1,22 +1,16 @@
 ---
 import { proyectos } from '../config/site';
 
+// El año no va en la ficha: alimenta el superíndice de la nube.
 const campos = [
-  [
-    ['Proyecto', 'nombre'],
-    ['Ubicación', 'ubicacion'],
-  ],
+  [['Proyecto', 'nombre']],
   [
     ['Superficie', 'superficie'],
     ['Puestos de trabajo', 'puestos'],
   ],
   [
     ['Alcance', 'alcance'],
-    ['Arquitectura', 'arquitectura'],
-  ],
-  [
     ['Marcas', 'marcas'],
-    ['Año', 'ano'],
   ],
 ] as const;
 ---

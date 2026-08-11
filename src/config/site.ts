@@ -71,216 +71,179 @@ export const proceso = [
   },
 ] as const;
 
-// Proyectos destacados. El superíndice del diseño son los dos últimos dígitos
-// del año, así que se derivan de `ano` en vez de duplicarse en otro campo.
-// TODO: falta el dato de `marcas` de todos, y la dirección de la Subsecretaría.
+// Textos de alcance tal como los envió el cliente, en Title Case y con punto
+// final. Son cinco variantes que se repiten entre proyectos.
 const alcanceCompleto =
-  'Equipamiento de mobiliario para bench, privados, salas de reunión y áreas colaborativas. Sillería';
+  'Equipamiento de Mobiliario para Bench, Privados, Salas de Reunión y Áreas Colaborativas. Sillería.';
 const alcanceSinSilleria =
-  'Equipamiento de mobiliario para bench, privados, salas de reunión y áreas colaborativas';
+  'Equipamiento de Mobiliario para Bench, Privados, Salas de Reunión y Áreas Colaborativas.';
 const alcanceReuniones =
-  'Equipamiento de mobiliario para bench, privados y salas de reunión';
+  'Equipamiento de Mobiliario para Bench, Privados, Salas de Reunión.';
+const alcanceBenchSalas = 'Equipamiento de Mobiliario para Bench y Salas de Reunión.';
+const alcanceBenchRegulable =
+  'Equipamiento de Mobiliario para Bench (Estaciones de trabajo con regulación altura).';
 
+// Proyectos destacados. `ano` no se muestra en la ficha: alimenta el
+// superíndice de la nube, que en el diseño son los dos últimos dígitos.
+// TODO: falta el dato de `marcas` de todos los proyectos.
 export const proyectos = [
   {
     nombre: 'Howden Chile',
-    ubicacion: 'Avenida Apoquindo 4660, Oficina 301A',
     superficie: '1.200 m²',
     puestos: '100',
     alcance: alcanceCompleto,
-    arquitectura: 'Lira Arquitectos',
     marcas: '',
     ano: '2026',
   },
   {
     nombre: 'Deportes Sparta',
-    ubicacion: 'Avenida Presidente Kennedy 5682, Oficina 1103',
     superficie: '1.100 m²',
     puestos: '130',
     alcance: alcanceCompleto,
-    arquitectura: 'Equipo Deportes Sparta',
     marcas: '',
     ano: '2026',
   },
   {
     nombre: 'Siemens Energy',
-    ubicacion: 'Avenida Presidente Riesco 5335, Piso 18',
     superficie: '1.000 m²',
     puestos: '65',
-    alcance:
-      'Equipamiento de mobiliario para bench (estaciones de trabajo con regulación de altura)',
-    arquitectura: 'Equipo Colliers',
+    alcance: alcanceBenchRegulable,
     marcas: '',
     ano: '2026',
   },
   {
     nombre: 'Colliers',
-    ubicacion: 'El Regidor 66, Oficinas 601-701-801',
     superficie: '2.250 m²',
     puestos: '180',
-    alcance: 'Equipamiento de mobiliario para bench y salas de reunión',
-    arquitectura: 'Equipo Colliers',
+    alcance: alcanceBenchSalas,
     marcas: '',
     ano: '2026',
   },
   {
     nombre: 'The Andes Brand (Lippi)',
-    ubicacion: 'Avenida Vitacura 2939, Pisos 5 y 7',
     superficie: '2.100 m²',
     puestos: '200',
     alcance: alcanceSinSilleria,
-    arquitectura: 'Virtual Studio',
     marcas: '',
     ano: '2026',
   },
   {
     nombre: 'Empresas Torre',
-    ubicacion: 'Parque Logístico, Avenida Eduardo Frei Montalva 8600',
     superficie: '1.100 m²',
     puestos: '70',
     alcance: alcanceCompleto,
-    arquitectura: 'Equipo Empresas Torre',
     marcas: '',
     ano: '2026',
   },
   {
     nombre: 'MetLife',
-    ubicacion: 'Almirante Pastene 194, Piso 6',
     superficie: '1.300 m²',
     puestos: '120',
     alcance: alcanceCompleto,
-    arquitectura: 'Equipo CentralCorp',
     marcas: '',
     ano: '2026',
   },
   {
     nombre: 'CCU',
-    ubicacion: 'Vitacura 2670, Pisos 5-6-7-8-19',
     superficie: '4.500 m²',
     puestos: '400',
     alcance: alcanceCompleto,
-    arquitectura: 'Claro Arquitectos',
     marcas: '',
     ano: '2025',
   },
   {
     nombre: 'Transbank',
-    ubicacion: 'Cerro El Plomo 5260, Torre A, Piso 16',
     superficie: '2.500 m²',
     puestos: '230',
     alcance: alcanceReuniones,
-    arquitectura: 'Equipo Colliers',
     marcas: '',
     ano: '2025',
   },
   {
     nombre: 'Servicio de Evaluación Ambiental (SEA)',
-    ubicacion: 'Huérfanos 670, Pisos 13-14-15-16',
     superficie: '3.500 m²',
     puestos: '230',
     alcance: alcanceReuniones,
-    arquitectura: 'Aforo',
     marcas: '',
     ano: '2025',
   },
   {
     nombre: 'OCA Global',
-    ubicacion: 'El Gobernador 020',
     superficie: '1.900 m²',
     puestos: '240',
     alcance: alcanceCompleto,
-    arquitectura: 'Arquitectura y Construcciones Buildpro',
     marcas: '',
     ano: '2025',
   },
   {
     nombre: 'BNP Paribas',
-    ubicacion: 'Avenida Vitacura 2670, Piso 9',
     superficie: '2.500 m²',
     puestos: '200',
     alcance: alcanceReuniones,
-    arquitectura: 'Equipo CASBRO',
     marcas: '',
     ano: '2025',
   },
   {
     nombre: 'ENEL',
-    ubicacion: 'Roger de Flor 2725, Torre 2, MUT',
     superficie: '15.000 m²',
     puestos: '800',
     alcance: alcanceReuniones,
-    arquitectura: 'CQ Arquitectos',
     marcas: '',
     ano: '2024',
   },
   {
     nombre: 'OnNet',
-    ubicacion: 'Alonso de Córdova 5870, Piso 4',
     superficie: '1.500 m²',
     puestos: '185',
     alcance: alcanceReuniones,
-    arquitectura: 'Equipo Casbro',
     marcas: '',
     ano: '2024',
   },
   {
     nombre: 'Mathiesen',
-    ubicacion: 'Avenida del Parque 4265, Piso 3',
     superficie: '1.500 m²',
     puestos: '100',
     alcance: alcanceReuniones,
-    arquitectura: 'Equipo Casbro',
     marcas: '',
     ano: '2024',
   },
   {
     nombre: 'Everest Chile',
-    ubicacion: 'Isidora Goyenechea 2800, Piso 31',
     superficie: '800 m²',
     puestos: '60',
     alcance: alcanceReuniones,
-    arquitectura: 'Equipo Contract',
     marcas: '',
     ano: '2024',
   },
   {
     nombre: 'ABB Chile',
-    ubicacion: 'Avenida Andrés Bello 2447, Piso 11',
     superficie: '2.000 m²',
     puestos: '120',
     alcance: alcanceReuniones,
-    arquitectura: 'Equipo Contract',
     marcas: '',
     ano: '2023',
   },
   {
     nombre: 'BUK',
-    ubicacion: 'Roger de Flor 2775, Torre 3, Piso 16',
     superficie: '1.500 m²',
     puestos: '160',
     alcance: alcanceReuniones,
-    arquitectura: 'Lira Arquitectos',
     marcas: '',
     ano: '2023',
   },
   {
     nombre: 'EMIN',
-    ubicacion: 'Asturias 350, Piso 8',
     superficie: '1.000 m²',
     puestos: '80',
     alcance: alcanceReuniones,
-    arquitectura: 'Equipo Contract',
     marcas: '',
     ano: '2023',
   },
   {
     nombre: 'Subsecretaría de la Niñez y la Adolescencia',
-    // TODO: la planilla venía con la palabra "Dirección" en vez del dato.
-    ubicacion: '',
     superficie: '5.000 m²',
     puestos: '450',
     alcance: alcanceReuniones,
-    arquitectura: 'BV Arquitectos',
     marcas: '',
     ano: '2023',
   },
