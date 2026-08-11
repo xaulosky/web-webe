@@ -43,28 +43,29 @@ export const marquesinaContacto = [
   { fuerte: 'be', suave: 'together.' },
 ] as const;
 
-// Carrusel de proceso. Copy definitivo; faltan las imágenes de los pasos 2 y 3.
+// Carrusel de proceso. Las tres láminas isométricas muestran la progresión:
+// planta vacía acotada, propuesta y resultado equipado.
 export const proceso = [
   {
     titulo: 'Entendemos.',
     texto:
       'Cada proyecto comienza escuchando. Analizamos los requerimientos, objetivos y particularidades de cada espacio para comprender qué necesita realmente el proyecto y cuáles son las soluciones más adecuadas para abordarlo.',
-    imagen: '/proceso/entendemos.png',
-    alt: 'Plano isométrico acotado de una planta de oficinas',
+    imagen: '/proceso/paso-1.webp',
+    alt: 'Plano isométrico acotado de una planta de oficinas vacía',
   },
   {
     titulo: 'Proponemos.',
     texto:
       'A partir de ese análisis, desarrollamos una propuesta que equilibra funcionalidad, diseño, presupuesto y plazo. Seleccionamos los productos y soluciones que mejor responden a las necesidades del proyecto, respaldando cada decisión con experiencia y criterio.',
-    imagen: '/proceso/paso-2.svg',
-    alt: 'Imagen pendiente del paso 2',
+    imagen: '/proceso/paso-2.webp',
+    alt: 'Plano isométrico de la planta con la propuesta de distribución',
   },
   {
     titulo: 'Implementamos.',
     texto:
       'Coordinamos la fabricación, importación, logística e instalación para asegurar que cada etapa se ejecute de acuerdo a lo planificado. Nos involucramos activamente en el proceso para garantizar una implementación eficiente y una correcta puesta en marcha.',
-    imagen: '/proceso/paso-3.svg',
-    alt: 'Imagen pendiente del paso 3',
+    imagen: '/proceso/paso-3.webp',
+    alt: 'Plano isométrico de la planta equipada y terminada',
   },
 ] as const;
 
@@ -246,6 +247,32 @@ export const proyectos = [
   },
 ] as const;
 
+// Logos de clientes, debajo de proyectos. Todos vienen en un lienzo de 300×200
+// con fondo transparente, así que comparten caja y no necesitan escala propia.
+// Se reparten en dos corridas de diez.
+export const clientes = [
+  { nombre: 'Howden', archivo: 'howden.webp' },
+  { nombre: 'Deportes Sparta', archivo: 'sparta.webp' },
+  { nombre: 'Colliers', archivo: 'oca.webp' },
+  { nombre: 'MetLife', archivo: 'metlife.webp' },
+  { nombre: 'CCU', archivo: 'ccu.webp' },
+  { nombre: 'Transbank', archivo: 'transbank.webp' },
+  { nombre: 'BNP Paribas', archivo: 'bnp.webp' },
+  { nombre: 'ENEL', archivo: 'enel.webp' },
+  { nombre: 'OnNet', archivo: 'onnet.webp' },
+  { nombre: 'Mathiesen', archivo: 'mathiesen.webp' },
+  { nombre: 'ABB', archivo: 'abb.webp' },
+  { nombre: 'BUK', archivo: 'buk.webp' },
+  { nombre: 'EMIN', archivo: 'emin.webp' },
+  { nombre: 'Lockton', archivo: 'lockton.webp' },
+  { nombre: 'Empresas Torre', archivo: 'torre.webp' },
+  { nombre: 'Ticketmaster', archivo: 'ticketmaster.webp' },
+  { nombre: 'BTG', archivo: 'btg.webp' },
+  { nombre: 'Capital', archivo: 'capital.webp' },
+  { nombre: 'Linkes', archivo: 'linkes.webp' },
+  { nombre: 'TAB', archivo: 'tab.webp' },
+] as const;
+
 // Cifras de la página "we are".
 export const cifras = [
   '+6 años',
@@ -313,8 +340,17 @@ export const marcas = [
     escala: 5.9,
     foto: '/marcas/fotos/novara.webp',
     descripcion:
-      'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation',
-    categorias: ['Escritorios', 'Sillas', 'Sofás', 'Butacas', 'Libreros', 'Gabinetes'],
+      'Novara desarrolla soluciones de mobiliario corporativo que combinan funcionalidad, diseño y bienestar para crear ambientes de trabajo más humanos y productivos. Su portafolio contempla sistemas de trabajo, mesas, almacenamiento y soluciones colaborativas, con propuestas versátiles y personalizables que se adaptan a distintas configuraciones y necesidades. La marca integra además diseño y sostenibilidad como parte de una propuesta orientada a la calidad y durabilidad.',
+    rotuloCategorias: 'Mobiliario',
+    categorias: [
+      'Escritorios',
+      'Mesas de reunión',
+      'Sistemas de trabajo',
+      'Mobiliario colaborativo',
+      'Almacenamiento',
+      'Cabinas acústicas',
+      'Mesas de apoyo',
+    ],
   },
   {
     nombre: 'Novus',
@@ -327,8 +363,17 @@ export const marcas = [
     alto: 46.34,
     escala: 4.35,
     foto: '',
-    descripcion: '',
-    categorias: [],
+    descripcion:
+      'NOVUS desarrolla soluciones técnicas para optimizar y organizar los espacios de trabajo, combinando ingeniería alemana, funcionalidad y ergonomía. Su propuesta incluye sistemas de soporte para monitores, organización del puesto de trabajo y soluciones modulares que permiten liberar espacio, mejorar la flexibilidad y adaptar cada estación a sus necesidades. Productos de alta calidad y larga duración, pensados para integrar tecnología y equipamiento de manera ordenada y eficiente.',
+    rotuloCategorias: 'Equipamiento',
+    categorias: [
+      'Brazos para monitor',
+      'Soportes para notebook',
+      'Organización de escritorio',
+      'Paneles organizadores',
+      'Iluminación',
+      'Soportes técnicos',
+    ],
   },
   {
     nombre: 'Trisoft',
@@ -341,8 +386,17 @@ export const marcas = [
     alto: 58.5,
     escala: 3.95,
     foto: '',
-    descripcion: '',
-    categorias: [],
+    descripcion:
+      'Trisoft desarrolla soluciones acústicas y arquitectónicas que combinan diseño, confort y sostenibilidad para mejorar la experiencia de los espacios. Sus productos, fabricados a partir de PET reciclado, permiten controlar la reverberación y mejorar el confort sonoro mediante paneles, revestimientos, baffles, nubes y divisorias. Una propuesta versátil y personalizable, especialmente adecuada para oficinas y espacios corporativos donde la acústica forma parte integral del diseño.',
+    rotuloCategorias: 'Equipamiento',
+    categorias: [
+      'Paneles acústicos',
+      'Baffles',
+      'Nubes acústicas',
+      'Divisorias acústicas',
+      'Biombos',
+      'Cabinas acústicas',
+    ],
   },
   {
     nombre: 'BK Contract',
@@ -355,8 +409,17 @@ export const marcas = [
     alto: 52.34,
     escala: 5.2,
     foto: '',
-    descripcion: '',
-    categorias: [],
+    descripcion:
+      'BK Contract desarrolla mobiliario contemporáneo para espacios profesionales, corporativos y de uso colectivo, combinando diseño, funcionalidad y personalización. Su propuesta se caracteriza por líneas puras y atemporales, calidad en materiales y acabados, y una alta capacidad de adaptación a las necesidades de cada proyecto. Con fabricación europea y una filosofía centrada en la simplicidad y la innovación, crea soluciones que integran diseño y funcionalidad con una mirada sofisticada y duradera.',
+    rotuloCategorias: 'Mobiliario',
+    categorias: [
+      'Mesas',
+      'Mesas de reunión',
+      'Almacenamiento',
+      'Recepciones',
+      'Librerías',
+      'Soft Meeting',
+    ],
   },
   {
     nombre: 'Rossi',
@@ -369,8 +432,18 @@ export const marcas = [
     alto: 33.06,
     escala: 5.75,
     foto: '',
-    descripcion: '',
-    categorias: [],
+    descripcion:
+      'Rossi es una marca argentina especializada en el diseño y fabricación de mobiliario para espacios de trabajo, con una trayectoria que se remonta a 1962. Su propuesta combina diseño, confort y ergonomía, desarrollando productos pensados para responder a distintas formas de trabajar y habitar la oficina. Su experiencia industrial, capacidad de desarrollo y variedad de configuraciones permiten ofrecer soluciones funcionales y versátiles para proyectos corporativos.',
+    rotuloCategorias: 'Mobiliario',
+    categorias: [
+      'Sillas operativas',
+      'Sillas ejecutivas',
+      'Sillas gerenciales',
+      'Sillas de reunión',
+      'Escritorios',
+      'Mesas',
+      'Guardado',
+    ],
   },
   {
     nombre: 'Belgotex',
@@ -383,8 +456,17 @@ export const marcas = [
     alto: 54.32,
     escala: 5.1,
     foto: '',
-    descripcion: '',
-    categorias: [],
+    descripcion:
+      'Belgotex desarrolla soluciones de revestimiento que combinan diseño, confort y alto desempeño. Su amplio portafolio de alfombras y pisos permite resolver distintos espacios y necesidades, integrando variedad estética, resistencia y soluciones técnicas para proyectos comerciales y corporativos. Una propuesta pensada para crear superficies que no solo acompañan el diseño, sino que también responden al uso cotidiano de cada espacio.',
+    rotuloCategorias: 'Equipamiento',
+    categorias: [
+      'Alfombras',
+      'Alfombras modulares',
+      'Alfombras muro a muro',
+      'Pisos vinílicos',
+      'Pisos vinílicos en rollo',
+      'Pasto sintético',
+    ],
   },
   {
     nombre: 'Frisokar',
@@ -397,23 +479,16 @@ export const marcas = [
     alto: 45.61,
     escala: 5.4,
     foto: '',
-    descripcion: '',
-    categorias: [],
-  },
-  {
-    // Enea no vino en el envío de logos oficiales: su blanco está derivado del
-    // gris que ya teníamos. TODO: pedir la versión oficial.
-    nombre: 'Enea',
-    slug: 'enea',
-    catalogo: { etiqueta: 'Catálogo Enea 2025-26', archivo: '' },
-    fotos: [],
-    archivo: 'enea.svg',
-    blanco: 'enea-blanco.svg',
-    ancho: 73.06,
-    alto: 18.32,
-    escala: 4.05,
-    foto: '',
-    descripcion: '',
-    categorias: [],
+    descripcion:
+      'Frisokar desarrolla sillas para espacios de trabajo que combinan ergonomía, confort y funcionalidad. Su propuesta contempla distintas soluciones para ambientes operativos, ejecutivos y corporativos, incorporando sistemas de ajuste y configuraciones pensadas para acompañar diferentes formas de trabajar. Una amplia variedad de modelos permite responder a distintos niveles de uso y necesidades, con una propuesta orientada al bienestar y al desempeño cotidiano.',
+    rotuloCategorias: 'Mobiliario',
+    categorias: [
+      'Sillas operativas',
+      'Sillas ejecutivas',
+      'Sillas gerenciales',
+      'Sillas para reunión',
+      'Sillas multifuncionales',
+      'Longarinas',
+    ],
   },
 ] as const;

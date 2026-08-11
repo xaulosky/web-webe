@@ -1,0 +1,98 @@
+---
+import { clientes } from '../config/site';
+
+// Dos corridas en bucle, diez logos visibles por pantalla. Cada corrida duplica
+// su secuencia y recorre exactamente la mitad de su ancho, así el empalme no se
+// nota. Van en sentidos opuestos para que el bucle no se lea como una repetición.
+const corridas = [clientes.slice(0, 10), clientes.slice(10)];
+---
+
+<section class="clientes" aria-label="Clientes" data-fondo="oscuro">
+  {
+    corridas.map((corrida, i) => (
+      <div class="clientes__pista" data-sentido={i === 0 ? 'izquierda' : 'derecha'}>
+        {/* La secuencia va duplicada; la copia es decorativa. */}
+        {[0, 1].map((copia) =>
+          corrida.map((cliente) => (
+            <div class="clientes__caja">
+              <img
+                src={`/clientes/${cliente.archivo}`}
+                alt={copia === 0 ? cliente.nombre : ''}
+                aria-hidden={copia === 1 ? 'true' : undefined}
+                width="300"
+                height="200"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          )),
+        )}
+      </div>
+    ))
+  }
+</section>
+
+<style>
+  .clientes {
+    display: grid;
+    gap: clamp(0.5rem, 2vh, 1.5rem);
+    padding-block: clamp(2.5rem, 7vw, 6rem);
+    overflow: hidden;
+    /* Los logos vienen en blanco sobre transparente: necesitan fondo oscuro.
+       De paso enlaza con la sección de proyectos, que también lo es. */
+    background: #14140f;
+  }
+
+  .clientes__pista {
+    display: flex;
+    width: max-content;
+    animation: correr-clientes 46s linear infinite;
+  }
+
+  .clientes__pista[data-sentido='derecha'] {
+    animation-direction: reverse;
+  }
+
+  /* Diez por pantalla: cada caja mide una décima parte del ancho. */
+  .clientes__caja {
+    flex: 0 0 10vw;
+    display: grid;
+    place-items: center;
+    padding-inline: clamp(0.4rem, 1vw, 1rem);
+  }
+
+  .clientes__caja img {
+    /* Todos comparten lienzo de 300×200, así que una sola caja los iguala. */
+    width: 100%;
+    height: clamp(2.25rem, 3.4vw, 3.25rem);
+    object-fit: contain;
+    opacity: 0.55;
+    transition: opacity 0.3s ease;
+  }
+
+  .clientes__caja:hover img {
+    opacity: 1;
+  }
+
+  @keyframes correr-clientes {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (max-width: 860px) {
+    /* En móvil no caben diez: se muestran cuatro y algo. */
+    .clientes__caja {
+      flex: 0 0 24vw;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .clientes__pista {
+      animation: none;
+      /* Sin animación la copia duplicada no aporta y sobra ancho. */
+      width: 100%;
+      overflow-x: auto;
+    }
+  }
+</style>

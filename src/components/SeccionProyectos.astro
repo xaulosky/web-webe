@@ -4,26 +4,29 @@ import { proyectos } from '../config/site';
 // El diseño pide como máximo 10 destacados.
 const destacados = proyectos.slice(0, 10);
 
-// Tres datos, cada uno con su ícono. Los íconos son provisionales: trazo de
-// marca en el mismo estilo que la flecha, hasta que lleguen los definitivos.
+// Tres datos, cada uno con su ícono de marca. Cada SVG trae su propio viewBox,
+// así que se guarda junto a la trayectoria.
 const taxonomia = [
   {
     clave: 'superficie',
     rotulo: 'Superficie',
-    // Marco con cotas.
-    icono: 'M3 7V4h3M18 4h3v3M21 17v3h-3M6 20H3v-3M8 12h8',
+    vb: '0 0 13.7 13.7',
+    icono:
+      'M5.57,9,2.1,12.46H5.45v1.2L0,13.7V8.22H1.2l0,3.38L4.71,8.14ZM9,5.57,12.5,2.06l0,3.39h1.2L13.7,0H8.22V1.2h3.42L8.14,4.71Zm3.47,6L9,8.14,8.14,9l3.46,3.47H8.26v1.2l5.44,0V8.22H12.5Zm-7-10.4V0H0L0,5.45h1.2l0-3.39L4.71,5.57l.86-.86L2.06,1.2Z',
   },
   {
     clave: 'puestos',
     rotulo: 'Puestos de trabajo',
-    // Silueta y asiento.
-    icono: 'M12 4a3 3 0 1 1 0 6 3 3 0 0 1 0-6ZM5 20v-1a7 7 0 0 1 14 0v1',
+    vb: '0 0 14.63 18',
+    icono:
+      'M12.38,6.75V7.88h.56v2.24h-.67A1.65,1.65,0,0,0,10.69,9H7.88V7.88H9.56a1.65,1.65,0,0,0,1.69-1.69V1.69A1.65,1.65,0,0,0,9.56,0H5.06A1.64,1.64,0,0,0,3.38,1.69v4.5A1.65,1.65,0,0,0,5.06,7.88H6.75V9H3.94a1.64,1.64,0,0,0-1.58,1.12H1.69V7.88h.56V6.75H0V7.88H.56v3.37H2.25v1L6.8,13.39v1.9L2.25,16.42V18H3.38v-.67l3.93-1,3.94,1V18h1.13V16.42L7.93,15.29v-2l4.45-1.12v-.95h1.68V7.88h.56V6.75Zm-7.32,0a.54.54,0,0,1-.56-.56V1.69a.54.54,0,0,1,.56-.57h4.5a.53.53,0,0,1,.56.57v4.5a.53.53,0,0,1-.56.56Zm6.19,4.61-3.94,1-3.93-1v-.67a.53.53,0,0,1,.56-.57h6.75a.54.54,0,0,1,.56.57Z',
   },
   {
     clave: 'alcance',
     rotulo: 'Alcance',
-    // Capas apiladas.
-    icono: 'M12 3 3 8l9 5 9-5-9-5ZM3 13l9 5 9-5M3 17.5 12 22l9-4.5',
+    vb: '0 0 16.95 16.95',
+    icono:
+      'M8.5,5.31a3.08,3.08,0,0,0-2.26,1A3.07,3.07,0,0,0,5.31,8.5,3.18,3.18,0,0,0,8.5,11.69a3.07,3.07,0,0,0,2.24-.93,3.08,3.08,0,0,0,.95-2.26,3,3,0,0,0-.95-2.24A3,3,0,0,0,8.5,5.31ZM10,10a2,2,0,0,1-1.49.61A2.08,2.08,0,0,1,6.38,8.5,2,2,0,0,1,7,7,2.05,2.05,0,0,1,8.5,6.38,2.15,2.15,0,0,1,10.62,8.5,2.05,2.05,0,0,1,10,10Zm7-.23V7.17l-2.17-.79-.34-.85,1-2.13L13.55,1.54l-2.08,1-.89-.39L9.78,0H7.17L6.38,2.17l-.9.39-2.08-1L1.54,3.4l1,2.08-.39.9L0,7.17V9.78l2.17.8.39.89-1,2.08L3.4,15.41l2.08-1,.9.39L7.17,17H9.78l.8-2.17.89-.39,2.08,1,1.86-1.86-1-2.08.39-.89Zm-2.71-.17L14,9.73l-.75,1.79.85,1.86-.8.8-1.81-.9L9.73,14,9,15.94H7.92L7.22,14l-1.74-.75-1.81.85-.8-.8.85-1.81L3,9.73,1.06,9V8l1.7-.58L3,7.27l.75-1.79L2.87,3.62l.8-.8,1.81.9L7.27,3l.65-1.91H9L9.73,3l1.79.75,1.81-.85.8.8-.85,1.81L14,7.27l1.91.7V9Z',
   },
 ] as const;
 ---
@@ -69,7 +72,7 @@ const taxonomia = [
     {
       taxonomia.map((dato) => (
         <div class="proyectos__dato">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <svg viewBox={dato.vb} fill="currentColor" aria-hidden="true">
             <path d={dato.icono} />
           </svg>
           <dt>{dato.rotulo}:</dt>

@@ -19,7 +19,7 @@ const portada = fotos[0] ?? '/marcas/fotos/novara.webp';
 
 <Base
   title={marca.nombre}
-  description={marca.descripcion || `${marca.nombre}, marca representada por WEBE.`}
+  description={marca.descripcion}
   header="overlay"
 >
   <HeroMarca slug={marca.slug} foto={portada} />
@@ -34,7 +34,8 @@ const portada = fotos[0] ?? '/marcas/fotos/novara.webp';
       {
         marca.categorias.length > 0 && (
           <div>
-            <p class="marca__rotulo">Mobiliario</p>
+            {/* Unas marcas listan mobiliario y otras equipamiento. */}
+            <p class="marca__rotulo">{marca.rotuloCategorias}</p>
             <ul class="marca__lista">
               {marca.categorias.map((categoria) => (
                 <li>{categoria}</li>
