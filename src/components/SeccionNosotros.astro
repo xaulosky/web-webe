@@ -10,7 +10,7 @@ const { id = 'descubre' } = Astro.props;
 
 <section class="nosotros" id={id}>
   <div class="nosotros__panel" data-anima="grupo">
-    <p class="nosotros__antetitulo">we are</p>
+    <p class="nosotros__antetitulo">Quiénes somos</p>
     <p class="nosotros__texto">
       Somos una empresa especializada en mobiliario y equipamiento de oficinas
       que entiende que los espacios influyen en la forma en que las personas
@@ -60,15 +60,20 @@ const { id = 'descubre' } = Astro.props;
     width: 47%;
     background: #fff;
     border-top-left-radius: var(--radio);
-    padding: clamp(2.5rem, 5vw, 5rem) clamp(1.5rem, 3.2vw, 3.5rem)
-      clamp(4rem, 9vw, 9rem) clamp(2rem, 4vw, 4.5rem);
+    /* Panel más bajo: el diseño lo quiere en poco más de la mitad del alto que
+       tenía, así que el aire vertical baja de 14rem a 6rem. */
+    padding: clamp(1.75rem, 2.6vw, 2.75rem) clamp(1.5rem, 3.2vw, 3.5rem)
+      clamp(2rem, 3.2vw, 3.25rem) clamp(2rem, 4vw, 4.5rem);
   }
 
+  /* Mismo tamaño y color que los botones (CONÓCENOS, TODAS LAS MARCAS). */
   .nosotros__antetitulo {
     margin: 0;
-    font-size: 0.9375rem;
+    font-size: 0.8125rem;
     font-weight: 300;
-    color: var(--color-muted);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink);
   }
 
   .nosotros__texto {

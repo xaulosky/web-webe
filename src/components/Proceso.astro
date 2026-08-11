@@ -92,22 +92,26 @@ import { proceso } from '../config/site';
     visibility: visible;
   }
 
+  /* Gris de marca para la barra, con aire entre puntos y líneas. */
   .proceso__barra {
+    --gris: #969696;
+
     display: flex;
     align-items: center;
+    gap: 0.55rem;
   }
 
   .proceso__linea {
     flex: 1;
     height: 1px;
-    background: var(--color-brand-300);
+    background: var(--gris);
   }
 
   .proceso__punto {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--color-brand-300);
+    background: var(--gris);
     cursor: pointer;
     transition:
       background-color 0.3s ease,
@@ -161,10 +165,11 @@ import { proceso } from '../config/site';
   }
 
   .proceso__siguiente {
-    width: clamp(1.6rem, 2.3vw, 2.3rem);
+    /* Más chica y en el gris de marca, no en tinta al 50%. */
+    width: clamp(1.15rem, 1.5vw, 1.55rem);
     margin-top: clamp(2rem, 4vw, 3.5rem);
-    color: var(--color-ink);
-    opacity: 0.5;
+    color: #969696;
+    opacity: 1;
     cursor: pointer;
     transition:
       opacity 0.25s ease,
@@ -172,7 +177,7 @@ import { proceso } from '../config/site';
   }
 
   .proceso__siguiente:hover {
-    opacity: 1;
+    color: var(--color-ink);
     transform: translateX(4px);
   }
 

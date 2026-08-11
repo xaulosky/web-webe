@@ -4,7 +4,8 @@
 interface Props {
   imagen: string;
   alt: string;
-  lineas: readonly { readonly fuerte: string; readonly suave: string }[];
+  /** Cada línea puede llevar sólo una de las dos partes. */
+  lineas: readonly { readonly fuerte?: string; readonly suave?: string }[];
   ancho?: number;
   alto?: number;
 }
@@ -20,8 +21,9 @@ const { imagen, alt, lineas, ancho = 1900, alto = 943 } = Astro.props;
     {
       lineas.map((linea) => (
         <span class="portada__linea">
-          <span class="portada__fuerte">{linea.fuerte}</span>{' '}
-          <span class="portada__suave">{linea.suave}</span>
+          {linea.fuerte && <span class="portada__fuerte">{linea.fuerte}</span>}
+          {linea.fuerte && linea.suave && ' '}
+          {linea.suave && <span class="portada__suave">{linea.suave}</span>}
         </span>
       ))
     }

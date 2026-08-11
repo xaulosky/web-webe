@@ -24,7 +24,9 @@ const { id, antetitulo, alineacion = 'izquierda' } = Astro.props;
 
 <style>
   .bloque {
-    --inclinacion: -15deg;
+    /* El diseño pide 71,5° respecto de la horizontal, que son 18,5° de sesgo
+       desde la vertical. */
+    --inclinacion: -18.5deg;
     --radio: clamp(2rem, 3.5vw, 3.5rem);
 
     position: relative;

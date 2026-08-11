@@ -1,21 +1,34 @@
 ---
 import { proyectos } from '../config/site';
 
-// El año no va en la ficha: alimenta el superíndice de la nube.
-const campos = [
-  [['Proyecto', 'nombre']],
-  [
-    ['Superficie', 'superficie'],
-    ['Puestos de trabajo', 'puestos'],
-  ],
-  [
-    ['Alcance', 'alcance'],
-    ['Marcas', 'marcas'],
-  ],
+// El diseño pide como máximo 10 destacados.
+const destacados = proyectos.slice(0, 10);
+
+// Tres datos, cada uno con su ícono. Los íconos son provisionales: trazo de
+// marca en el mismo estilo que la flecha, hasta que lleguen los definitivos.
+const taxonomia = [
+  {
+    clave: 'superficie',
+    rotulo: 'Superficie',
+    // Marco con cotas: superficie.
+    icono: 'M3 7V4h3M18 4h3v3M21 17v3h-3M6 20H3v-3M8 12h8',
+  },
+  {
+    clave: 'puestos',
+    rotulo: 'Puestos de trabajo',
+    // Silueta y asiento: puestos de trabajo.
+    icono: 'M12 4a3 3 0 1 1 0 6 3 3 0 0 1 0-6ZM5 20v-1a7 7 0 0 1 14 0v1',
+  },
+  {
+    clave: 'alcance',
+    rotulo: 'Alcance',
+    // Capas apiladas: alcance del equipamiento.
+    icono: 'M12 3 3 8l9 5 9-5-9-5ZM3 13l9 5 9-5M3 17.5 12 22l9-4.5',
+  },
 ] as const;
 ---
 
-<section class="proyectos" id="proyectos">
+<section class="proyectos" id="proyectos" data-fondo="oscuro">
   <video
     class="proyectos__video"
     autoplay
@@ -33,33 +46,37 @@ const campos = [
 
   <p class="proyectos__antetitulo">proyectos destacados</p>
 
-  <ul class="proyectos__nube" data-anima="grupo">
-    {
-      proyectos.map((proyecto, i) => (
-        <li>
-          <button
-            type="button"
-            data-proyecto={i}
-            aria-current={i === 0 ? 'true' : undefined}
-          >
-            {proyecto.nombre}
-            <sup>({proyecto.ano.slice(-2)})</sup>
-          </button>
-        </li>
-      ))
-    }
-  </ul>
+  {/* Slider de títulos: se recorre y el que queda centrado es el que manda. */}
+  <div class="proyectos__pista" id="proyectos-pista" data-scroll-propio>
+    <ul class="proyectos__nube">
+      {
+        destacados.map((proyecto, i) => (
+          <li>
+            <button
+              type="button"
+              data-proyecto={i}
+              aria-current={i === 0 ? 'true' : undefined}
+            >
+              {proyecto.nombre}
+              <sup>({proyecto.ano.slice(-2)})</sup>
+            </button>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 
   <dl class="proyectos__ficha" data-anima="grupo">
     {
-      campos.map((grupo) => (
-        <div class="proyectos__grupo">
-          {grupo.map(([etiqueta, clave]) => (
-            <div class="proyectos__fila">
-              <dt>{etiqueta}</dt>
-              <dd data-campo={clave}>{proyectos[0][clave] || '—'}</dd>
-            </div>
-          ))}
+      taxonomia.map((dato) => (
+        <div class="proyectos__dato">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d={dato.icono} />
+          </svg>
+          <div>
+            <dt>{dato.rotulo}</dt>
+            <dd data-campo={dato.clave}>{destacados[0][dato.clave] || '—'}</dd>
+          </div>
         </div>
       ))
     }
@@ -74,7 +91,7 @@ const campos = [
     align-items: center;
     min-height: 100vh;
     min-height: 100svh;
-    padding: clamp(3rem, 6vh, 5rem) clamp(1.5rem, 4vw, 4rem) clamp(2rem, 5vh, 4rem);
+    padding: clamp(3rem, 6vh, 5rem) 0 clamp(2rem, 5vh, 4rem);
     overflow: hidden;
     background: #14140f;
     color: #fff;
@@ -89,15 +106,14 @@ const campos = [
     filter: saturate(0.3) brightness(0.62) contrast(1.04);
   }
 
+  /* Dos degradados, arriba y abajo, como pide el diseño: el centro queda
+     limpio para que se lea la foto. */
   .proyectos__scrim {
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.4) 0%,
-      rgba(0, 0, 0, 0.15) 45%,
-      rgba(0, 0, 0, 0.5) 100%
-    );
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0) 32%),
+      linear-gradient(0deg, rgba(0, 0, 0, 0.78) 0%, rgba(0, 0, 0, 0) 34%);
   }
 
   .proyectos__antetitulo {
@@ -108,38 +124,57 @@ const campos = [
     color: rgba(255, 255, 255, 0.6);
   }
 
-  .proyectos__nube {
+  /* La pista scrollea sola: data-scroll-propio la exime del suavizado global. */
+  .proyectos__pista {
     position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.15em clamp(0.9rem, 1.8vw, 1.9rem);
-    /* Veinte proyectos con nombres largos: más ancho y menos cuerpo que en el
-       diseño original, que sólo mostraba ocho. */
-    max-width: 82rem;
+    width: 100%;
     margin-top: clamp(1.5rem, 4vh, 3rem);
-    text-align: center;
+    overflow-y: auto;
+    max-height: 42vh;
+    scroll-snap-type: y proximity;
+    scrollbar-width: none;
+    /* Difumina los extremos para que se lea como un carrete. */
+    mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
+  }
+
+  .proyectos__pista::-webkit-scrollbar {
+    display: none;
+  }
+
+  .proyectos__nube {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-block: 12vh;
+  }
+
+  .proyectos__nube li {
+    scroll-snap-align: center;
   }
 
   .proyectos__nube button {
-    font-size: clamp(1.05rem, 1.75vw, 2rem);
+    display: block;
+    padding-block: 0.12em;
+    font-size: clamp(1.35rem, 2.6vw, 2.9rem);
     font-weight: 300;
-    line-height: 1.28;
+    line-height: 1.24;
     letter-spacing: -0.01em;
-    color: rgba(255, 255, 255, 0.42);
+    color: rgba(255, 255, 255, 0.34);
     cursor: pointer;
-    transition: color 0.25s ease;
+    transition:
+      color 0.35s ease,
+      font-weight 0.35s ease;
   }
 
   .proyectos__nube button sup {
-    font-size: 0.42em;
+    font-size: 0.4em;
     font-weight: 300;
-    vertical-align: 1.6em;
+    vertical-align: 1.7em;
     margin-left: 0.15em;
   }
 
   .proyectos__nube button:hover {
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.7);
   }
 
   .proyectos__nube button[aria-current] {
@@ -147,107 +182,84 @@ const campos = [
     color: #fff;
   }
 
-  /* --- Ficha del proyecto activo --- */
+  /* --- Tres datos con ícono --- */
   .proyectos__ficha {
     position: relative;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: clamp(1rem, 3vw, 3rem);
+    gap: clamp(1.5rem, 4vw, 4.5rem);
     width: 100%;
     margin: auto 0 0;
-    padding-top: clamp(2rem, 5vh, 3rem);
-    font-size: clamp(0.75rem, 0.95vw, 0.9375rem);
+    padding: clamp(2rem, 5vh, 3rem) clamp(1.5rem, 4vw, 4rem) 0;
   }
 
-  .proyectos__grupo {
-    display: grid;
-    gap: 0.15rem;
-    padding-left: clamp(1rem, 3vw, 3rem);
-    border-left: 1px solid rgba(255, 255, 255, 0.3);
+  .proyectos__dato {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    max-width: 22rem;
   }
 
-  .proyectos__grupo:first-child {
-    border-left: 0;
-    padding-left: 0;
+  .proyectos__dato svg {
+    flex: 0 0 auto;
+    width: clamp(1.15rem, 1.5vw, 1.5rem);
+    height: auto;
+    margin-top: 0.1rem;
+    color: rgba(255, 255, 255, 0.55);
   }
 
-  .proyectos__fila {
-    display: grid;
-    grid-template-columns: minmax(0, auto) minmax(0, 1fr);
-    gap: 0.35rem 1.25rem;
-  }
-
-  /* El alcance real llega a 95 caracteres: sin acotar el ancho, la fila de
-     cuatro grupos se desbordaba fuera de la sección. */
-  .proyectos__grupo {
-    max-width: 24rem;
-  }
-
-  .proyectos__fila dt {
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
+  .proyectos__dato dt {
+    font-size: 0.75rem;
     font-weight: 300;
-    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.65);
   }
 
-  .proyectos__fila dd {
-    margin: 0;
+  .proyectos__dato dd {
+    margin: 0.2rem 0 0;
+    font-size: clamp(0.8125rem, 1vw, 0.9375rem);
     font-weight: 500;
+    line-height: 1.45;
   }
 
   @media (max-width: 860px) {
-    /* Sin este aire el rótulo queda debajo del header fijo. */
     .proyectos {
       padding-top: 7.5rem;
     }
 
-    .proyectos__nube {
-      gap: 0.15em 1rem;
+    .proyectos__pista {
+      max-height: 38vh;
     }
 
-    .proyectos__nube button {
-      font-size: 1.2rem;
-    }
-
-    /* La ficha pasa a tabla: etiqueta a la izquierda, dato a la derecha. */
     .proyectos__ficha {
       flex-direction: column;
-      gap: 0;
-    }
-
-    .proyectos__grupo {
-      display: block;
-      width: 100%;
-      padding-left: 0;
-      border-left: 0;
-    }
-
-    .proyectos__fila {
-      grid-template-columns: 1fr auto;
-      gap: 0 1rem;
-      padding-block: 0.7rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
-    }
-
-    .proyectos__grupo:first-child .proyectos__fila:first-child {
-      border-top: 1px solid rgba(255, 255, 255, 0.18);
+      align-items: flex-start;
+      gap: 1.25rem;
+      padding-inline: clamp(1.5rem, 6vw, 2.5rem);
     }
   }
 </style>
 
 <script>
   const seccion = document.querySelector<HTMLElement>('.proyectos');
+  const pista = document.getElementById('proyectos-pista');
 
-  if (seccion) {
+  if (seccion && pista) {
     const botones = Array.from(seccion.querySelectorAll<HTMLElement>('[data-proyecto]'));
     const celdas = Array.from(seccion.querySelectorAll<HTMLElement>('[data-campo]'));
+    let actual = 0;
 
-    // Los datos viajan en el HTML; aquí sólo se leen del módulo de config.
     import('../config/site').then(({ proyectos }) => {
-      const elegir = (indice: number) => {
-        const proyecto = proyectos[indice];
+      const destacados = proyectos.slice(0, 10);
+
+      const pintar = (indice: number) => {
+        if (indice === actual) return;
+        const proyecto = destacados[indice];
         if (!proyecto) return;
+        actual = indice;
+
         for (const boton of botones) {
           const activo = Number(boton.dataset.proyecto) === indice;
           if (activo) boton.setAttribute('aria-current', 'true');
@@ -260,9 +272,48 @@ const campos = [
         }
       };
 
-      botones.forEach((boton, i) => {
-        boton.addEventListener('click', () => elegir(i));
+      /* El que manda es el título que quedó centrado en la pista, no el que se
+         pulsó: así los datos de abajo se actualizan mientras se recorre. */
+      const centrado = () => {
+        const caja = pista.getBoundingClientRect();
+        const medio = caja.top + caja.height / 2;
+        let mejor = 0;
+        let menor = Infinity;
+
+        botones.forEach((boton, i) => {
+          const r = boton.getBoundingClientRect();
+          const distancia = Math.abs(r.top + r.height / 2 - medio);
+          if (distancia < menor) {
+            menor = distancia;
+            mejor = i;
+          }
+        });
+
+        pintar(mejor);
+      };
+
+      let pedido = false;
+      pista.addEventListener(
+        'scroll',
+        () => {
+          if (pedido) return;
+          pedido = true;
+          requestAnimationFrame(() => {
+            pedido = false;
+            centrado();
+          });
+        },
+        { passive: true },
+      );
+
+      // Al pulsar un título se lo lleva al centro; el scroll hace el resto.
+      botones.forEach((boton) => {
+        boton.addEventListener('click', () => {
+          boton.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        });
       });
+
+      centrado();
     });
 
     // El video de fondo sólo corre cuando la sección está a la vista.

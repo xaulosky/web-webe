@@ -421,10 +421,14 @@ const { scrollTo = '#descubre' } = Astro.props;
         pieza.style.width = `${(anchos[i] ?? 0) * (1 - cierre)}px`;
       });
 
-      // 2. El bloque viaja al navbar y se encoge.
-      const viaje = suavizar(tramo(p, 0.12, 0.42));
-      morph.style.transform = `translate(${dx * viaje}px, ${dy * viaje}px) scale(${
-        1 + (escala - 1) * viaje
+      // 2. El bloque viaja al navbar en dos tiempos: primero se va del todo
+      //    hacia la izquierda y recién después sube. Los tramos se solapan un
+      //    poco para que el giro no se sienta como dos movimientos pegados.
+      const viajeX = suavizar(tramo(p, 0.12, 0.34));
+      const viajeY = suavizar(tramo(p, 0.28, 0.44));
+      const encoge = suavizar(tramo(p, 0.12, 0.4));
+      morph.style.transform = `translate(${dx * viajeX}px, ${dy * viajeY}px) scale(${
+        1 + (escala - 1) * encoge
       })`;
 
       // 3. Relevo entre el texto y el logo oficial del navbar.

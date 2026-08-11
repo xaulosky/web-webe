@@ -41,7 +41,10 @@
 
     const revisar = () => {
       const alto = window.innerHeight;
-      const umbral = alto * 0.88;
+      // El umbral es el borde inferior de la ventana: con un margen menor
+      // quedaba una banda muerta abajo y el contenido anclado al pie de una
+      // sección de alto completo no se revelaba nunca.
+      const umbral = alto;
       // Al tocar fondo ya no hay más scroll: lo que siga pendiente se revela,
       // o quedaría varado en la franja inferior para siempre.
       const enElFondo =
