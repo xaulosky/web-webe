@@ -1,6 +1,6 @@
 ---
-// Corte entre el hero y la sección siguiente: un escalón estrecho y alto. El
-// canto recorre 35 unidades de ancho en 165 de alto —la proporción medida en el
+// Corte entre el hero y la sección siguiente: un escalón estrecho y alto. Su
+// recorrido completo mide 52 unidades de ancho en 165 de alto —lo medido en el
 // diseño— con las dos uniones redondeadas en sentidos opuestos: convexa arriba,
 // donde empieza el panel blanco, y cóncava abajo, donde termina el bloque
 // oscuro.
@@ -13,7 +13,7 @@ interface Props {
   quiebre?: string;
 }
 
-const { quiebre = '54%' } = Astro.props;
+const { quiebre = '56.5%' } = Astro.props;
 ---
 
 <div class="corte" style={`--quiebre:${quiebre}`}>
@@ -28,7 +28,7 @@ const { quiebre = '54%' } = Astro.props;
     style="display:block"
   >
     <path
-      d="M0,165 L6,165 Q20,165 22.9,151.3 L52.1,13.7 Q55,0 69,0 L80,0 L80,165 Z"
+      d="M0,165 L8,165 Q20,165 22,153.2 L46,11.8 Q48,0 60,0 L80,0 L80,165 Z"
       fill="#fff"
     ></path>
   </svg>
