@@ -4,7 +4,8 @@
 // el video de arriba, más un filete que redondea la esquina del bloque oscuro.
 interface Props {
   id?: string;
-  antetitulo: string;
+  /** Rótulo chico sobre el texto. Opcional: el copy definitivo los eliminó. */
+  antetitulo?: string;
 }
 
 const { id, antetitulo } = Astro.props;
@@ -16,7 +17,7 @@ const { id, antetitulo } = Astro.props;
   </div>
 
   <div class="sacado__panel" data-anima="grupo">
-    <p class="sacado__antetitulo">{antetitulo}</p>
+    {antetitulo && <p class="sacado__antetitulo">{antetitulo}</p>}
     <slot />
   </div>
 </section>

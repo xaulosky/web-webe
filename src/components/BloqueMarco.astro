@@ -4,7 +4,8 @@
 // sesgarlo sin torcer el texto.
 interface Props {
   id?: string;
-  antetitulo: string;
+  /** Rótulo chico sobre el texto. Opcional: el copy definitivo los eliminó. */
+  antetitulo?: string;
   /** Dónde se apoya el texto dentro del marco. */
   alineacion?: 'izquierda' | 'derecha';
 }
@@ -16,7 +17,7 @@ const { id, antetitulo, alineacion = 'izquierda' } = Astro.props;
   <div class="bloque__marco" aria-hidden="true"></div>
 
   <div class="bloque__contenido" data-anima="grupo">
-    <p class="bloque__antetitulo">{antetitulo}</p>
+    {antetitulo && <p class="bloque__antetitulo">{antetitulo}</p>}
     <p class="bloque__texto"><slot /></p>
     <slot name="extra" />
   </div>

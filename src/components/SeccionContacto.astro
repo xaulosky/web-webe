@@ -1,7 +1,6 @@
 ---
 import Marquesina from './Marquesina.astro';
 import IconoRed from './IconoRed.astro';
-import Flecha from './Flecha.astro';
 import { site, marquesinaContacto } from '../config/site';
 
 const mapa = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.address)}`;
@@ -40,14 +39,6 @@ const mapa = `https://www.google.com/maps/search/?api=1&query=${encodeURICompone
       <p class="contacto__intro">
         Nos gustaría conocer tus ideas, entender tus necesidades y explorar
         juntos las mejores soluciones para tu proyecto.
-      </p>
-
-      <p class="contacto__showroom">
-        Reserva una visita a nuestro showroom
-        <a class="contacto__agenda" href="/contacto">
-          Agenda aquí
-          <Flecha />
-        </a>
       </p>
 
       <a class="contacto__mapa" href={mapa} target="_blank" rel="noopener">

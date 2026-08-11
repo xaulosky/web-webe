@@ -11,8 +11,8 @@ export const site = {
   email: 'hola@webe.cl',
   // TODO: teléfono (el diseño no lo muestra).
   phone: '+56 9 0000 0000',
-  direccion: ['Av. del Valle Norte 937 Oficina 454', 'Huechuraba — Ciudad Empresarial', 'Santiago, Chile'],
-  address: 'Av. del Valle Norte 937 Oficina 454, Huechuraba, Santiago, Chile',
+  direccion: ['Avenida Vitacura 3439, Oficina 203', 'Vitacura', 'Santiago, Chile'],
+  address: 'Avenida Vitacura 3439, Oficina 203, Vitacura, Santiago, Chile',
   creditos: { texto: 'the—concept.studio', url: 'https://the-concept.studio/' },
   // TODO: URLs reales de los perfiles.
   social: [
@@ -43,9 +43,7 @@ export const marquesinaContacto = [
   { fuerte: 'be', suave: 'together.' },
 ] as const;
 
-// Carrusel de proceso dentro de "be partner".
-// TODO: faltan el copy y las imágenes de los pasos 2 y 3; hoy repiten la del 1
-// sólo para que se vea el mecanismo.
+// Carrusel de proceso. Copy definitivo; faltan las imágenes de los pasos 2 y 3.
 export const proceso = [
   {
     titulo: 'Entendemos.',
@@ -54,18 +52,17 @@ export const proceso = [
     imagen: '/proceso/entendemos.png',
     alt: 'Plano isométrico acotado de una planta de oficinas',
   },
-  // Títulos y textos de relleno para poder ver la transición; NO son copy final.
   {
     titulo: 'Proponemos.',
     texto:
-      'Traducimos ese diagnóstico en una propuesta concreta: distribución, mobiliario y materialidades. Presentamos alternativas para que la decisión se tome sobre opciones claras y comparables.',
+      'A partir de ese análisis, desarrollamos una propuesta que equilibra funcionalidad, diseño, presupuesto y plazo. Seleccionamos los productos y soluciones que mejor responden a las necesidades del proyecto, respaldando cada decisión con experiencia y criterio.',
     imagen: '/proceso/paso-2.svg',
     alt: 'Imagen pendiente del paso 2',
   },
   {
-    titulo: 'Ejecutamos.',
+    titulo: 'Implementamos.',
     texto:
-      'Coordinamos fabricación, plazos y montaje en obra. Acompañamos la instalación hasta la entrega para que el resultado sea el mismo que se proyectó.',
+      'Coordinamos la fabricación, importación, logística e instalación para asegurar que cada etapa se ejecute de acuerdo a lo planificado. Nos involucramos activamente en el proceso para garantizar una implementación eficiente y una correcta puesta en marcha.',
     imagen: '/proceso/paso-3.svg',
     alt: 'Imagen pendiente del paso 3',
   },
@@ -252,44 +249,43 @@ export const proyectos = [
 // Cifras de la página "we are".
 export const cifras = [
   '+6 años',
-  '+6.500 m² equipados',
   '+18 proyectos',
-  '+480 puestos de trabajo',
   '+12 marcas',
+  '+6.500 m² equipados',
+  '+480 puestos de trabajo',
 ] as const;
 
-// Acordeón "our attributes". Sólo el primero trae copy real en el diseño.
-// TODO: textos de los cinco restantes.
+// Acordeón de atributos. Copy definitivo.
 export const atributos = [
   {
-    titulo: 'Atención directa de socios',
+    titulo: 'Atención directa',
     texto:
       'Cada proyecto cuenta con la participación activa de los socios de WEBE. Esto permite tomar decisiones con mayor criterio, mantener una comunicación directa y asegurar un acompañamiento cercano desde la propuesta inicial hasta la postventa.',
   },
   {
     titulo: 'Experiencia',
     texto:
-      'Lorem ipsum dolor sit amet, consectetuer adipiscing sed diam nonumy nibh euismod tincidunt ut laoreet…',
+      'Años de experiencia en el equipamiento de oficinas permiten comprender las necesidades de arquitectos, empresas y equipos de proyecto. Esa experiencia se traduce en recomendaciones más acertadas, procesos más eficientes y soluciones mejor adaptadas a cada contexto.',
   },
   {
     titulo: 'Versatilidad',
     texto:
-      'Lorem ipsum dolor sit amet, consectetuer adipiscing sed diam nonumy nibh euismod tincidunt ut laoreet…',
+      'Contamos con una amplia variedad de marcas, líneas y soluciones que nos permiten responder a distintos requerimientos, escalas y presupuestos. Esta diversidad nos ayuda a construir propuestas equilibradas entre diseño, funcionalidad, plazo y costo según las necesidades de cada proyecto.',
   },
   {
     titulo: 'Showroom',
     texto:
-      'Lorem ipsum dolor sit amet, consectetuer adipiscing sed diam nonumy nibh euismod tincidunt ut laoreet…',
+      'Más que una exhibición de productos, el showroom es un espacio para conocer materiales, probar soluciones y visualizar distintas alternativas de equipamiento. Una instancia que facilita la toma de decisiones y aporta mayor seguridad durante el proceso.',
   },
   {
     titulo: 'Acompañamiento',
     texto:
-      'Lorem ipsum dolor sit amet, consectetuer adipiscing sed diam nonumy nibh euismod tincidunt ut laoreet…',
+      'webe participa en todo el proceso: selección de productos, desarrollo de propuestas, importación, logística, instalación y postventa. Un acompañamiento continuo que permite coordinar cada etapa bajo un mismo criterio y un único punto de contacto.',
   },
   {
     titulo: 'Continuidad',
     texto:
-      'Lorem ipsum dolor sit amet, consectetuer adipiscing sed diam nonumy nibh euismod tincidunt ut laoreet…',
+      'Nuestro compromiso no termina con la instalación. Acompañamos cada proyecto con respaldo postventa y trabajamos con marcas que nos permiten asegurar continuidad, reposición y garantía a lo largo del tiempo.',
   },
 ] as const;
 
