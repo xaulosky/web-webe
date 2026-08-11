@@ -1,0 +1,65 @@
+---
+// Corte entre el hero y la sección siguiente: un escalón. El canto que sube va
+// inclinado 18,5° respecto de la vertical (los 71,5° del diseño medidos desde
+// la horizontal) y las dos uniones van redondeadas en sentidos opuestos:
+// convexa arriba, donde el panel blanco empieza, y cóncava abajo, donde el
+// bloque oscuro termina.
+//
+// El escalón es un SVG de tamaño fijo y proporción intacta, y los tramos planos
+// se resuelven con cajas a cada lado. Estirar el SVG a todo el ancho deformaría
+// los radios y cambiaría la inclinación con el viewport.
+interface Props {
+  /** Dónde queda el canto del escalón, en % del ancho. */
+  quiebre?: string;
+}
+
+const { quiebre = '53%' } = Astro.props;
+---
+
+<div class="corte" style={`--quiebre:${quiebre}`}>
+  {/* Izquierda: transparente, se ve el hero. */}
+  <svg
+    class="corte__paso"
+    viewBox="0 0 200 130"
+    width="200"
+    height="130"
+    aria-hidden="true"
+    style="display:block"
+  >
+    <path
+      d="M0,130 L18,130 Q40,130 47,109.1 L76.5,20.9 Q83.5,0 105.5,0 L200,0 L200,130 Z"
+      fill="#fff"
+    ></path>
+  </svg>
+  <div class="corte__derecha"></div>
+</div>
+
+<style>
+  .corte {
+    --ancho-paso: clamp(7rem, 13vw, 12.5rem);
+
+    position: relative;
+    /* Misma proporción que el viewBox del escalón. */
+    height: calc(var(--ancho-paso) * 130 / 200);
+    /* Sin esto, dentro de un contenedor flex se dejaría comprimir. */
+    flex: 0 0 auto;
+  }
+
+  .corte__paso {
+    position: absolute;
+    top: 0;
+    /* Su borde derecho cae justo en el quiebre. */
+    right: calc(100% - var(--quiebre));
+    width: var(--ancho-paso);
+    height: 100%;
+  }
+
+  .corte__derecha {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: var(--quiebre);
+    background: #fff;
+  }
+</style>

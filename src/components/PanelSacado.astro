@@ -1,8 +1,8 @@
----
-import CorteDiagonal from './CorteDiagonal.astro';
+﻿---
+import CortePaso from './CortePaso.astro';
 
-// El corte entre la portada y esta sección es una diagonal: la banda blanca
-// sube por la derecha y desde ahí el fondo sigue macizo.
+// El corte entre la portada y esta sección es un escalón con el canto
+// inclinado: el blanco entra por la derecha y desde ahí el fondo sigue macizo.
 interface Props {
   id?: string;
   /** Rótulo chico sobre el texto. Opcional: el copy definitivo los eliminó. */
@@ -14,7 +14,7 @@ const { id, antetitulo } = Astro.props;
 
 <section class="sacado" id={id}>
   <div class="sacado__fondo" aria-hidden="true">
-    <CorteDiagonal />
+    <CortePaso />
     <div class="sacado__relleno"></div>
   </div>
 

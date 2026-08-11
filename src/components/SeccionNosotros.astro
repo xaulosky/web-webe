@@ -1,5 +1,5 @@
----
-import CorteDiagonal from './CorteDiagonal.astro';
+﻿---
+import CortePaso from './CortePaso.astro';
 import Flecha from './Flecha.astro';
 
 interface Props {
@@ -10,9 +10,9 @@ const { id = 'descubre' } = Astro.props;
 ---
 
 <section class="nosotros" id={id}>
-  {/* El fondo blanco entra con la diagonal y sigue macizo hacia abajo. */}
+  {/* El fondo blanco entra con el escalón y sigue macizo hacia abajo. */}
   <div class="nosotros__fondo" aria-hidden="true">
-    <CorteDiagonal />
+    <CortePaso />
     <div class="nosotros__relleno"></div>
   </div>
 
