@@ -22,12 +22,12 @@ export const site = {
 } as const;
 
 // Cada ítem se parte en dos: la primera palabra va en medium y la segunda en
-// light, como en el diseño del menú.
+// light. El PDF de ajustes los pasó a español.
 export const nav = [
-  { fuerte: 'we', suave: 'are', label: 'We are', href: '/nosotros' },
-  { fuerte: 'be', suave: 'partner', label: 'Be partner', href: '/be-partner' },
-  { fuerte: 'our', suave: 'brands', label: 'Our brands', href: '/marcas' },
-  { fuerte: 'we', suave: 'work', label: 'We work', href: '/proyectos' },
+  { fuerte: 'Nuestro', suave: 'equipo', label: 'Nuestro equipo', href: '/nosotros' },
+  { fuerte: 'Seamos', suave: 'partners', label: 'Seamos partners', href: '/be-partner' },
+  { fuerte: 'Nuestras', suave: 'marcas', label: 'Nuestras marcas', href: '/marcas' },
+  { fuerte: 'Proyectos', suave: 'destacados', label: 'Proyectos destacados', href: '/proyectos' },
 ] as const;
 
 // Frases de la marquesina que separa secciones. Mismo patrón de la marca:
@@ -77,173 +77,117 @@ const alcanceSinSilleria =
   'Equipamiento de Mobiliario para Bench, Privados, Salas de Reunión y Áreas Colaborativas.';
 const alcanceReuniones =
   'Equipamiento de Mobiliario para Bench, Privados, Salas de Reunión.';
-const alcanceBenchSalas = 'Equipamiento de Mobiliario para Bench y Salas de Reunión.';
+// (Colliers, pendiente de fotos, usaba «…para Bench y Salas de Reunión.»)
 const alcanceBenchRegulable =
   'Equipamiento de Mobiliario para Bench (Estaciones de trabajo con regulación altura).';
 
-// Proyectos destacados. `ano` no se muestra en la ficha: alimenta el
-// superíndice de la nube, que en el diseño son los dos últimos dígitos.
-// TODO: falta el dato de `marcas` de todos los proyectos.
+// Proyectos destacados: los que tienen carpeta de fotos. Cada uno trae sus
+// tres láminas de 1920×900 para el fondo de la sección. `ano` alimenta el
+// superíndice de la nube (sus dos últimos dígitos).
+// TODO: Colliers queda fuera hasta que lleguen sus fotos. BTG Pactual y
+// Lockton no traen ficha (superficie/puestos/alcance) ni año todavía.
+const fotosDe = (slug: string) =>
+  [1, 2, 3].map((n) => `/proyectos/fotos/${slug}-${n}.webp`);
+
 export const proyectos = [
   {
-    nombre: 'Howden Chile',
-    superficie: '1.200 m²',
-    puestos: '100',
-    alcance: alcanceCompleto,
-    marcas: '',
-    ano: '2026',
-  },
-  {
-    nombre: 'Deportes Sparta',
-    superficie: '1.100 m²',
-    puestos: '130',
-    alcance: alcanceCompleto,
-    marcas: '',
-    ano: '2026',
-  },
-  {
     nombre: 'Siemens Energy',
+    slug: 'siemens',
     superficie: '1.000 m²',
     puestos: '65',
     alcance: alcanceBenchRegulable,
-    marcas: '',
     ano: '2026',
-  },
-  {
-    nombre: 'Colliers',
-    superficie: '2.250 m²',
-    puestos: '180',
-    alcance: alcanceBenchSalas,
-    marcas: '',
-    ano: '2026',
+    fotos: fotosDe('siemens'),
   },
   {
     nombre: 'The Andes Brand (Lippi)',
+    slug: 'lippi',
     superficie: '2.100 m²',
     puestos: '200',
     alcance: alcanceSinSilleria,
-    marcas: '',
     ano: '2026',
-  },
-  {
-    nombre: 'Empresas Torre',
-    superficie: '1.100 m²',
-    puestos: '70',
-    alcance: alcanceCompleto,
-    marcas: '',
-    ano: '2026',
+    fotos: fotosDe('lippi'),
   },
   {
     nombre: 'MetLife',
+    slug: 'metlife',
     superficie: '1.300 m²',
     puestos: '120',
     alcance: alcanceCompleto,
-    marcas: '',
     ano: '2026',
+    fotos: fotosDe('metlife'),
   },
   {
     nombre: 'CCU',
+    slug: 'ccu',
     superficie: '4.500 m²',
     puestos: '400',
     alcance: alcanceCompleto,
-    marcas: '',
     ano: '2025',
+    fotos: fotosDe('ccu'),
   },
   {
     nombre: 'Transbank',
+    slug: 'transbank',
     superficie: '2.500 m²',
     puestos: '230',
     alcance: alcanceReuniones,
-    marcas: '',
     ano: '2025',
-  },
-  {
-    nombre: 'Servicio de Evaluación Ambiental (SEA)',
-    superficie: '3.500 m²',
-    puestos: '230',
-    alcance: alcanceReuniones,
-    marcas: '',
-    ano: '2025',
-  },
-  {
-    nombre: 'OCA Global',
-    superficie: '1.900 m²',
-    puestos: '240',
-    alcance: alcanceCompleto,
-    marcas: '',
-    ano: '2025',
+    fotos: fotosDe('transbank'),
   },
   {
     nombre: 'BNP Paribas',
+    slug: 'bnp',
     superficie: '2.500 m²',
     puestos: '200',
     alcance: alcanceReuniones,
-    marcas: '',
     ano: '2025',
+    fotos: fotosDe('bnp'),
   },
   {
     nombre: 'ENEL',
+    slug: 'enel',
     superficie: '15.000 m²',
     puestos: '800',
     alcance: alcanceReuniones,
-    marcas: '',
     ano: '2024',
+    fotos: fotosDe('enel'),
   },
   {
     nombre: 'OnNet',
+    slug: 'onnet',
     superficie: '1.500 m²',
     puestos: '185',
     alcance: alcanceReuniones,
-    marcas: '',
     ano: '2024',
-  },
-  {
-    nombre: 'Mathiesen',
-    superficie: '1.500 m²',
-    puestos: '100',
-    alcance: alcanceReuniones,
-    marcas: '',
-    ano: '2024',
-  },
-  {
-    nombre: 'Everest Chile',
-    superficie: '800 m²',
-    puestos: '60',
-    alcance: alcanceReuniones,
-    marcas: '',
-    ano: '2024',
-  },
-  {
-    nombre: 'ABB Chile',
-    superficie: '2.000 m²',
-    puestos: '120',
-    alcance: alcanceReuniones,
-    marcas: '',
-    ano: '2023',
-  },
-  {
-    nombre: 'BUK',
-    superficie: '1.500 m²',
-    puestos: '160',
-    alcance: alcanceReuniones,
-    marcas: '',
-    ano: '2023',
-  },
-  {
-    nombre: 'EMIN',
-    superficie: '1.000 m²',
-    puestos: '80',
-    alcance: alcanceReuniones,
-    marcas: '',
-    ano: '2023',
+    fotos: fotosDe('onnet'),
   },
   {
     nombre: 'Subsecretaría de la Niñez y la Adolescencia',
+    slug: 'ninez',
     superficie: '5.000 m²',
     puestos: '450',
     alcance: alcanceReuniones,
-    marcas: '',
     ano: '2023',
+    fotos: fotosDe('ninez'),
+  },
+  {
+    nombre: 'BTG Pactual',
+    slug: 'btg',
+    superficie: '',
+    puestos: '',
+    alcance: '',
+    ano: '',
+    fotos: fotosDe('btg'),
+  },
+  {
+    nombre: 'Lockton',
+    slug: 'lockton',
+    superficie: '',
+    puestos: '',
+    alcance: '',
+    ano: '',
+    fotos: fotosDe('lockton'),
   },
 ] as const;
 
@@ -325,20 +269,23 @@ export const CONTACT_ENDPOINT = '/api/contacto.php';
 // diseño — los logos no comparten altura, están equilibrados ópticamente.
 // TODO: falta el copy real de cada marca (el diseño trae lorem), y las fotos
 // de todas menos Novara.
+// Seis fotos de 1920×650 por marca (Rossi pendiente).
+const fotosMarca = (slug: string) =>
+  [1, 2, 3, 4, 5, 6].map((n) => `/marcas/fotos/${slug}-${n}.webp`);
+
 export const marcas = [
   {
     nombre: 'Novara',
     slug: 'novara',
     // TODO: PDF del catálogo. Sin archivo el botón se dibuja inactivo.
     catalogo: { etiqueta: 'Catálogo Novara 2025-26', archivo: '' },
-    // TODO: faltan 3 fotos (el diseño muestra 4 puntos en el carrusel).
-    fotos: ['/marcas/fotos/novara.webp'],
+    fotos: fotosMarca('novara'),
     archivo: 'novara.svg',
     blanco: 'novara-blanco.svg',
     ancho: 222.48,
     alto: 47.66,
     escala: 5.9,
-    foto: '/marcas/fotos/novara.webp',
+    foto: '/marcas/fotos/novara-1.webp',
     descripcion:
       'Novara desarrolla soluciones de mobiliario corporativo que combinan funcionalidad, diseño y bienestar para crear ambientes de trabajo más humanos y productivos. Su portafolio contempla sistemas de trabajo, mesas, almacenamiento y soluciones colaborativas, con propuestas versátiles y personalizables que se adaptan a distintas configuraciones y necesidades. La marca integra además diseño y sostenibilidad como parte de una propuesta orientada a la calidad y durabilidad.',
     rotuloCategorias: 'Mobiliario',
@@ -349,20 +296,19 @@ export const marcas = [
       'Mobiliario colaborativo',
       'Almacenamiento',
       'Cabinas acústicas',
-      'Mesas de apoyo',
     ],
   },
   {
     nombre: 'Novus',
     slug: 'novus',
     catalogo: { etiqueta: 'Catálogo Novus 2025-26', archivo: '' },
-    fotos: [],
+    fotos: fotosMarca('novus'),
     archivo: 'novus.svg',
     blanco: 'novus-blanco.svg',
     ancho: 168.38,
     alto: 46.34,
     escala: 4.35,
-    foto: '',
+    foto: '/marcas/fotos/novus-1.webp',
     descripcion:
       'NOVUS desarrolla soluciones técnicas para optimizar y organizar los espacios de trabajo, combinando ingeniería alemana, funcionalidad y ergonomía. Su propuesta incluye sistemas de soporte para monitores, organización del puesto de trabajo y soluciones modulares que permiten liberar espacio, mejorar la flexibilidad y adaptar cada estación a sus necesidades. Productos de alta calidad y larga duración, pensados para integrar tecnología y equipamiento de manera ordenada y eficiente.',
     rotuloCategorias: 'Equipamiento',
@@ -379,13 +325,13 @@ export const marcas = [
     nombre: 'Trisoft',
     slug: 'trisoft',
     catalogo: { etiqueta: 'Catálogo Trisoft 2025-26', archivo: '' },
-    fotos: [],
+    fotos: fotosMarca('trisoft'),
     archivo: 'trisoft.svg',
     blanco: 'trisoft-blanco.svg',
     ancho: 184.52,
     alto: 58.5,
     escala: 3.95,
-    foto: '',
+    foto: '/marcas/fotos/trisoft-1.webp',
     descripcion:
       'Trisoft desarrolla soluciones acústicas y arquitectónicas que combinan diseño, confort y sostenibilidad para mejorar la experiencia de los espacios. Sus productos, fabricados a partir de PET reciclado, permiten controlar la reverberación y mejorar el confort sonoro mediante paneles, revestimientos, baffles, nubes y divisorias. Una propuesta versátil y personalizable, especialmente adecuada para oficinas y espacios corporativos donde la acústica forma parte integral del diseño.',
     rotuloCategorias: 'Equipamiento',
@@ -402,13 +348,13 @@ export const marcas = [
     nombre: 'BK Contract',
     slug: 'bkcontract',
     catalogo: { etiqueta: 'Catálogo BK Contract 2025-26', archivo: '' },
-    fotos: [],
+    fotos: fotosMarca('bkcontract'),
     archivo: 'bkcontract.svg',
     blanco: 'bkcontract-blanco.svg',
     ancho: 223.09,
     alto: 52.34,
     escala: 5.2,
-    foto: '',
+    foto: '/marcas/fotos/bkcontract-1.webp',
     descripcion:
       'BK Contract desarrolla mobiliario contemporáneo para espacios profesionales, corporativos y de uso colectivo, combinando diseño, funcionalidad y personalización. Su propuesta se caracteriza por líneas puras y atemporales, calidad en materiales y acabados, y una alta capacidad de adaptación a las necesidades de cada proyecto. Con fabricación europea y una filosofía centrada en la simplicidad y la innovación, crea soluciones que integran diseño y funcionalidad con una mirada sofisticada y duradera.',
     rotuloCategorias: 'Mobiliario',
@@ -442,20 +388,19 @@ export const marcas = [
       'Sillas de reunión',
       'Escritorios',
       'Mesas',
-      'Guardado',
     ],
   },
   {
     nombre: 'Belgotex',
     slug: 'belgotex',
     catalogo: { etiqueta: 'Catálogo Belgotex 2025-26', archivo: '' },
-    fotos: [],
+    fotos: fotosMarca('belgotex'),
     archivo: 'belgotex.svg',
     blanco: 'belgotex-blanco.svg',
     ancho: 223.79,
     alto: 54.32,
     escala: 5.1,
-    foto: '',
+    foto: '/marcas/fotos/belgotex-1.webp',
     descripcion:
       'Belgotex desarrolla soluciones de revestimiento que combinan diseño, confort y alto desempeño. Su amplio portafolio de alfombras y pisos permite resolver distintos espacios y necesidades, integrando variedad estética, resistencia y soluciones técnicas para proyectos comerciales y corporativos. Una propuesta pensada para crear superficies que no solo acompañan el diseño, sino que también responden al uso cotidiano de cada espacio.',
     rotuloCategorias: 'Equipamiento',
@@ -472,13 +417,13 @@ export const marcas = [
     nombre: 'Frisokar',
     slug: 'frisokar',
     catalogo: { etiqueta: 'Catálogo Frisokar 2025-26', archivo: '' },
-    fotos: [],
+    fotos: fotosMarca('frisokar'),
     archivo: 'frisokar.svg',
     blanco: 'frisokar-blanco.svg',
     ancho: 209.59,
     alto: 45.61,
     escala: 5.4,
-    foto: '',
+    foto: '/marcas/fotos/frisokar-1.webp',
     descripcion:
       'Frisokar desarrolla sillas para espacios de trabajo que combinan ergonomía, confort y funcionalidad. Su propuesta contempla distintas soluciones para ambientes operativos, ejecutivos y corporativos, incorporando sistemas de ajuste y configuraciones pensadas para acompañar diferentes formas de trabajar. Una amplia variedad de modelos permite responder a distintos niveles de uso y necesidades, con una propuesta orientada al bienestar y al desempeño cotidiano.',
     rotuloCategorias: 'Mobiliario',

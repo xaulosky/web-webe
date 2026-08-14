@@ -2,11 +2,14 @@
 import Flecha from './Flecha.astro';
 import { marcas } from '../config/site';
 
-// La primera marca es la que abre destacada. El diseño dibujaba 5 pestañas
-// porque había 5 marcas; con las 8 actuales se muestran todas, o quedarían
-// marcas sin acceso desde aquí.
+// La primera marca es la que abre destacada. Se muestran todas: la barra
+// funciona además como slider cuando no caben.
 const pestanas = marcas;
 const destacada = 0;
+
+// TODO: Rossi aún no manda fotos; mientras tanto muestra la primera de Novara.
+const fotosDe = (marca: (typeof marcas)[number]) =>
+  marca.fotos.length > 0 ? marca.fotos : (['/marcas/fotos/novara-1.webp'] as const);
 
 // De a tres por fila, como el diseño. Agrupar en el marcado (en vez de dejar
 // que el flex parta solo) evita que el separador quede colgando al final de
@@ -17,9 +20,12 @@ const porFilas = (lista: readonly string[]) =>
     filas[filas.length - 1].push(categoria);
     return filas;
   }, []);
+
+const maxFotos = Math.max(...pestanas.map((marca) => fotosDe(marca).length));
 ---
 
-<section class="marcas" id="marcas">
+{/* data-oculta-logo: aquí el logo del header pisaba el contenido y se retira. */}
+<section class="marcas" id="marcas" data-oculta-logo>
   <div class="marcas__intro" data-anima="grupo">
     <p class="marcas__texto">
       Trabajamos con marcas reconocidas por su calidad, innovación y
@@ -37,6 +43,7 @@ const porFilas = (lista: readonly string[]) =>
           role="tab"
           data-marca={i}
           data-slug={marca.slug}
+          data-fotos={fotosDe(marca).length}
           aria-selected={i === destacada}
         >
           <img
@@ -68,9 +75,7 @@ const porFilas = (lista: readonly string[]) =>
               loading="lazy"
               decoding="async"
             />
-            <p class="marcas__descripcion">
-              {marca.descripcion || 'Descripción pendiente.'}
-            </p>
+            <p class="marcas__descripcion">{marca.descripcion}</p>
             {marca.categorias.length > 0 && (
               <div class="marcas__categorias">
                 {porFilas(marca.categorias).map((fila) => (
@@ -92,23 +97,44 @@ const porFilas = (lista: readonly string[]) =>
       </a>
     </div>
 
-    <div class="marcas__medio" data-anima>
+    {/* Slider de fotos por marca: cambia al elegir pestaña. Sólo la marca
+        inicial carga de entrada; el resto lleva la URL en data-src. */}
+    <div class="marcas__medio" id="marcas-medio" data-anima>
       {
-        pestanas.map((marca, i) => (
-          <img
-            class="marcas__foto"
-            src={marca.foto || '/marcas/fotos/novara.webp'}
-            alt={`Espacio equipado con ${marca.nombre}`}
-            width="1039"
-            height="702"
-            loading="lazy"
-            decoding="async"
-            data-panel={i}
-            data-activo={i === destacada ? '' : undefined}
-          />
-        ))
+        pestanas.map((marca, i) =>
+          fotosDe(marca).map((url, j) => (
+            <img
+              class="marcas__foto"
+              src={i === 0 ? url : undefined}
+              data-src={url}
+              alt={`Espacio equipado con ${marca.nombre}`}
+              width="1920"
+              height="650"
+              loading="lazy"
+              decoding="async"
+              data-foto-de={i}
+              data-foto={j}
+              data-activo={i === 0 && j === 0 ? '' : undefined}
+            />
+          )),
+        )
       }
 
+      <div class="marcas__puntos" role="tablist" aria-label="Fotos de la marca">
+        {
+          Array.from({ length: maxFotos }, (_, j) => (
+            <button
+              type="button"
+              role="tab"
+              data-ir-foto={j}
+              aria-selected={j === 0}
+              aria-label={`Foto ${j + 1}`}
+            />
+          ))
+        }
+      </div>
+
+      {/* La chapa sigue al cursor dentro de la foto; el clic navega. */}
       <a class="marcas__ver" id="marcas-ver" href={`/marcas/${pestanas[destacada].slug}`}>
         <span class="sr-only">Ver marca</span>
         <svg class="marcas__ver-aro" viewBox="0 0 100 100" aria-hidden="true">
@@ -117,8 +143,8 @@ const porFilas = (lista: readonly string[]) =>
           </defs>
           <text><textPath href="#aro-ver-marca">VER MARCA — VER MARCA — </textPath></text>
         </svg>
-        <svg class="marcas__ver-flecha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M7 7h10v10M7 17L17 7"></path>
+        <svg class="marcas__ver-flecha" viewBox="0 0 21.84 19.04" fill="currentColor" aria-hidden="true">
+          <path d="M21.84,10.99v-.2s0-2.54,0-2.54v-.2c0-.66-.35-1.28-.91-1.62L10.42,0v1.89c0,.66.35,1.28.91,1.62l7.75,4.74H0s0,2.54,0,2.54h19.08s-7.75,4.74-7.75,4.74c-.57.35-.91.96-.91,1.62v1.89s10.51-6.42,10.51-6.42c.57-.35.91-.96.91-1.62Z"></path>
         </svg>
       </a>
     </div>
@@ -134,13 +160,14 @@ const porFilas = (lista: readonly string[]) =>
        distintos quedaba una costura horizontal en el borde. */
     --fondo: #e9e9e7;
     /* Radio compartido por la pestaña y por sus filetes cóncavos. */
-    --r: clamp(1rem, 2vw, 1.75rem);
+    --r: clamp(0.8rem, 1.6vw, 1.4rem);
     background: var(--fondo);
   }
 
+  /* Más achatada: la sección completa debe entrar en una pantalla. */
   .marcas__intro {
-    padding: clamp(4rem, 9vw, 9rem) clamp(1.5rem, 8vw, 9rem) clamp(4rem, 8vw, 8rem)
-      clamp(1.5rem, 16.2vw, 18rem);
+    padding: clamp(1.75rem, 4.5vh, 3rem) clamp(1.5rem, 8vw, 9rem)
+      clamp(1rem, 2.5vh, 1.75rem) clamp(1.5rem, 16.2vw, 18rem);
   }
 
   .marcas__antetitulo {
@@ -151,35 +178,44 @@ const porFilas = (lista: readonly string[]) =>
   }
 
   .marcas__texto {
-    margin: clamp(1.5rem, 3vw, 2.5rem) 0 0;
-    max-width: 22ch;
-    font-size: clamp(1.4rem, 2.6vw, 2.4rem);
+    margin: 0;
+    max-width: 30ch;
+    font-size: clamp(1.1rem, 1.8vw, 1.6rem);
     font-weight: 500;
     line-height: 1.45;
     letter-spacing: -0.01em;
   }
 
-  /* --- Barra de pestañas --- */
+  /* --- Barra de pestañas: conjunto centrado, y slider cuando no cabe --- */
   .marcas__pestanas {
     display: flex;
     align-items: stretch;
+    justify-content: safe center;
     background: var(--fondo);
-    padding-left: clamp(1rem, 9vw, 10rem);
+    padding-inline: clamp(1rem, 4vw, 3rem);
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+
+  .marcas__pestanas::-webkit-scrollbar {
+    display: none;
   }
 
   .marcas__pestana {
     position: relative;
-    flex: 1;
+    flex: 0 1 auto;
     display: grid;
     place-items: center;
-    /* Pestañas más bajas, con el logo centrado en la altura. */
-    padding: clamp(0.9rem, 1.6vw, 1.5rem) clamp(0.5rem, 2vw, 2rem);
+    scroll-snap-align: center;
+    /* Pestaña baja y con el logo pegado: menos aire en todos los lados. */
+    padding: clamp(0.7rem, 1.2vw, 1.1rem) clamp(0.9rem, 1.8vw, 1.9rem);
     cursor: pointer;
     transition: opacity 0.25s ease;
   }
 
   .marcas__pestana img {
-    width: clamp(3.5rem, 8vw, 8.5rem);
+    width: clamp(3rem, 6.4vw, 6.75rem);
     height: auto;
     opacity: 0.45;
     transition: opacity 0.25s ease;
@@ -230,11 +266,10 @@ const porFilas = (lista: readonly string[]) =>
   /* --- Ficha de la marca destacada --- */
   .marcas__detalle {
     display: grid;
-    /* Proporciones del diseño: columna 20.7%, canaleta 8.4%, foto 55%. */
-    grid-template-columns: 24.5% 1fr;
-    gap: 10%;
+    grid-template-columns: 29% 1fr;
+    gap: 4.5%;
     align-items: start;
-    padding: clamp(3rem, 6vw, 6rem) 3.3% clamp(4rem, 8vw, 8rem) 12.4%;
+    padding: clamp(1.5rem, 3vh, 2.25rem) 3% clamp(1.5rem, 3.5vh, 2.5rem) 7.5%;
     background: var(--panel);
   }
 
@@ -247,23 +282,24 @@ const porFilas = (lista: readonly string[]) =>
   }
 
   .marcas__wordmark {
-    width: clamp(9rem, 19vw, 20rem);
+    width: clamp(7rem, 12.5vw, 12.5rem);
     height: auto;
-    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+    margin-top: clamp(0.75rem, 2vh, 1.25rem);
   }
 
+  /* Tipografía una pizca menor y caja más ancha, para que no baje tanto. */
   .marcas__descripcion {
-    margin: clamp(1.5rem, 3vw, 2.5rem) 0 0;
-    max-width: 34ch;
-    font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+    margin: clamp(1rem, 2.5vh, 1.75rem) 0 0;
+    max-width: 52ch;
+    font-size: clamp(0.85rem, 0.98vw, 0.95rem);
     font-weight: 300;
-    line-height: 1.85;
+    line-height: 1.65;
   }
 
   .marcas__categorias {
     display: grid;
     gap: 0.35rem;
-    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+    margin-top: clamp(1rem, 2.5vh, 1.75rem);
     font-size: 0.8125rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -284,7 +320,7 @@ const porFilas = (lista: readonly string[]) =>
     display: inline-flex;
     align-items: center;
     gap: 0.75rem;
-    margin-top: clamp(2.5rem, 6vw, 5rem);
+    margin-top: clamp(1.5rem, 3.5vh, 2.5rem);
     padding-bottom: 0.4rem;
     border-bottom: 1px solid currentColor;
     font-size: 0.8125rem;
@@ -302,16 +338,22 @@ const porFilas = (lista: readonly string[]) =>
     opacity: 0.55;
   }
 
+  /* --- Foto: recuadro bajo, con la proporción real de las fotos (1920×650) --- */
   .marcas__medio {
     position: relative;
     display: grid;
+    overflow: hidden;
+    border-radius: clamp(1rem, 2vw, 1.75rem);
+    aspect-ratio: 1920 / 650;
+    /* La chapa hace de cursor dentro del recuadro. */
+    cursor: none;
   }
 
   .marcas__foto {
     grid-area: 1 / 1;
     width: 100%;
-    height: auto;
-    border-radius: clamp(1rem, 2vw, 1.75rem);
+    height: 100%;
+    object-fit: cover;
     opacity: 0;
     visibility: hidden;
     transition:
@@ -324,25 +366,46 @@ const porFilas = (lista: readonly string[]) =>
     visibility: visible;
   }
 
-  /* Chapa "ver marca" sobre la foto. */
+  .marcas__puntos {
+    position: absolute;
+    bottom: clamp(0.75rem, 1.5vw, 1.25rem);
+    left: 50%;
+    display: flex;
+    gap: 0.6rem;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+
+  .marcas__puntos button {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.55);
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+  }
+
+  .marcas__puntos button[aria-selected='true'] {
+    background: #fff;
+  }
+
+  /* Chapa "ver marca": sigue al cursor; el JS coloca --x/--y. */
   .marcas__ver {
     position: absolute;
-    top: 50%;
-    left: 24%;
+    top: var(--y, 50%);
+    left: var(--x, 24%);
     display: grid;
     place-items: center;
-    width: clamp(5rem, 8vw, 7.5rem);
+    width: clamp(5rem, 7vw, 6.75rem);
     aspect-ratio: 1;
     color: #fff;
-    background: rgba(20, 20, 15, 0.28);
+    background: rgba(45, 45, 45, 0.32);
     border-radius: 50%;
     backdrop-filter: blur(2px);
     transform: translate(-50%, -50%);
-    transition: background-color 0.3s ease;
-  }
-
-  .marcas__ver:hover {
-    background: rgba(20, 20, 15, 0.45);
+    /* El clic lo captura el recuadro entero; la chapa es el indicador. */
+    pointer-events: none;
+    z-index: 1;
   }
 
   .marcas__ver-aro,
@@ -360,9 +423,10 @@ const porFilas = (lista: readonly string[]) =>
     animation: aro-gira 20s linear infinite;
   }
 
+  /* La flecha de marca, apuntando a la derecha. */
   .marcas__ver-flecha {
-    width: 24%;
-    height: 24%;
+    width: 26%;
+    height: auto;
   }
 
   @keyframes aro-gira {
@@ -374,29 +438,28 @@ const porFilas = (lista: readonly string[]) =>
   @media (max-width: 900px) {
     .marcas__detalle {
       grid-template-columns: 1fr;
+      gap: clamp(1.5rem, 5vw, 2.5rem);
     }
 
     /* En móvil la foto va arriba del texto, como en el diseño. */
     .marcas__medio {
       order: -1;
+      cursor: auto;
     }
 
-    /* En móvil la barra es un carrusel: la activa queda centrada y las vecinas
-       asoman por los costados. */
+    .marcas__ver {
+      display: none;
+    }
+
+    /* La barra es un carrusel: la activa queda centrada y las vecinas asoman. */
     .marcas__pestanas {
-      overflow-x: auto;
+      justify-content: flex-start;
       padding-inline: 25%;
       scroll-snap-type: x mandatory;
-      scrollbar-width: none;
-    }
-
-    .marcas__pestanas::-webkit-scrollbar {
-      display: none;
     }
 
     .marcas__pestana {
       flex: 0 0 50%;
-      scroll-snap-align: center;
     }
   }
 </style>
@@ -407,9 +470,43 @@ const porFilas = (lista: readonly string[]) =>
   if (seccion) {
     const pestanas = Array.from(seccion.querySelectorAll<HTMLElement>('[data-marca]'));
     const paneles = Array.from(seccion.querySelectorAll<HTMLElement>('[data-panel]'));
+    const fotos = Array.from(seccion.querySelectorAll<HTMLImageElement>('[data-foto-de]'));
+    const puntos = Array.from(seccion.querySelectorAll<HTMLElement>('[data-ir-foto]'));
+    const medio = document.getElementById('marcas-medio');
     const ver = document.getElementById('marcas-ver') as HTMLAnchorElement | null;
 
+    let activa = 0;
+    let foto = 0;
+
+    const pintarFotos = () => {
+      for (const img of fotos) {
+        img.toggleAttribute(
+          'data-activo',
+          Number(img.dataset.fotoDe) === activa && Number(img.dataset.foto) === foto,
+        );
+      }
+      const total = Number(pestanas[activa]?.dataset.fotos ?? 1);
+      puntos.forEach((punto, j) => {
+        punto.hidden = j >= total;
+        punto.setAttribute('aria-selected', String(j === foto));
+      });
+    };
+
+    // Las fotos de una marca se descargan recién cuando se la selecciona.
+    const cargar = (indice: number) => {
+      for (const img of fotos) {
+        if (Number(img.dataset.fotoDe) === indice && !img.src && img.dataset.src) {
+          img.src = img.dataset.src;
+        }
+      }
+    };
+
     const mostrar = (indice: number) => {
+      activa = indice;
+      foto = 0;
+      cargar(indice);
+      pintarFotos();
+
       // La chapa "ver marca" tiene que seguir a la pestaña activa.
       const slug = pestanas[indice]?.dataset.slug;
       if (ver && slug) ver.href = `/marcas/${slug}`;
@@ -425,9 +522,37 @@ const porFilas = (lista: readonly string[]) =>
     pestanas.forEach((pestana, i) => {
       pestana.addEventListener('click', () => {
         mostrar(i);
-        // En móvil la barra scrollea: dejar la elegida centrada.
+        // La barra scrollea: dejar la elegida centrada.
         pestana.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
       });
     });
+
+    puntos.forEach((punto, j) => {
+      punto.addEventListener('click', (evento) => {
+        evento.stopPropagation();
+        foto = j;
+        pintarFotos();
+      });
+    });
+
+    // La chapa sigue al cursor dentro del recuadro; el clic navega, salvo
+    // sobre los puntitos.
+    if (medio && ver && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      medio.addEventListener('pointermove', (evento) => {
+        const caja = medio.getBoundingClientRect();
+        ver.style.setProperty('--x', `${evento.clientX - caja.left}px`);
+        ver.style.setProperty('--y', `${evento.clientY - caja.top}px`);
+      });
+      medio.addEventListener('pointerleave', () => {
+        ver.style.removeProperty('--x');
+        ver.style.removeProperty('--y');
+      });
+      medio.addEventListener('click', (evento) => {
+        if ((evento.target as HTMLElement).closest('button')) return;
+        window.location.href = ver.href;
+      });
+    }
+
+    pintarFotos();
   }
 </script>

@@ -1,4 +1,4 @@
----
+﻿---
 import ScrollBadge from './ScrollBadge.astro';
 import { marcas } from '../config/site';
 
@@ -46,13 +46,13 @@ const { scrollTo = '#descubre' } = Astro.props;
           ><span class="hero__space" data-shrink>&nbsp;</span><span
             class="hero__word hero__word--drop"
             data-shrink
-            data-fade>create,</span
+            data-fade><span class="hero__tinta">create,</span></span
           ><span class="hero__space" data-shrink>&nbsp;</span><span
             class="hero__word hero__word--keep">be</span
           ><span class="hero__space" data-shrink>&nbsp;</span><span
             class="hero__word hero__word--drop"
             data-shrink
-            data-fade>yourself.</span
+            data-fade><span class="hero__tinta">yourself.</span></span
           ><span class="hero__tm">™</span></span
         >
       </h1>
@@ -108,7 +108,7 @@ const { scrollTo = '#descubre' } = Astro.props;
     height: 100vh;
     height: 100svh;
     overflow: hidden;
-    background: #14140f;
+    background: #2d2d2d;
     color: #fff;
     /* El bloque de fase 2 va más adentro que el navbar, como en el diseño. */
     --sangria-fase2: clamp(1.5rem, 16.4vw, 20rem);
@@ -185,6 +185,14 @@ const { scrollTo = '#descubre' } = Astro.props;
     opacity: calc(1 - var(--fade, 0));
   }
 
+  /* El texto de las palabras que caen se desplaza a la izquierda mientras su
+     máscara se cierra: se ocultan hacia la izquierda, no recortadas a la
+     derecha. */
+  .hero__tinta {
+    display: inline-block;
+    will-change: transform;
+  }
+
   /* Los espacios entre palabras se encogen igual que las palabras. */
   .hero__space {
     display: inline-block;
@@ -259,6 +267,8 @@ const { scrollTo = '#descubre' } = Astro.props;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    /* El grupo se lee centrado dentro de su caja. */
+    justify-content: center;
     gap: clamp(0.9rem, 2vh, 1.5rem) clamp(1rem, 1.85vw, 2rem);
     /* Ajustado para que corte después de bkcontract: 4 marcas arriba, 2 abajo. */
     max-width: min(30rem, 27vw);
@@ -269,7 +279,8 @@ const { scrollTo = '#descubre' } = Astro.props;
 
   .hero__marcas li {
     display: flex;
-    width: clamp(2.75rem, calc(var(--ancho) * 1vw), 7rem);
+    /* Un pelo más chicos, para que el grupo se lea centrado y compacto. */
+    width: clamp(2.5rem, calc(var(--ancho) * 0.88vw), 6.25rem);
   }
 
   .hero__marcas img {
@@ -412,11 +423,15 @@ const { scrollTo = '#descubre' } = Astro.props;
           ? Math.min(1, Math.max(0, -wrap.getBoundingClientRect().top / recorrido))
           : 0;
 
-      // 1. Las palabras se van y el bloque se junta.
+      // 1. Las palabras se van y el bloque se junta. La tinta de las que caen
+      //    se corre a la izquierda al ritmo del cierre: el enmascarado las
+      //    oculta hacia la izquierda.
       const cierre = suavizar(tramo(p, 0.02, 0.3));
       title.style.setProperty('--fade', String(tramo(p, 0, 0.16)));
       encogibles.forEach((pieza, i) => {
         pieza.style.width = `${(anchos[i] ?? 0) * (1 - cierre)}px`;
+        const tinta = pieza.querySelector<HTMLElement>('.hero__tinta');
+        if (tinta) tinta.style.transform = `translateX(${-(anchos[i] ?? 0) * cierre}px)`;
       });
 
       // 2. El bloque viaja al navbar en dos tiempos: primero se va del todo

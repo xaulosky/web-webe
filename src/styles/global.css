@@ -1,21 +1,22 @@
 @import "tailwindcss";
 
-/* Tokens del sitio. El diseño es esencialmente monocromo: el color lo pone
-   el video/las fotos, no la UI. */
+/* Tokens del sitio. Dos grises de marca: #2d2d2d para tipografías, logos y
+   elementos principales, #969696 para los suaves (líneas, rótulos, iconos
+   apagados). Los tonos 50/100 quedan como fondos claros. */
 @theme {
   --color-brand-50: #f7f7f6;
   --color-brand-100: #ececea;
-  --color-brand-200: #d9d9d6;
-  --color-brand-300: #b8b8b3;
-  --color-brand-400: #8e8e88;
-  --color-brand-500: #6b6b65;
-  --color-brand-600: #4d4d48;
-  --color-brand-700: #2e2e2b;
-  --color-brand-800: #1c1c1a;
-  --color-brand-900: #111110;
+  --color-brand-200: #969696;
+  --color-brand-300: #969696;
+  --color-brand-400: #969696;
+  --color-brand-500: #969696;
+  --color-brand-600: #2d2d2d;
+  --color-brand-700: #2d2d2d;
+  --color-brand-800: #2d2d2d;
+  --color-brand-900: #2d2d2d;
 
-  --color-ink: #14140f;
-  --color-muted: #6b6b65;
+  --color-ink: #2d2d2d;
+  --color-muted: #969696;
 
   --font-sans: "Parkinsans Variable", system-ui, -apple-system, "Segoe UI",
     Roboto, Helvetica, Arial, sans-serif;

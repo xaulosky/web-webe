@@ -1,4 +1,4 @@
----
+﻿---
 import Logo from './Logo.astro';
 import IconoRed from './IconoRed.astro';
 import { site, nav } from '../config/site';
@@ -175,7 +175,9 @@ const destacado = actual >= 0 ? actual : 0;
 
   .site-header__lines span {
     display: block;
-    height: 2.5px;
+    /* Entero, no fraccionario: 2.5px redondea distinto en cada línea según el
+       DPR y se veían de grosores diferentes. */
+    height: 2px;
     background: currentColor;
     transition:
       transform 0.35s cubic-bezier(0.65, 0, 0.35, 1),
@@ -193,11 +195,18 @@ const destacado = actual >= 0 ? actual : 0;
   /* Las dos líneas giran sobre sí mismas y se cruzan donde estaban: cada una
      se desplaza media separación hacia el centro y rota. */
   :root[data-menu='abierto'] .site-header__lines span:first-child {
-    transform: translateY(calc(var(--separacion, 0.625rem) / 2 + 1.25px)) rotate(45deg);
+    transform: translateY(calc(var(--separacion, 0.625rem) / 2 + 1px)) rotate(45deg);
   }
 
   :root[data-menu='abierto'] .site-header__lines span:last-child {
-    transform: translateY(calc(var(--separacion, 0.625rem) / -2 - 1.25px)) rotate(-45deg);
+    transform: translateY(calc(var(--separacion, 0.625rem) / -2 - 1px)) rotate(-45deg);
+  }
+
+  /* Sobre la sección de marcas el logo pisaba el contenido: ahí se retira.
+     Con el menú abierto la regla de arriba (más específica) lo devuelve. */
+  .site-header[data-variant='overlay'][data-logo='oculto'] .site-header__logo {
+    opacity: 0;
+    pointer-events: none;
   }
 
   /* --- Overlay de menú --- */
@@ -208,7 +217,7 @@ const destacado = actual >= 0 ? actual : 0;
     z-index: 50;
     display: flex;
     flex-direction: column;
-    background: rgba(19, 19, 17, 0.9);
+    background: rgba(45, 45, 45, 0.92);
     color: #fff;
     opacity: 0;
     transition: opacity 0.35s ease;
@@ -233,7 +242,8 @@ const destacado = actual >= 0 ? actual : 0;
 
   .menu__nav a {
     display: inline-block;
-    padding-block: clamp(0.15rem, 0.6vh, 0.4rem);
+    /* Un poco más de aire entre ítems, como pide el ajuste. */
+    padding-block: clamp(0.35rem, 1.2vh, 0.75rem);
     font-size: clamp(1.75rem, 4.65vw, 4.25rem);
     line-height: 1.18;
     letter-spacing: -0.01em;
@@ -352,16 +362,23 @@ const destacado = actual >= 0 ? actual : 0;
         '.hero, .cita, .proyectos, .portada, [data-fondo="oscuro"]',
       ),
     );
+    // Secciones donde el logo estorba al contenido y se retira del todo.
+    const sinLogo = Array.from(
+      document.querySelectorAll<HTMLElement>('[data-oculta-logo]'),
+    );
 
     const linea = () => cabecera.offsetHeight / 2;
 
+    const cruza = (zona: HTMLElement, y: number) => {
+      const caja = zona.getBoundingClientRect();
+      return caja.top <= y && caja.bottom >= y;
+    };
+
     const revisar = () => {
       const y = linea();
-      const sobreOscuro = oscuras.some((zona) => {
-        const caja = zona.getBoundingClientRect();
-        return caja.top <= y && caja.bottom >= y;
-      });
-      cabecera.dataset.tema = sobreOscuro ? 'claro' : 'oscuro';
+      cabecera.dataset.tema = oscuras.some((zona) => cruza(zona, y)) ? 'claro' : 'oscuro';
+      if (sinLogo.some((zona) => cruza(zona, y))) cabecera.dataset.logo = 'oculto';
+      else delete cabecera.dataset.logo;
     };
 
     let pedido = false;

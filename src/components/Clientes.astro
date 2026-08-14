@@ -1,4 +1,4 @@
----
+﻿---
 import { clientes } from '../config/site';
 
 // Dos corridas en bucle, diez logos visibles por pantalla. Cada corrida duplica
@@ -40,7 +40,7 @@ const corridas = [clientes.slice(0, 10), clientes.slice(10)];
     overflow: hidden;
     /* Los logos vienen en blanco sobre transparente: necesitan fondo oscuro.
        De paso enlaza con la sección de proyectos, que también lo es. */
-    background: #14140f;
+    background: #2d2d2d;
   }
 
   .clientes__pista {
@@ -62,9 +62,10 @@ const corridas = [clientes.slice(0, 10), clientes.slice(10)];
   }
 
   .clientes__caja img {
-    /* Todos comparten lienzo de 300×200, así que una sola caja los iguala. */
+    /* Todos comparten lienzo de 300×200, así que una sola caja los iguala.
+       El ajuste pidió los logos un poco más grandes. */
     width: 100%;
-    height: clamp(2.25rem, 3.4vw, 3.25rem);
+    height: clamp(2.75rem, 4.2vw, 4rem);
     object-fit: contain;
     opacity: 0.55;
     transition: opacity 0.3s ease;

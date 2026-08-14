@@ -1,13 +1,10 @@
 ---
-// Corte entre el hero y la sección siguiente: un escalón. Recorre 70 unidades
-// de ancho en 165 de alto, con dos arcos circulares de radio 26,6 en sentidos
+// Corte entre el hero y la sección siguiente: un escalón. Recorre 99 unidades
+// de ancho en 165 de alto, con dos arcos circulares de radio 34 en sentidos
 // opuestos —cóncavo abajo, donde termina el bloque oscuro, y convexo arriba,
-// donde empieza el panel blanco— unidos por un tramo recto.
-//
-// El radio es el mayor que cabe manteniendo el escalón estrecho: con arcos más
-// abiertos el recorrido se vuelve casi cuadrado y deja de leerse como escalón.
-// Se usan arcos (A) y no curvas cuadráticas para que las uniones sean
-// circulares de verdad.
+// donde empieza el panel blanco— unidos por un tramo recto a 16° de la
+// vertical. El ajuste pidió el ángulo algo más pronunciado y las curvas
+// ligeramente más amplias que la versión anterior (70 de ancho, radio 26,6).
 //
 // El escalón es un SVG de tamaño fijo y proporción intacta, y los tramos planos
 // se resuelven con cajas a cada lado. Estirarlo a todo el ancho deformaría los
@@ -24,15 +21,15 @@ const { quiebre = '56.2%' } = Astro.props;
   {/* Izquierda: transparente, se ve el hero. */}
   <svg
     class="corte__paso"
-    viewBox="0 0 90 165"
-    width="90"
+    viewBox="0 0 118 165"
+    width="118"
     height="165"
     preserveAspectRatio="none"
     aria-hidden="true"
     style="display:block"
   >
     <path
-      d="M0,165 A26.6,26.6 0 0 0 26.31,142.24 L43.69,22.76 A26.6,26.6 0 0 1 70,0 L90,0 L90,165 Z"
+      d="M0,165 A34,34 0 0 0 32.7,140.4 L65.9,24.6 A34,34 0 0 1 98.6,0 L118,0 L118,165 Z"
       fill="#fff"
     ></path>
   </svg>
@@ -55,7 +52,7 @@ const { quiebre = '56.2%' } = Astro.props;
     top: 0;
     /* Su borde derecho cae justo en el quiebre. */
     right: calc(100% - var(--quiebre));
-    width: calc(var(--alto-paso) * 90 / 165);
+    width: calc(var(--alto-paso) * 118 / 165);
     height: 100%;
   }
 

@@ -13,8 +13,9 @@ export function getStaticPaths() {
 const { marca } = Astro.props;
 
 // Con una sola foto no hay carrusel que mostrar.
+// TODO: Rossi aún no manda fotos; mientras tanto usa la primera de Novara.
 const fotos = marca.fotos.length > 0 ? marca.fotos : [marca.foto].filter(Boolean);
-const portada = fotos[0] ?? '/marcas/fotos/novara.webp';
+const portada = fotos[0] ?? '/marcas/fotos/novara-1.webp';
 ---
 
 <Base
