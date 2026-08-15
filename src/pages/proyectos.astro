@@ -1,11 +1,244 @@
-﻿---
+---
 import Base from '../layouts/Base.astro';
+import HeroPagina from '../components/HeroPagina.astro';
+import SeccionContacto from '../components/SeccionContacto.astro';
+import Clientes from '../components/Clientes.astro';
+import { proyectos } from '../config/site';
+
+// La portada usa la primera lámina del proyecto más grande.
+const portada = '/proyectos/fotos/enel-1.webp';
+
+// BTG y Lockton todavía no traen ficha; se muestran igual por sus fotos, pero
+// sin la fila de datos vacía.
+const conFicha = (p: (typeof proyectos)[number]) => Boolean(p.superficie);
 ---
 
-<Base title="We work" description="Proyectos de equipamiento que hemos ejecutado.">
-  <section class="container-page py-16 sm:py-20">
-    <h1 class="text-3xl font-light tracking-tight sm:text-4xl">We work</h1>
-    <p class="mt-4 max-w-2xl text-muted">Proyectos de equipamiento que hemos ejecutado.</p>
-    <p class="mt-10 text-sm text-muted">Contenido pendiente de diseño.</p>
+<Base
+  title="Proyectos destacados"
+  description="Proyectos de equipamiento integral ejecutados por WEBE."
+  header="overlay"
+>
+  <HeroPagina
+    imagen={portada}
+    alt="Oficinas equipadas por WEBE"
+    ancho={1920}
+    alto={900}
+    lineas={[{ fuerte: 'Proyectos' }, { suave: 'destacados' }]}
+  />
+
+  <section class="intro" data-anima="grupo">
+    <p class="intro__texto">
+      Cada proyecto refleja una forma de trabajar basada en la experiencia, el
+      acompañamiento y la búsqueda de soluciones acordes a las necesidades de
+      cada cliente.
+    </p>
   </section>
+
+  <div class="listado">
+    {
+      proyectos.map((proyecto, i) => (
+        <article class="proyecto" data-anima="grupo">
+          <div class="proyecto__marco">
+            {proyecto.fotos.map((url, j) => (
+              <img
+                src={j === 0 ? url : undefined}
+                data-src={url}
+                alt={`${proyecto.nombre} — imagen ${j + 1}`}
+                width="1920"
+                height="900"
+                loading={i < 2 ? 'eager' : 'lazy'}
+                decoding="async"
+                data-foto={j}
+                data-activa={j === 0 ? '' : undefined}
+              />
+            ))}
+
+            <div class="proyecto__puntos" role="tablist" aria-label="Imágenes">
+              {proyecto.fotos.map((_, j) => (
+                <button
+                  type="button"
+                  role="tab"
+                  data-ir={j}
+                  aria-selected={j === 0}
+                  aria-label={`Imagen ${j + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div class="proyecto__ficha">
+            <h2 class="proyecto__nombre">
+              {proyecto.nombre}
+              {proyecto.ano && <span class="proyecto__ano">({proyecto.ano.slice(-2)})</span>}
+            </h2>
+
+            {conFicha(proyecto) && (
+              <dl class="proyecto__datos">
+                <div>
+                  <dt>Superficie</dt>
+                  <dd>{proyecto.superficie}</dd>
+                </div>
+                <div>
+                  <dt>Puestos de trabajo</dt>
+                  <dd>{proyecto.puestos}</dd>
+                </div>
+                <div class="proyecto__alcance">
+                  <dt>Alcance</dt>
+                  <dd>{proyecto.alcance}</dd>
+                </div>
+              </dl>
+            )}
+          </div>
+        </article>
+      ))
+    }
+  </div>
+
+  <Clientes />
+
+  <SeccionContacto />
 </Base>
+
+<style>
+  .intro {
+    padding: clamp(3rem, 7vw, 7rem) clamp(1.5rem, 6vw, 7rem)
+      clamp(2rem, 5vw, 5rem) clamp(1.5rem, 16.2vw, 18rem);
+  }
+
+  .intro__texto {
+    margin: 0;
+    max-width: 30ch;
+    font-size: clamp(1.25rem, 2.1vw, 1.95rem);
+    font-weight: 300;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+  }
+
+  .listado {
+    display: grid;
+    gap: clamp(3rem, 7vw, 7rem);
+    padding: 0 clamp(1.5rem, 6vw, 7rem) clamp(4rem, 9vw, 9rem);
+  }
+
+  .proyecto {
+    display: grid;
+    grid-template-columns: 1fr 30%;
+    gap: clamp(1.5rem, 3vw, 3rem);
+    align-items: start;
+  }
+
+  .proyecto__marco {
+    position: relative;
+    display: grid;
+  }
+
+  .proyecto__marco img {
+    grid-area: 1 / 1;
+    width: 100%;
+    height: auto;
+    border-radius: clamp(1rem, 1.8vw, 1.75rem);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.45s ease,
+      visibility 0.45s;
+  }
+
+  .proyecto__marco img[data-activa] {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .proyecto__puntos {
+    position: absolute;
+    bottom: clamp(0.75rem, 1.5vw, 1.25rem);
+    left: 50%;
+    display: flex;
+    gap: 0.6rem;
+    transform: translateX(-50%);
+  }
+
+  .proyecto__puntos button {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.55);
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+  }
+
+  .proyecto__puntos button[aria-selected='true'] {
+    background: #fff;
+  }
+
+  .proyecto__nombre {
+    margin: 0 0 clamp(1rem, 2vw, 1.75rem);
+    font-size: clamp(1.35rem, 2.1vw, 2rem);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  /* El año va como superíndice, igual que en la nube de la portada. */
+  .proyecto__ano {
+    font-size: 0.5em;
+    font-weight: 300;
+    vertical-align: super;
+    color: var(--color-muted);
+  }
+
+  .proyecto__datos {
+    display: grid;
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+    margin: 0;
+  }
+
+  .proyecto__datos dt {
+    font-size: 0.75rem;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .proyecto__datos dd {
+    margin: 0.25rem 0 0;
+    font-size: clamp(0.9rem, 1.05vw, 1.05rem);
+    font-weight: 300;
+    line-height: 1.55;
+  }
+
+  @media (max-width: 900px) {
+    .intro {
+      padding-inline: clamp(1.5rem, 6vw, 2.5rem);
+    }
+
+    .listado {
+      padding-inline: clamp(1.5rem, 6vw, 2.5rem);
+    }
+
+    .proyecto {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  // Un carrusel por proyecto, cada uno con sus propios puntos.
+  for (const marco of document.querySelectorAll<HTMLElement>('.proyecto__marco')) {
+    const fotos = Array.from(marco.querySelectorAll<HTMLImageElement>('[data-foto]'));
+    const puntos = Array.from(marco.querySelectorAll<HTMLElement>('[data-ir]'));
+
+    puntos.forEach((punto, i) => {
+      punto.addEventListener('click', () => {
+        for (const foto of fotos) {
+          const suya = Number(foto.dataset.foto) === i;
+          // Las láminas 2 y 3 sólo se descargan si alguien las pide.
+          if (suya && !foto.src && foto.dataset.src) foto.src = foto.dataset.src;
+          foto.toggleAttribute('data-activa', suya);
+        }
+        puntos.forEach((otro, j) => otro.setAttribute('aria-selected', String(i === j)));
+      });
+    });
+  }
+</script>

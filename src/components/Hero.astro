@@ -221,8 +221,10 @@ const { scrollTo = '#descubre' } = Astro.props;
      ~83% del ancho, igual que en el diseño, y aguanta hasta 320px. */
   @media (max-width: 767px) {
     .hero {
+      /* Arriba del centro para dejar sitio al claim de fase 2 y al badge, pero
+         no pegado al header: con 11vh el titular quedaba a 15px del navbar. */
       align-items: flex-start;
-      padding-top: 11vh;
+      padding-top: 34svh;
     }
 
     .hero__title {

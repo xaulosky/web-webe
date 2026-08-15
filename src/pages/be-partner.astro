@@ -1,11 +1,104 @@
-﻿---
+---
 import Base from '../layouts/Base.astro';
+import HeroPagina from '../components/HeroPagina.astro';
+import Proceso from '../components/Proceso.astro';
+import Acordeon from '../components/Acordeon.astro';
+import SeccionContacto from '../components/SeccionContacto.astro';
+import Clientes from '../components/Clientes.astro';
 ---
 
-<Base title="Be partner" description="Conviértete en partner de WEBE.">
-  <section class="container-page py-16 sm:py-20">
-    <h1 class="text-3xl font-light tracking-tight sm:text-4xl">Be partner</h1>
-    <p class="mt-4 max-w-2xl text-muted">Conviértete en partner de WEBE.</p>
-    <p class="mt-10 text-sm text-muted">Contenido pendiente de diseño.</p>
+<Base
+  title="Seamos partners"
+  description="Acompañamos a arquitectos, interioristas y empresas en el desarrollo integral de proyectos de equipamiento para oficinas."
+  header="overlay"
+>
+  <HeroPagina
+    imagen="/proyectos/fotos/ccu-1.webp"
+    alt="Sala de reuniones equipada por WEBE"
+    ancho={1920}
+    alto={900}
+    lineas={[{ fuerte: 'Seamos' }, { suave: 'partners' }]}
+  />
+
+  <section class="intro" data-anima="grupo">
+    <p class="intro__texto">
+      Acompañamos a arquitectos, interioristas y empresas en el desarrollo
+      integral de proyectos de equipamiento para oficinas. Con un proceso
+      cercano y continuo que nos permite transformar cada necesidad en la
+      solución ideal.
+    </p>
   </section>
+
+  <section class="etapas">
+    <div class="etapas__encabezado" data-anima="grupo">
+      <h2>
+        Cómo trabajamos<br />
+        en cada proyecto
+      </h2>
+    </div>
+
+    <Proceso />
+  </section>
+
+  <section class="razones">
+    <div class="razones__encabezado" data-anima="grupo">
+      <h2>
+        Más que promesas<br />
+        nuestra manera de trabajar
+      </h2>
+    </div>
+
+    <Acordeon />
+  </section>
+
+  <Clientes />
+
+  <SeccionContacto />
 </Base>
+
+<style>
+  .intro {
+    padding: clamp(3rem, 7vw, 7rem) clamp(1.5rem, 6vw, 7rem)
+      clamp(2rem, 5vw, 5rem) clamp(1.5rem, 16.2vw, 18rem);
+  }
+
+  .intro__texto {
+    margin: 0;
+    max-width: 34ch;
+    font-size: clamp(1.25rem, 2.1vw, 1.95rem);
+    font-weight: 300;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+  }
+
+  .etapas {
+    padding-bottom: clamp(3rem, 8vw, 8rem);
+  }
+
+  .etapas__encabezado,
+  .razones__encabezado {
+    padding: 0 clamp(1.5rem, 6vw, 7rem) clamp(2rem, 5vw, 4rem)
+      clamp(1.5rem, 16.7vw, 18rem);
+  }
+
+  .razones {
+    padding-bottom: clamp(3rem, 7vw, 7rem);
+  }
+
+  .etapas h2,
+  .razones h2 {
+    margin: 0;
+    font-size: clamp(1.35rem, 2vw, 1.85rem);
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+
+  @media (max-width: 860px) {
+    .intro,
+    .etapas__encabezado,
+    .razones__encabezado {
+      padding-inline: clamp(1.5rem, 6vw, 2.5rem);
+    }
+  }
+</style>

@@ -436,6 +436,13 @@ const maxFotos = Math.max(...pestanas.map((marca) => fotosDe(marca).length));
   }
 
   @media (max-width: 900px) {
+    /* El header flota sobre la sección: sin este respiro el párrafo pasa por
+       debajo de la hamburguesa. */
+    .marcas__intro {
+      padding-top: clamp(4.5rem, 11vh, 6rem);
+      padding-right: clamp(4rem, 18vw, 6rem);
+    }
+
     .marcas__detalle {
       grid-template-columns: 1fr;
       gap: clamp(1.5rem, 5vw, 2.5rem);
