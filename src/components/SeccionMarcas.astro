@@ -273,16 +273,16 @@ const maxFotos = Math.max(...pestanas.map((marca) => fotosDe(marca).length));
   /* --- Ficha de la marca destacada --- */
   .marcas__detalle {
     display: grid;
-    /* Columna de texto algo más ancha: con 29% la descripción caía a diez
-       líneas y la ficha terminaba muy por debajo de la foto. */
-    grid-template-columns: 33% 1fr;
-    /* Márgenes y hueco tomados de la maqueta: sangría de ~11%, separación
-       entre columnas del 7% y el canto derecho casi al filo. */
-    gap: 7%;
+    /* Proporciones medidas sobre la maqueta, en % del ancho de ventana:
+       sangría 12, texto 20,7, hueco 8,9, foto 55,6 y canto derecho 2,8.
+       Como las columnas y el hueco del grid son relativos al contenedor
+       (85,2% de la ventana), aquí van divididos por ese 0,852. */
+    grid-template-columns: 24.3% 1fr;
+    gap: 10.4%;
     /* stretch, no start: la foto iguala la altura de la ficha y las dos
        columnas cierran a la vez, como en el diseño. */
     align-items: stretch;
-    padding: clamp(1.1rem, 2.2vh, 1.75rem) 2.5% clamp(1.1rem, 2.4vh, 1.9rem) 11%;
+    padding: clamp(1.1rem, 2.2vh, 1.75rem) 2.8% clamp(1.1rem, 2.4vh, 1.9rem) 12%;
     background: var(--panel);
   }
 
@@ -302,28 +302,31 @@ const maxFotos = Math.max(...pestanas.map((marca) => fotosDe(marca).length));
     display: block;
   }
 
-  /* En la maqueta el wordmark ocupa el 18% del ancho de la ventana; a 11vw se
-     quedaba en la mitad de eso. */
+  /* En la maqueta el wordmark ocupa el 18,4% del ancho de la ventana y deja
+     58px de aire bajo el antetítulo (sobre un lienzo de 1713). */
   .marcas__wordmark {
-    width: clamp(8rem, 16vw, 16rem);
+    width: clamp(8rem, 18.4vw, 18.4rem);
     height: auto;
-    margin-top: clamp(0.75rem, 2vh, 1.4rem);
+    margin-top: clamp(1.25rem, 3.4vw, 3.4rem);
   }
 
-  /* Tipografía una pizca menor y caja más ancha, para que no baje tanto. */
+  /* Los huecos verticales salen de la maqueta: 45px bajo el wordmark y 42px
+     antes de las categorías, escalados al ancho de ventana. */
   .marcas__descripcion {
-    margin: clamp(0.75rem, 1.8vh, 1.2rem) 0 0;
-    max-width: 56ch;
-    font-size: clamp(0.85rem, 0.95vw, 0.9375rem);
+    margin: clamp(1rem, 2.6vw, 2.6rem) 0 0;
+    /* Con la columna estrecha de la maqueta, el texto real (unos 470 caracteres
+       frente a los 230 del lorem ipsum) dispara la ficha y deja la foto casi
+       cuadrada. El PDF autoriza «achicar una pizca la tipografía»: a 0.92vw
+       cae en diez líneas y la foto recupera su proporción. */
+    font-size: clamp(0.78rem, 0.92vw, 0.95rem);
     font-weight: 300;
-    /* La maqueta respira más entre líneas que el 1.55 al que lo había bajado. */
-    line-height: 1.68;
+    line-height: 1.7;
   }
 
   .marcas__categorias {
     display: grid;
     gap: 0.3rem;
-    margin-top: clamp(0.75rem, 1.8vh, 1.2rem);
+    margin-top: clamp(1rem, 2.45vw, 2.45rem);
     font-size: 0.8125rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -465,6 +468,33 @@ const maxFotos = Math.max(...pestanas.map((marca) => fotosDe(marca).length));
   @keyframes aro-gira {
     to {
       transform: rotate(360deg);
+    }
+  }
+
+  /* Portátiles de 768px de alto: con las proporciones de la maqueta el bloque
+     no entra en una pantalla, así que ahí se comprime. */
+  @media (min-width: 901px) and (max-height: 720px) {
+    .marcas__intro {
+      min-height: 68svh;
+    }
+
+    .marcas__wordmark {
+      width: clamp(7rem, 13vw, 13rem);
+      margin-top: clamp(0.75rem, 2vw, 2rem);
+    }
+
+    .marcas__descripcion {
+      margin-top: clamp(0.75rem, 1.6vw, 1.6rem);
+      font-size: clamp(0.8rem, 0.92vw, 0.9rem);
+      line-height: 1.6;
+    }
+
+    .marcas__categorias {
+      margin-top: clamp(0.75rem, 1.5vw, 1.5rem);
+    }
+
+    .marcas__todas {
+      padding-top: clamp(0.75rem, 2vh, 1.5rem);
     }
   }
 
