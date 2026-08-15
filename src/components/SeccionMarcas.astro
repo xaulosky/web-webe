@@ -1,6 +1,6 @@
 ---
 import Flecha from './Flecha.astro';
-import { marcas } from '../config/site';
+import { marcas, MARCA_PORTADA } from '../config/site';
 
 // La primera marca es la que abre destacada. Se muestran todas: la barra
 // funciona además como slider cuando no caben.
@@ -102,7 +102,7 @@ const resumen = (texto: string) =>
         ))
       }
 
-      <a class="marcas__todas" href="/marcas">
+      <a class="marcas__todas" href={`/marcas/${MARCA_PORTADA}`}>
         Todas las marcas
         <Flecha />
       </a>

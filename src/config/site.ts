@@ -21,12 +21,22 @@ export const site = {
   ],
 } as const;
 
+// La marca con la que abre la sección de marcas y a la que apunta el menú: no
+// hay pantalla de índice en el diseño, así que «Nuestras marcas» entra directo
+// a la ficha y desde ahí se salta al resto con los logos de la portada.
+export const MARCA_PORTADA = 'novara';
+
 // Cada ítem se parte en dos: la primera palabra va en medium y la segunda en
 // light. El PDF de ajustes los pasó a español.
 export const nav = [
   { fuerte: 'Nuestro', suave: 'equipo', label: 'Nuestro equipo', href: '/nosotros' },
   { fuerte: 'Seamos', suave: 'partners', label: 'Seamos partners', href: '/be-partner' },
-  { fuerte: 'Nuestras', suave: 'marcas', label: 'Nuestras marcas', href: '/marcas' },
+  {
+    fuerte: 'Nuestras',
+    suave: 'marcas',
+    label: 'Nuestras marcas',
+    href: `/marcas/${MARCA_PORTADA}`,
+  },
   { fuerte: 'Proyectos', suave: 'destacados', label: 'Proyectos destacados', href: '/proyectos' },
 ] as const;
 
