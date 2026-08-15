@@ -269,8 +269,9 @@ const { scrollTo = '#descubre' } = Astro.props;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    /* El grupo se lee centrado dentro de su caja. */
-    justify-content: center;
+    /* Ambas filas arrancan en el mismo borde izquierdo: centradas, la segunda
+       quedaba descolgada respecto a la primera. */
+    justify-content: flex-start;
     /* Las dos filas iban demasiado juntas y se leían como un bloque; el hueco
        vertical va aparte del horizontal. */
     gap: clamp(1.4rem, 3.4vh, 2.4rem) clamp(1rem, 1.85vw, 2rem);
