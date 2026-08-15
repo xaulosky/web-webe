@@ -22,6 +22,17 @@ const porFilas = (lista: readonly string[]) =>
   }, []);
 
 const maxFotos = Math.max(...pestanas.map((marca) => fotosDe(marca).length));
+
+// En la home entran las dos primeras frases. Las descripciones completas rondan
+// los 470 caracteres —el doble del texto que dibuja la maqueta— y con la columna
+// estrecha del diseño estiraban la ficha hasta dejar la foto casi cuadrada,
+// justo lo contrario del «recuadro de la foto podría ser más bajo». La versión
+// íntegra se sigue leyendo en la página de cada marca.
+const resumen = (texto: string) =>
+  texto
+    .split(/(?<=\.)\s+/)
+    .slice(0, 2)
+    .join(' ');
 ---
 
 {/* data-oculta-logo: aquí el logo del header pisaba el contenido y se retira. */}
@@ -75,7 +86,7 @@ const maxFotos = Math.max(...pestanas.map((marca) => fotosDe(marca).length));
               loading="lazy"
               decoding="async"
             />
-            <p class="marcas__descripcion">{marca.descripcion}</p>
+            <p class="marcas__descripcion">{resumen(marca.descripcion)}</p>
             {marca.categorias.length > 0 && (
               <div class="marcas__categorias">
                 {porFilas(marca.categorias).map((fila) => (
@@ -307,7 +318,7 @@ const maxFotos = Math.max(...pestanas.map((marca) => fotosDe(marca).length));
   .marcas__wordmark {
     width: clamp(8rem, 18.4vw, 18.4rem);
     height: auto;
-    margin-top: clamp(1.25rem, 3.4vw, 3.4rem);
+    margin-top: clamp(1rem, 2.4vw, 2.4rem);
   }
 
   /* Los huecos verticales salen de la maqueta: 45px bajo el wordmark y 42px
@@ -350,7 +361,7 @@ const maxFotos = Math.max(...pestanas.map((marca) => fotosDe(marca).length));
     /* auto: cae al pie de la columna. El mínimo protege el caso en que la
        ficha ya llena todo el alto y no sobra hueco que repartir. */
     margin-top: auto;
-    padding-top: clamp(1.5rem, 4vh, 3rem);
+    padding-top: clamp(1rem, 2.5vh, 1.9rem);
     padding-bottom: 0.4rem;
     border-bottom: 1px solid currentColor;
     font-size: 0.8125rem;
