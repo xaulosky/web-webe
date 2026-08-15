@@ -74,6 +74,9 @@ const resumen = (texto: string) =>
     <div class="marcas__ficha">
       <p class="marcas__antetitulo">marcas destacadas</p>
 
+      {/* Los paneles se apilan en la misma celda: así cruzan en fundido en vez
+          de cortar, y la altura la fija el más largo, sin saltos al cambiar. */}
+      <div class="marcas__paneles">
       {
         pestanas.map((marca, i) => (
           <div class="marcas__cuerpo" data-panel={i} data-activo={i === destacada ? '' : undefined}>
@@ -101,6 +104,7 @@ const resumen = (texto: string) =>
           </div>
         ))
       }
+      </div>
 
       <a class="marcas__todas" href={`/marcas/${MARCA_PORTADA}`}>
         Todas las marcas
@@ -307,12 +311,27 @@ const resumen = (texto: string) =>
     align-items: flex-start;
   }
 
+  /* Apilados: la altura la fija el panel más largo, así la ficha no da un
+     salto cuando se pasa a una marca de texto más corto. */
+  .marcas__paneles {
+    display: grid;
+  }
+
   .marcas__cuerpo {
-    display: none;
+    grid-area: 1 / 1;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(0.5rem);
+    transition:
+      opacity 0.4s ease,
+      transform 0.4s ease,
+      visibility 0.4s;
   }
 
   .marcas__cuerpo[data-activo] {
-    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
   }
 
   /* En la maqueta el wordmark ocupa el 18,4% del ancho de la ventana y deja
@@ -431,7 +450,16 @@ const resumen = (texto: string) =>
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.55);
     cursor: pointer;
-    transition: background-color 0.25s ease;
+    transition:
+      background-color 0.25s ease,
+      opacity 0.3s ease;
+  }
+
+  /* Los puntos que sobran (marcas con menos fotos) se desvanecen en vez de
+     desaparecer: si salieran del flujo, el grupo se recolocaría de golpe. */
+  .marcas__puntos button[data-fuera] {
+    opacity: 0;
+    pointer-events: none;
   }
 
   .marcas__puntos button[aria-selected='true'] {
@@ -569,6 +597,14 @@ const resumen = (texto: string) =>
 
     let activa = 0;
     let foto = 0;
+    // Cada cambio lleva su número: si llegan dos seguidos, el decode del
+    // primero no debe activar su foto cuando ya se pidió otra marca.
+    let turno = 0;
+
+    const laDe = (indice: number, j: number) =>
+      fotos.find(
+        (img) => Number(img.dataset.fotoDe) === indice && Number(img.dataset.foto) === j,
+      );
 
     const pintarFotos = () => {
       for (const img of fotos) {
@@ -579,7 +615,7 @@ const resumen = (texto: string) =>
       }
       const total = Number(pestanas[activa]?.dataset.fotos ?? 1);
       puntos.forEach((punto, j) => {
-        punto.hidden = j >= total;
+        punto.toggleAttribute('data-fuera', j >= total);
         punto.setAttribute('aria-selected', String(j === foto));
       });
     };
@@ -593,22 +629,39 @@ const resumen = (texto: string) =>
       }
     };
 
-    const mostrar = (indice: number) => {
-      activa = indice;
-      foto = 0;
-      cargar(indice);
-      pintarFotos();
+    // Deja la imagen pintable antes de cruzarla: activarla sin haber cargado
+    // deja el recuadro en blanco un instante, que es el parpadeo.
+    const lista = async (img: HTMLImageElement | undefined) => {
+      if (!img) return;
+      if (!img.src && img.dataset.src) img.src = img.dataset.src;
+      if (img.complete && img.naturalWidth > 0) return;
+      try {
+        await img.decode();
+      } catch {
+        /* imagen rota o cancelada: seguimos igual, mejor eso que quedar colgado */
+      }
+    };
 
-      // La chapa "ver marca" tiene que seguir a la pestaña activa.
+    const mostrar = async (indice: number) => {
+      const mio = ++turno;
+
+      // La chapa, las pestañas y el texto cambian ya; sólo la foto espera.
       const slug = pestanas[indice]?.dataset.slug;
       if (ver && slug) ver.href = `/marcas/${slug}`;
-
       pestanas.forEach((pestana, i) => {
         pestana.setAttribute('aria-selected', String(i === indice));
       });
       for (const panel of paneles) {
         panel.toggleAttribute('data-activo', Number(panel.dataset.panel) === indice);
       }
+
+      await lista(laDe(indice, 0));
+      if (mio !== turno) return;
+
+      activa = indice;
+      foto = 0;
+      cargar(indice);
+      pintarFotos();
     };
 
     pestanas.forEach((pestana, i) => {
@@ -617,11 +670,20 @@ const resumen = (texto: string) =>
         // La barra scrollea: dejar la elegida centrada.
         pestana.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
       });
+
+      // Al rozar la pestaña ya se va trayendo su primera foto, para que al
+      // pulsar el cruce salga inmediato.
+      const adelantar = () => lista(laDe(i, 0));
+      pestana.addEventListener('pointerenter', adelantar, { once: true });
+      pestana.addEventListener('focus', adelantar, { once: true });
     });
 
     puntos.forEach((punto, j) => {
-      punto.addEventListener('click', (evento) => {
+      punto.addEventListener('click', async (evento) => {
         evento.stopPropagation();
+        const mio = ++turno;
+        await lista(laDe(activa, j));
+        if (mio !== turno) return;
         foto = j;
         pintarFotos();
       });
