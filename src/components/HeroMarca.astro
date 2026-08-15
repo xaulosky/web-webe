@@ -107,11 +107,12 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
   .marca-portada__otras {
     flex: 1;
     display: flex;
-    align-items: center;
+    /* Los logos se apoyan en la misma línea de base que el wordmark de la
+       pestaña: por eso el padding inferior es el mismo que el suyo. */
+    align-items: flex-end;
     justify-content: space-between;
     gap: clamp(0.75rem, 2vw, 2.25rem);
-    /* Los logos quedan a la altura del wordmark, no del borde de la pestaña. */
-    padding: 0 clamp(1.5rem, 3vw, 3rem) clamp(2.5rem, 5vw, 5rem)
+    padding: 0 clamp(1.5rem, 3vw, 3rem) clamp(1.1rem, 2.2vw, 2.1rem)
       clamp(1rem, 2.5vw, 2.5rem);
     overflow-x: auto;
     scroll-snap-type: x proximity;
