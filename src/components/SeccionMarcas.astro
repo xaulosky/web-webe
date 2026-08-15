@@ -276,12 +276,22 @@ const maxFotos = Math.max(...pestanas.map((marca) => fotosDe(marca).length));
     /* Columna de texto algo más ancha: con 29% la descripción caía a diez
        líneas y la ficha terminaba muy por debajo de la foto. */
     grid-template-columns: 33% 1fr;
-    gap: 4%;
+    /* Márgenes y hueco tomados de la maqueta: sangría de ~11%, separación
+       entre columnas del 7% y el canto derecho casi al filo. */
+    gap: 7%;
     /* stretch, no start: la foto iguala la altura de la ficha y las dos
        columnas cierran a la vez, como en el diseño. */
     align-items: stretch;
-    padding: clamp(1.1rem, 2.2vh, 1.75rem) 3% clamp(1.1rem, 2.4vh, 1.9rem) 7.5%;
+    padding: clamp(1.1rem, 2.2vh, 1.75rem) 2.5% clamp(1.1rem, 2.4vh, 1.9rem) 11%;
     background: var(--panel);
+  }
+
+  /* Columna en pila para que el enlace pueda irse al pie con margin-top:auto,
+     alineado con el canto inferior de la foto como en la maqueta. */
+  .marcas__ficha {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .marcas__cuerpo {
@@ -292,10 +302,12 @@ const maxFotos = Math.max(...pestanas.map((marca) => fotosDe(marca).length));
     display: block;
   }
 
+  /* En la maqueta el wordmark ocupa el 18% del ancho de la ventana; a 11vw se
+     quedaba en la mitad de eso. */
   .marcas__wordmark {
-    width: clamp(6.5rem, 11vw, 11rem);
+    width: clamp(8rem, 16vw, 16rem);
     height: auto;
-    margin-top: clamp(0.5rem, 1.4vh, 0.9rem);
+    margin-top: clamp(0.75rem, 2vh, 1.4rem);
   }
 
   /* Tipografía una pizca menor y caja más ancha, para que no baje tanto. */
@@ -304,7 +316,8 @@ const maxFotos = Math.max(...pestanas.map((marca) => fotosDe(marca).length));
     max-width: 56ch;
     font-size: clamp(0.85rem, 0.95vw, 0.9375rem);
     font-weight: 300;
-    line-height: 1.55;
+    /* La maqueta respira más entre líneas que el 1.55 al que lo había bajado. */
+    line-height: 1.68;
   }
 
   .marcas__categorias {
@@ -331,7 +344,10 @@ const maxFotos = Math.max(...pestanas.map((marca) => fotosDe(marca).length));
     display: inline-flex;
     align-items: center;
     gap: 0.75rem;
-    margin-top: clamp(1rem, 2.2vh, 1.6rem);
+    /* auto: cae al pie de la columna. El mínimo protege el caso en que la
+       ficha ya llena todo el alto y no sobra hueco que repartir. */
+    margin-top: auto;
+    padding-top: clamp(1.5rem, 4vh, 3rem);
     padding-bottom: 0.4rem;
     border-bottom: 1px solid currentColor;
     font-size: 0.8125rem;
@@ -355,8 +371,10 @@ const maxFotos = Math.max(...pestanas.map((marca) => fotosDe(marca).length));
     display: grid;
     overflow: hidden;
     border-radius: clamp(1rem, 2vw, 1.75rem);
-    /* Sin altura propia: la fila la marca la ficha y el recuadro se estira
-       hasta ahí, de modo que las dos columnas cierran juntas. */
+    /* La ficha marca la fila y el recuadro se estira hasta ahí; este suelo
+       evita que quede una franja demasiado apaisada frente a la maqueta, que
+       la dibuja en torno a 1.5:1. */
+    min-height: min(52vh, calc((100vw - 2rem) * 0.56 / 1.62));
     /* La chapa hace de cursor dentro del recuadro. */
     cursor: none;
   }
