@@ -266,9 +266,13 @@ const maxFotos = Math.max(...pestanas.map((marca) => fotosDe(marca).length));
   /* --- Ficha de la marca destacada --- */
   .marcas__detalle {
     display: grid;
-    grid-template-columns: 29% 1fr;
-    gap: 4.5%;
-    align-items: start;
+    /* Columna de texto algo más ancha: con 29% la descripción caía a diez
+       líneas y la ficha terminaba muy por debajo de la foto. */
+    grid-template-columns: 33% 1fr;
+    gap: 4%;
+    /* stretch, no start: la foto iguala la altura de la ficha y las dos
+       columnas cierran a la vez, como en el diseño. */
+    align-items: stretch;
     padding: clamp(1.5rem, 3vh, 2.25rem) 3% clamp(1.5rem, 3.5vh, 2.5rem) 7.5%;
     background: var(--panel);
   }
@@ -344,13 +348,17 @@ const maxFotos = Math.max(...pestanas.map((marca) => fotosDe(marca).length));
     display: grid;
     overflow: hidden;
     border-radius: clamp(1rem, 2vw, 1.75rem);
-    aspect-ratio: 1920 / 650;
+    /* Sin altura propia: la fila la marca la ficha y el recuadro se estira
+       hasta ahí, de modo que las dos columnas cierran juntas. */
     /* La chapa hace de cursor dentro del recuadro. */
     cursor: none;
   }
 
+  /* Absolutas para que su alto intrínseco (650px) no imponga la altura de la
+     fila; el recorte lo resuelve object-fit. */
   .marcas__foto {
-    grid-area: 1 / 1;
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -448,10 +456,13 @@ const maxFotos = Math.max(...pestanas.map((marca) => fotosDe(marca).length));
       gap: clamp(1.5rem, 5vw, 2.5rem);
     }
 
-    /* En móvil la foto va arriba del texto, como en el diseño. */
+    /* En móvil la foto va arriba del texto, como en el diseño, y vuelve a su
+       proporción: en una columna no hay ficha con la que igualarse. */
     .marcas__medio {
       order: -1;
       cursor: auto;
+      aspect-ratio: 1920 / 650;
+      min-height: 0;
     }
 
     .marcas__ver {
