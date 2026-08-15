@@ -293,7 +293,9 @@ const resumen = (texto: string) =>
     /* stretch, no start: la foto iguala la altura de la ficha y las dos
        columnas cierran a la vez, como en el diseño. */
     align-items: stretch;
-    padding: clamp(1.1rem, 2.2vh, 1.75rem) 2.8% clamp(1.1rem, 2.4vh, 1.9rem) 12%;
+    /* Aire arriba y abajo para que el bloque no quede pegado a la barra de
+       pestañas ni a la sección siguiente. */
+    padding: clamp(2.5rem, 6vh, 5rem) 2.8% clamp(2.5rem, 6.5vh, 5.5rem) 12%;
     background: var(--panel);
   }
 
@@ -506,6 +508,12 @@ const resumen = (texto: string) =>
 
     .marcas__todas {
       padding-top: clamp(0.75rem, 2vh, 1.5rem);
+    }
+
+    /* En pantallas bajas el aire de separación se recorta a la mitad. */
+    .marcas__detalle {
+      padding-top: clamp(1.25rem, 3vh, 2.25rem);
+      padding-bottom: clamp(1.25rem, 3.5vh, 2.5rem);
     }
   }
 
