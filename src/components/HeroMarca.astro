@@ -25,31 +25,36 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
   />
   <div class="marca-portada__scrim" aria-hidden="true"></div>
 
-  <nav class="marca-portada__otras" aria-label="Otras marcas">
-    {
-      otras.map((marca) => (
-        <a href={`/marcas/${marca.slug}`}>
-          {/* Sobre la foto va la versión blanca oficial. */}
-          <img
-            src={`/marcas/${marca.blanco}`}
-            alt={marca.nombre}
-            width={marca.ancho}
-            height={marca.alto}
-            loading="lazy"
-          />
-        </a>
-      ))
-    }
-  </nav>
+  {/* Pestaña y logos en una misma fila: con la pestaña posicionada aparte y
+      los logos a un `left` fijo, el hueco entre ambos cambiaba según lo ancho
+      que fuera cada wordmark. */}
+  <div class="marca-portada__pie">
+    <div class="marca-portada__pestana" data-anima="portada">
+      <img
+        class="marca-portada__wordmark"
+        src={`/marcas/${activa.archivo}`}
+        alt={activa.nombre}
+        width={activa.ancho}
+        height={activa.alto}
+      />
+    </div>
 
-  <div class="marca-portada__pestana" data-anima="portada">
-    <img
-      class="marca-portada__wordmark"
-      src={`/marcas/${activa.archivo}`}
-      alt={activa.nombre}
-      width={activa.ancho}
-      height={activa.alto}
-    />
+    <nav class="marca-portada__otras" aria-label="Otras marcas">
+      {
+        otras.map((marca) => (
+          <a href={`/marcas/${marca.slug}`}>
+            {/* Sobre la foto va la versión blanca oficial. */}
+            <img
+              src={`/marcas/${marca.blanco}`}
+              alt={marca.nombre}
+              width={marca.ancho}
+              height={marca.alto}
+              loading="lazy"
+            />
+          </a>
+        ))
+      }
+    </nav>
   </div>
 </section>
 
@@ -81,23 +86,33 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
     background: linear-gradient(
       180deg,
       rgba(0, 0, 0, 0.22) 0%,
-      rgba(0, 0, 0, 0.08) 45%,
-      rgba(0, 0, 0, 0.42) 100%
+      rgba(0, 0, 0, 0.06) 40%,
+      rgba(0, 0, 0, 0.34) 72%,
+      rgba(0, 0, 0, 0.62) 100%
     );
   }
 
-  /* Las marcas inactivas van sobre la foto, alineadas con la pestaña y
-     arrancando justo a su derecha: el diseño las quiere cerca, no repartidas
-     por todo el ancho. Cuando no caben, la fila hace de slider. */
+  /* La fila del pie ocupa el ancho y reparte: pestaña a la izquierda, logos
+     llenando lo que queda hasta el canto derecho. */
+  .marca-portada__pie {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+  }
+
+  /* Las marcas inactivas arrancan justo a la derecha de la pestaña —el diseño
+     las quiere pegadas a ella, no descolgadas— y se reparten hasta el borde.
+     Cuando no caben, la fila hace de slider. */
   .marca-portada__otras {
-    position: absolute;
-    right: clamp(1.5rem, 3vw, 3rem);
-    bottom: clamp(2.75rem, 5.5vw, 5.5rem);
-    left: 34%;
+    flex: 1;
     display: flex;
     align-items: center;
-    justify-content: safe center;
-    gap: clamp(1rem, 2.6vw, 2.75rem);
+    justify-content: space-between;
+    gap: clamp(0.75rem, 2vw, 2.25rem);
+    /* Los logos quedan a la altura del wordmark, no del borde de la pestaña. */
+    padding: 0 clamp(1.5rem, 3vw, 3rem) clamp(2.5rem, 5vw, 5rem)
+      clamp(1rem, 2.5vw, 2.5rem);
     overflow-x: auto;
     scroll-snap-type: x proximity;
     scrollbar-width: none;
@@ -116,7 +131,11 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
     /* Una pizca más chicos, como la barra de pestañas de la portada. */
     width: clamp(3rem, 5.4vw, 5.75rem);
     height: auto;
-    opacity: 0.68;
+    opacity: 0.72;
+    /* Son logos blancos sobre foto: el degradado general no basta cuando la
+       imagen tiene claros justo detrás (Trisoft, Belgotex). La sombra los
+       despega de cualquier fondo. */
+    filter: drop-shadow(0 1px 7px rgba(0, 0, 0, 0.6));
     transition: opacity 0.25s ease;
   }
 
@@ -129,6 +148,7 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
   /* Pestaña más baja y más ceñida al wordmark, como pide el diseño. */
   .marca-portada__pestana {
     position: relative;
+    flex: none;
     margin-left: clamp(1.5rem, 4.7vw, 5rem);
     padding: clamp(1.1rem, 2.2vw, 2.1rem) clamp(1.5rem, 3.4vw, 3.6rem);
     background: #fff;
@@ -173,17 +193,20 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
       min-height: min(60vh, 30rem);
     }
 
-    /* No caben cinco logos junto a la pestaña: pasan a scroll horizontal. */
+    /* No caben seis logos junto a la pestaña: se van sobre la foto, arriba, y
+       corren en horizontal. */
+    .marca-portada__pie {
+      display: block;
+    }
+
     .marca-portada__otras {
-      left: auto;
+      position: absolute;
       right: 0;
-      bottom: auto;
+      left: 0;
       top: clamp(5rem, 12vh, 7rem);
       justify-content: flex-start;
-      overflow-x: auto;
       max-width: 100%;
-      padding-inline: clamp(1.5rem, 6vw, 2.5rem);
-      scrollbar-width: none;
+      padding: 0 clamp(1.5rem, 6vw, 2.5rem);
     }
 
     .marca-portada__otras::-webkit-scrollbar {
