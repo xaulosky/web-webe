@@ -73,28 +73,50 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
     object-fit: cover;
   }
 
+  /* La banda baja se oscurece más: ahí van los logos blancos y con fotos
+     claras (Trisoft, Belgotex) se perdían del todo. */
   .marca-portada__scrim {
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0.1));
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.22) 0%,
+      rgba(0, 0, 0, 0.08) 45%,
+      rgba(0, 0, 0, 0.42) 100%
+    );
   }
 
-  /* Las marcas inactivas van sobre la foto, alineadas con la pestaña. */
+  /* Las marcas inactivas van sobre la foto, alineadas con la pestaña y
+     arrancando justo a su derecha: el diseño las quiere cerca, no repartidas
+     por todo el ancho. Cuando no caben, la fila hace de slider. */
   .marca-portada__otras {
     position: absolute;
     right: clamp(1.5rem, 3vw, 3rem);
-    bottom: clamp(2.5rem, 5vw, 5rem);
-    left: 42%;
+    bottom: clamp(2.75rem, 5.5vw, 5.5rem);
+    left: 34%;
     display: flex;
     align-items: center;
-    justify-content: space-around;
-    gap: clamp(1rem, 2.5vw, 2.5rem);
+    justify-content: safe center;
+    gap: clamp(1rem, 2.6vw, 2.75rem);
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+
+  .marca-portada__otras::-webkit-scrollbar {
+    display: none;
+  }
+
+  .marca-portada__otras a {
+    flex: 0 0 auto;
+    scroll-snap-align: center;
   }
 
   .marca-portada__otras img {
-    width: clamp(3rem, 6vw, 6.5rem);
+    /* Una pizca más chicos, como la barra de pestañas de la portada. */
+    width: clamp(3rem, 5.4vw, 5.75rem);
     height: auto;
-    opacity: 0.5;
+    opacity: 0.68;
     transition: opacity 0.25s ease;
   }
 
@@ -104,10 +126,11 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
 
   /* Pestaña de carpeta: blanca, esquinas superiores redondeadas y filetes
      cóncavos que la enganchan con el blanco de la página. */
+  /* Pestaña más baja y más ceñida al wordmark, como pide el diseño. */
   .marca-portada__pestana {
     position: relative;
     margin-left: clamp(1.5rem, 4.7vw, 5rem);
-    padding: clamp(1.75rem, 3.5vw, 3.5rem) clamp(2rem, 5vw, 5.5rem);
+    padding: clamp(1.1rem, 2.2vw, 2.1rem) clamp(1.5rem, 3.4vw, 3.6rem);
     background: #fff;
     border-radius: var(--radio) var(--radio) 0 0;
   }
@@ -141,7 +164,7 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
 
   .marca-portada__wordmark {
     display: block;
-    width: clamp(9rem, 21vw, 21rem);
+    width: clamp(8rem, 17vw, 17rem);
     height: auto;
   }
 

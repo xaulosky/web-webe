@@ -271,7 +271,9 @@ const { scrollTo = '#descubre' } = Astro.props;
     align-items: center;
     /* El grupo se lee centrado dentro de su caja. */
     justify-content: center;
-    gap: clamp(0.9rem, 2vh, 1.5rem) clamp(1rem, 1.85vw, 2rem);
+    /* Las dos filas iban demasiado juntas y se leían como un bloque; el hueco
+       vertical va aparte del horizontal. */
+    gap: clamp(1.4rem, 3.4vh, 2.4rem) clamp(1rem, 1.85vw, 2rem);
     /* Ajustado para que corte después de bkcontract: 4 marcas arriba, 2 abajo. */
     max-width: min(30rem, 27vw);
     opacity: var(--marcas-in, 0);
@@ -437,25 +439,25 @@ const { scrollTo = '#descubre' } = Astro.props;
       });
 
       // 2. El bloque viaja al navbar en dos tiempos: primero se va del todo
-      //    hacia la izquierda y recién después sube. Los tramos se solapan un
-      //    poco para que el giro no se sienta como dos movimientos pegados.
-      const viajeX = suavizar(tramo(p, 0.12, 0.34));
-      const viajeY = suavizar(tramo(p, 0.28, 0.44));
-      const encoge = suavizar(tramo(p, 0.12, 0.4));
+      //    hacia la izquierda y recién después sube. Los tramos no se solapan:
+      //    el pedido es que se desplace «totalmente» antes de subir.
+      const viajeX = suavizar(tramo(p, 0.1, 0.32));
+      const viajeY = suavizar(tramo(p, 0.32, 0.46));
+      const encoge = suavizar(tramo(p, 0.1, 0.44));
       morph.style.transform = `translate(${dx * viajeX}px, ${dy * viajeY}px) scale(${
         1 + (escala - 1) * encoge
       })`;
 
       // 3. Relevo entre el texto y el logo oficial del navbar.
-      const relevo = tramo(p, 0.36, 0.44);
+      const relevo = tramo(p, 0.42, 0.5);
       title.style.opacity = String(1 - relevo);
       header.style.setProperty('--logo-opacity', String(relevo));
       header.dataset.morph = relevo >= 1 ? 'done' : 'running';
 
       // 4. Fase 2: el video se apaga, luego el claim, luego las marcas.
       hero?.style.setProperty('--oscurecer', String(suavizar(tramo(p, 0.1, 0.6))));
-      claim.style.setProperty('--claim-in', String(suavizar(tramo(p, 0.45, 0.62))));
-      marcasEl?.style.setProperty('--marcas-in', String(suavizar(tramo(p, 0.56, 0.74))));
+      claim.style.setProperty('--claim-in', String(suavizar(tramo(p, 0.5, 0.66))));
+      marcasEl?.style.setProperty('--marcas-in', String(suavizar(tramo(p, 0.6, 0.78))));
     };
 
     if (sinMovimiento.matches) {
