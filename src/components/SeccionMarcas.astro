@@ -317,21 +317,28 @@ const resumen = (texto: string) =>
     display: grid;
   }
 
+  /* El relevo es secuencial, no simultáneo: si los dos textos se cruzan al 50%
+     se leen superpuestos y eso es lo que se percibe como parpadeo. El saliente
+     se va primero y el entrante arranca justo después. */
   .marcas__cuerpo {
     grid-area: 1 / 1;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(0.5rem);
+    transform: translateY(0.4rem);
     transition:
-      opacity 0.4s ease,
-      transform 0.4s ease,
-      visibility 0.4s;
+      opacity 0.2s ease,
+      transform 0.2s ease,
+      visibility 0.2s;
   }
 
   .marcas__cuerpo[data-activo] {
     opacity: 1;
     visibility: visible;
     transform: none;
+    transition:
+      opacity 0.3s ease 0.2s,
+      transform 0.3s ease 0.2s,
+      visibility 0s 0.2s;
   }
 
   /* En la maqueta el wordmark ocupa el 18,4% del ancho de la ventana y deja
@@ -429,7 +436,18 @@ const resumen = (texto: string) =>
       visibility 0.45s;
   }
 
+  /* La que se va no se desvanece: se queda opaca por debajo mientras la nueva
+     aparece encima. Cruzando las dos a la vez, en el punto medio ninguna cubre
+     del todo y se transparenta el panel blanco de atrás. */
+  .marcas__foto[data-saliente] {
+    opacity: 1;
+    visibility: visible;
+    z-index: 0;
+    transition: none;
+  }
+
   .marcas__foto[data-activo] {
+    z-index: 1;
     opacity: 1;
     visibility: visible;
   }
@@ -606,13 +624,27 @@ const resumen = (texto: string) =>
         (img) => Number(img.dataset.fotoDe) === indice && Number(img.dataset.foto) === j,
       );
 
+    // La foto que se va queda de fondo hasta que la nueva termina de entrar.
+    let limpiar: ReturnType<typeof setTimeout> | undefined;
+
     const pintarFotos = () => {
-      for (const img of fotos) {
-        img.toggleAttribute(
-          'data-activo',
-          Number(img.dataset.fotoDe) === activa && Number(img.dataset.foto) === foto,
-        );
+      const saliente = fotos.find((img) => img.hasAttribute('data-activo'));
+      const entrante = laDe(activa, foto);
+      if (saliente && saliente !== entrante) {
+        saliente.setAttribute('data-saliente', '');
       }
+
+      for (const img of fotos) {
+        img.toggleAttribute('data-activo', img === entrante);
+      }
+
+      clearTimeout(limpiar);
+      limpiar = setTimeout(() => {
+        for (const img of fotos) {
+          if (img !== entrante) img.removeAttribute('data-saliente');
+        }
+      }, 500);
+
       const total = Number(pestanas[activa]?.dataset.fotos ?? 1);
       puntos.forEach((punto, j) => {
         punto.toggleAttribute('data-fuera', j >= total);
