@@ -11,12 +11,16 @@ interface Props {
 
 const { slug, foto } = Astro.props;
 const activa = marcas.find((marca) => marca.slug === slug)!;
-const otras = marcas.filter((marca) => marca.slug !== slug);
+const indiceActivo = marcas.findIndex((marca) => marca.slug === slug);
 ---
 
 <section class="marca-portada" data-fondo="oscuro">
+  {/* La foto cruza en fundido y la pestaña se estira a su nuevo ancho, en vez
+      de cortar las dos de golpe mientras los logos se deslizan. */}
   <img
     class="marca-portada__foto"
+    transition:name="marca-foto"
+    transition:animate="fade"
     src={foto}
     alt={`Espacio equipado con ${activa.nombre}`}
     width="1920"
@@ -25,31 +29,50 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
   />
   <div class="marca-portada__scrim" aria-hidden="true"></div>
 
-  {/* Pestaña y logos en una misma fila: con la pestaña posicionada aparte y
-      los logos a un `left` fijo, el hueco entre ambos cambiaba según lo ancho
-      que fuera cada wordmark. */}
-  <div class="marca-portada__pie">
-    <div class="marca-portada__pestana" data-anima="portada">
-      <img
-        class="marca-portada__wordmark"
-        src={`/marcas/${activa.archivo}`}
-        alt={activa.nombre}
-        width={activa.ancho}
-        height={activa.alto}
-      />
-    </div>
+  {/* Las siete marcas van siempre en el mismo orden dentro de una cinta: al
+      elegir otra no se reordena nada, se desplaza el conjunto hasta que la
+      elegida queda sobre la pestaña. El JS fija el corrimiento porque los
+      wordmarks tienen anchos distintos y no se puede calcular en el build. */}
+  {/* Persiste entre navegaciones: si se reemplazara, la cinta aparecería ya
+      colocada en su sitio y no se vería el desplazamiento. Al sobrevivir, sólo
+      cambia su corrimiento y la transición de CSS hace el scroll. */}
+  <div class="marca-portada__pie" transition:persist="pie-marcas">
+    <div class="marca-portada__pestana" data-anima="portada"></div>
 
-    <nav class="marca-portada__otras" aria-label="Otras marcas">
+    <nav
+      class="marca-portada__cinta"
+      id="marca-cinta"
+      aria-label="Marcas"
+      data-activa={indiceActivo}
+      data-slugs={marcas.map((marca) => marca.slug).join(',')}
+    >
       {
-        otras.map((marca) => (
-          <a href={`/marcas/${marca.slug}`}>
-            {/* Sobre la foto va la versión blanca oficial. */}
+        marcas.map((marca, i) => (
+          <a
+            class="marca-portada__paso"
+            href={`/marcas/${marca.slug}`}
+            data-paso={i}
+            data-activa={i === indiceActivo ? '' : undefined}
+            aria-current={i === indiceActivo ? 'page' : undefined}
+          >
+            {/* Las dos versiones apiladas: la oscura manda cuando el logo está
+                sobre la pestaña blanca, la blanca cuando va sobre la foto. */}
             <img
+              class="marca-portada__logo marca-portada__logo--claro"
               src={`/marcas/${marca.blanco}`}
               alt={marca.nombre}
               width={marca.ancho}
               height={marca.alto}
-              loading="lazy"
+              loading={i === indiceActivo ? undefined : 'lazy'}
+            />
+            <img
+              class="marca-portada__logo marca-portada__logo--oscuro"
+              src={`/marcas/${marca.archivo}`}
+              alt=""
+              width={marca.ancho}
+              height={marca.alto}
+              aria-hidden="true"
+              loading={i === indiceActivo ? undefined : 'lazy'}
             />
           </a>
         ))
@@ -92,68 +115,120 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
     );
   }
 
-  /* La fila del pie ocupa el ancho y reparte: pestaña a la izquierda, logos
-     llenando lo que queda hasta el canto derecho. */
+  /* --- Cinta de marcas ---------------------------------------------------
+     La pestaña es una ventana fija a la izquierda y la cinta se corre por
+     debajo. `--corrimiento` lo calcula el JS a partir del ancho real de cada
+     logo; `--hueco` es la separación entre ellos, compartida por el JS. */
   .marca-portada__pie {
     position: relative;
     display: flex;
     align-items: flex-end;
     width: 100%;
+    /* Recorta lo que sale por los lados al desplazarse. */
+    overflow: hidden;
+    /* El paso mide lo que el logo activo, así los inactivos quedan holgados y
+       ninguno pisa al que está sobre la pestaña. */
+    --paso: clamp(8rem, 17vw, 17rem);
+    /* Tamaño del wordmark cuando está sobre la pestaña. Vive aquí, y no sólo
+       en la regla del logo, porque el JS necesita el valor de destino: medir
+       el elemento mientras crece devuelve un ancho a medio camino. */
+    --activo-w: clamp(8rem, 17vw, 17rem);
+    --hueco: clamp(1rem, 2.5vw, 2.5rem);
+    /* El wordmark arranca al 10,6% del ancho, como en la maqueta; descontando
+       el aire, la pestaña abre en torno al 7%. */
+    --margen: clamp(2rem, 10.6vw, 11rem);
+    /* Aire de la pestaña alrededor del wordmark. */
+    --aire: clamp(1.5rem, 3.4vw, 3.6rem);
   }
 
-  /* Las marcas inactivas arrancan justo a la derecha de la pestaña —el diseño
-     las quiere pegadas a ella, no descolgadas— y se reparten hasta el borde.
-     Cuando no caben, la fila hace de slider. */
-  .marca-portada__otras {
-    flex: 1;
+  .marca-portada__cinta {
     display: flex;
-    /* Los logos se apoyan en la misma línea de base que el wordmark de la
-       pestaña: por eso el padding inferior es el mismo que el suyo. */
     align-items: flex-end;
-    justify-content: space-between;
-    gap: clamp(0.75rem, 2vw, 2.25rem);
-    padding: 0 clamp(1.5rem, 3vw, 3rem) clamp(1.1rem, 2.2vw, 2.1rem)
-      clamp(1rem, 2.5vw, 2.5rem);
-    overflow-x: auto;
-    scroll-snap-type: x proximity;
-    scrollbar-width: none;
+    gap: var(--hueco);
+    /* Arranca donde arranca la pestaña; de ahí en adelante manda el JS. */
+    padding-left: var(--margen);
+    padding-bottom: clamp(1.1rem, 2.2vw, 2.1rem);
+    transform: translateX(calc(var(--corrimiento, 0px) * -1));
+    transition: transform 0.72s cubic-bezier(0.65, 0, 0.24, 1);
+    will-change: transform;
   }
 
-  .marca-portada__otras::-webkit-scrollbar {
-    display: none;
+  /* Cada paso reserva el ancho del logo grande, activo o no. Así la cinta es
+     rígida: al cambiar de marca todos los logos recorren exactamente la misma
+     distancia, que es lo que hace que se lea como un scroll y no como un
+     acordeón donde el que crece empuja a los vecinos. */
+  .marca-portada__paso {
+    position: relative;
+    flex: 0 0 var(--paso, 17rem);
+    display: grid;
+    /* Centrados en su hueco: alineados a la izquierda quedaban descolgados,
+       con todo el aire acumulado a un lado. */
+    place-items: end center;
   }
 
-  .marca-portada__otras a {
-    flex: 0 0 auto;
-    scroll-snap-align: center;
-  }
-
-  .marca-portada__otras img {
-    /* Una pizca más chicos, como la barra de pestañas de la portada. */
+  .marca-portada__logo {
+    grid-area: 1 / 1;
     width: clamp(3rem, 5.4vw, 5.75rem);
     height: auto;
-    opacity: 0.72;
-    /* Son logos blancos sobre foto: el degradado general no basta cuando la
-       imagen tiene claros justo detrás (Trisoft, Belgotex). La sombra los
-       despega de cualquier fondo. */
-    filter: drop-shadow(0 1px 7px rgba(0, 0, 0, 0.6));
-    transition: opacity 0.25s ease;
+    transition:
+      opacity 0.45s ease,
+      width 0.72s cubic-bezier(0.65, 0, 0.24, 1);
   }
 
-  .marca-portada__otras a:hover img {
-    opacity: 0.9;
+  .marca-portada__logo--claro {
+    opacity: 0.72;
+    /* Sobre foto: la sombra los despega de los fondos claros. */
+    filter: drop-shadow(0 1px 7px rgba(0, 0, 0, 0.6));
+  }
+
+  .marca-portada__logo--oscuro {
+    opacity: 0;
+  }
+
+  .marca-portada__paso:hover .marca-portada__logo--claro {
+    opacity: 0.95;
+  }
+
+  /* La que está sobre la pestaña: grande, en tinta y sin sombra. */
+  .marca-portada__paso[data-activa] {
+    pointer-events: none;
+  }
+
+  .marca-portada__paso[data-activa] .marca-portada__logo {
+    width: var(--activo-w);
+  }
+
+  .marca-portada__paso[data-activa] .marca-portada__logo--claro {
+    opacity: 0;
+    filter: none;
+  }
+
+  .marca-portada__paso[data-activa] .marca-portada__logo--oscuro {
+    opacity: 1;
   }
 
   /* Pestaña de carpeta: blanca, esquinas superiores redondeadas y filetes
      cóncavos que la enganchan con el blanco de la página. */
-  /* Pestaña más baja y más ceñida al wordmark, como pide el diseño. */
+  /* Pestaña más baja y más ceñida al wordmark, como pide el diseño. Ya no
+     contiene al logo: es la ventana sobre la que pasa la cinta, y el JS le da
+     el ancho del logo activo. */
+  /* El JS sólo pasa dónde y cuánto mide el wordmark activo; el aire alrededor
+     lo pone el CSS como padding, para no tener que resolver clamp() a mano. */
   .marca-portada__pestana {
-    position: relative;
-    flex: none;
-    margin-left: clamp(1.5rem, 4.7vw, 5rem);
-    padding: clamp(1.1rem, 2.2vw, 2.1rem) clamp(1.5rem, 3.4vw, 3.6rem);
+    position: absolute;
+    box-sizing: content-box;
+    bottom: 0;
+    left: calc(var(--pestana-x, 0px) - var(--aire));
+    width: var(--pestana-w, 17rem);
+    height: calc(var(--pestana-h, 5rem) + var(--aire) * 0.6);
+    padding: var(--aire);
+    padding-bottom: 0;
     background: #fff;
     border-radius: var(--radio) var(--radio) 0 0;
+    transition:
+      left 0.72s cubic-bezier(0.65, 0, 0.24, 1),
+      width 0.72s cubic-bezier(0.65, 0, 0.24, 1),
+      height 0.72s cubic-bezier(0.65, 0, 0.24, 1);
   }
 
   .marca-portada__pestana::before,
@@ -183,10 +258,33 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
     );
   }
 
-  .marca-portada__wordmark {
-    display: block;
-    width: clamp(8rem, 17vw, 17rem);
-    height: auto;
+  /* La foto cruza en fundido mientras la cinta se desplaza. */
+  :global(::view-transition-old(marca-foto)) {
+    animation: salir-foto 0.5s ease forwards;
+  }
+
+  :global(::view-transition-new(marca-foto)) {
+    animation: entrar-foto 0.5s ease backwards;
+  }
+
+  @keyframes salir-foto {
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes entrar-foto {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marca-portada__cinta,
+    .marca-portada__pestana,
+    .marca-portada__logo {
+      transition-duration: 0.01s;
+    }
   }
 
   @media (max-width: 860px) {
@@ -194,33 +292,112 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
       min-height: min(60vh, 30rem);
     }
 
-    /* No caben seis logos junto a la pestaña: se van sobre la foto, arriba, y
-       corren en horizontal. */
     .marca-portada__pie {
-      display: block;
+      --paso: clamp(7rem, 34vw, 11rem);
+      --hueco: clamp(0.75rem, 3vw, 1.25rem);
+      --margen: clamp(1rem, 4vw, 2rem);
     }
 
-    .marca-portada__otras {
-      position: absolute;
-      right: 0;
-      left: 0;
-      top: clamp(5rem, 12vh, 7rem);
-      justify-content: flex-start;
-      max-width: 100%;
-      padding: 0 clamp(1.5rem, 6vw, 2.5rem);
+    .marca-portada__cinta {
+      padding-bottom: clamp(0.75rem, 3vw, 1.25rem);
     }
 
-    .marca-portada__otras::-webkit-scrollbar {
-      display: none;
+    .marca-portada__logo {
+      width: 3.75rem;
     }
 
-    .marca-portada__otras img {
-      width: 4.25rem;
-    }
-
-    .marca-portada__pestana {
-      margin-left: clamp(1rem, 4vw, 2rem);
-      padding-inline: clamp(1.5rem, 6vw, 2.5rem);
+    .marca-portada__paso[data-activa] .marca-portada__logo {
+      width: clamp(7rem, 34vw, 11rem);
     }
   }
 </style>
+
+<script>
+  // La cinta lleva las siete marcas en orden fijo. Elegir otra no reordena
+  // nada: se corre el conjunto hasta que la elegida cae sobre la pestaña. El
+  // corrimiento se mide en vivo porque cada wordmark tiene su propio ancho.
+  function colocarCinta() {
+    const cinta = document.getElementById('marca-cinta');
+    const pie = cinta?.closest<HTMLElement>('.marca-portada__pie');
+    if (!cinta || !pie) return;
+
+    const pasos = Array.from(cinta.querySelectorAll<HTMLElement>('[data-paso]'));
+    const activa = Number(cinta.dataset.activa ?? 0);
+    const logoActivo = pasos[activa]?.querySelector<HTMLElement>('.marca-portada__logo--oscuro');
+    if (!logoActivo) return;
+
+    const medir = () => {
+      // Sin transición mientras se mide y se coloca por primera vez.
+      const hueco = parseFloat(getComputedStyle(cinta).gap) || 0;
+
+      // Todo lo que hay antes del activo, más los huecos, es lo que hay que
+      // correr para que el activo quede al principio.
+      let corrimiento = 0;
+      for (let i = 0; i < activa; i++) {
+        corrimiento += pasos[i].getBoundingClientRect().width + hueco;
+      }
+
+      pie.style.setProperty('--corrimiento', `${corrimiento}px`);
+
+      // El corrimiento es justo lo que hay antes del activo, así que el activo
+      // siempre acaba a la altura del margen. No hace falta medir su caja ya
+      // desplazada, que además todavía no lo está cuando esto corre.
+      // El padding sí llega resuelto en px; las custom properties no (devuelven
+      // el `clamp(...)` literal), de ahí que se lea de aquí.
+      const margen = parseFloat(getComputedStyle(cinta).paddingLeft) || 0;
+      const anchoPaso = pasos[activa].getBoundingClientRect().width;
+      // Ancho de destino, no el del elemento a medio crecer: se toma del hueco
+      // que ya tiene reservado el paso, que es el mismo valor.
+      const anchoLogo = Math.min(
+        anchoPaso,
+        parseFloat(getComputedStyle(pasos[activa]).flexBasis) || anchoPaso,
+      );
+      const img = logoActivo as HTMLImageElement;
+      const proporcion = img.naturalWidth ? img.naturalHeight / img.naturalWidth : 0.3;
+
+      pie.style.setProperty('--pestana-x', `${margen + (anchoPaso - anchoLogo) / 2}px`);
+      pie.style.setProperty('--pestana-w', `${anchoLogo}px`);
+      pie.style.setProperty('--pestana-h', `${anchoLogo * proporcion}px`);
+    };
+
+    // Dos pasadas: la primera con las medidas actuales y otra cuando las
+    // fuentes e imágenes ya asentaron, que es cuando los anchos son fiables.
+    medir();
+    document.fonts?.ready.then(medir);
+    for (const img of cinta.querySelectorAll('img')) {
+      if (!img.complete) img.addEventListener('load', medir, { once: true });
+    }
+
+    let pedido = 0;
+    window.addEventListener('resize', () => {
+      clearTimeout(pedido);
+      pedido = window.setTimeout(medir, 120);
+    });
+  }
+
+  // La cinta sobrevive al cambio de página, así que aquí sólo se le dice cuál
+  // es ahora la marca activa: el corrimiento nuevo lo interpola el CSS y eso
+  // es lo que se ve como scroll horizontal.
+  function sincronizarConLaRuta() {
+    const cinta = document.getElementById('marca-cinta');
+    if (!cinta) return;
+
+    const slugs = (cinta.dataset.slugs ?? '').split(',');
+    const actual = location.pathname.replace(/\/$/, '').split('/').pop() ?? '';
+    const indice = slugs.indexOf(actual);
+    if (indice < 0 || indice === Number(cinta.dataset.activa)) return;
+
+    cinta.dataset.activa = String(indice);
+    for (const paso of cinta.querySelectorAll<HTMLElement>('[data-paso]')) {
+      const suyo = Number(paso.dataset.paso) === indice;
+      paso.toggleAttribute('data-activa', suyo);
+      if (suyo) paso.setAttribute('aria-current', 'page');
+      else paso.removeAttribute('aria-current');
+    }
+
+    colocarCinta();
+  }
+
+  colocarCinta();
+  document.addEventListener('astro:after-swap', sincronizarConLaRuta);
+</script>

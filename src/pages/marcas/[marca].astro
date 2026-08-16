@@ -22,6 +22,7 @@ const portada = fotos[0] ?? '/marcas/fotos/novara-1.webp';
   title={marca.nombre}
   description={marca.descripcion}
   header="overlay"
+  transiciones
 >
   <HeroMarca slug={marca.slug} foto={portada} />
 
@@ -242,9 +243,12 @@ const portada = fotos[0] ?? '/marcas/fotos/novara-1.webp';
 </style>
 
 <script>
-  const marco = document.querySelector<HTMLElement>('.galeria__marco');
+  // Con navegación sin recarga el módulo sólo se evalúa una vez, así que el
+  // enganche va en astro:page-load: se dispara también en la carga inicial.
+  function montarGaleria() {
+    const marco = document.querySelector<HTMLElement>('.galeria__marco');
+    if (!marco) return;
 
-  if (marco) {
     const fotos = Array.from(marco.querySelectorAll<HTMLElement>('[data-foto]'));
     const puntos = Array.from(marco.querySelectorAll<HTMLElement>('[data-ir]'));
 
@@ -257,4 +261,6 @@ const portada = fotos[0] ?? '/marcas/fotos/novara-1.webp';
       });
     });
   }
+
+  document.addEventListener('astro:page-load', montarGaleria);
 </script>

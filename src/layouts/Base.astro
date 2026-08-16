@@ -2,6 +2,8 @@
 import '@fontsource-variable/parkinsans';
 import '../styles/global.css';
 
+import { ClientRouter } from 'astro:transitions';
+
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Animaciones from '../components/Animaciones.astro';
@@ -14,6 +16,12 @@ interface Props {
   header?: 'overlay' | 'solid';
   /** Sólo la home: el logo del navbar nace del titular al hacer scroll. */
   logoMorph?: boolean;
+  /**
+   * Navegación sin recarga, para que el salto entre marcas se anime. Sólo lo
+   * activan las fichas de marca: entre dos páginas que lo declaran hay
+   * transición, y con el resto del sitio la navegación sigue siendo normal.
+   */
+  transiciones?: boolean;
 }
 
 const {
@@ -21,6 +29,7 @@ const {
   description = site.description,
   header = 'solid',
   logoMorph = false,
+  transiciones = false,
 } = Astro.props;
 const fullTitle = title ? `${title} | ${site.name}` : `${site.name} — ${site.tagline}`;
 const canonical = new URL(Astro.url.pathname, site.url).href;
@@ -45,6 +54,7 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     <script is:inline>
       document.documentElement.classList.add('con-js');
     </script>
+    {transiciones && <ClientRouter />}
   </head>
   <body class="flex min-h-screen flex-col">
     <a

@@ -30,7 +30,14 @@ const destacado = actual >= 0 ? actual : 0;
   </style>
 </noscript>
 
-<header class="site-header" data-variant={variant} data-morph-inicial={morph ? 'oculto' : undefined}>
+{/* Persiste entre navegaciones sin recarga: si se reemplazara, el menú se
+    quedaría sin sus escuchas y el logo parpadearía en cada salto de marca. */}
+<header
+  class="site-header"
+  transition:persist
+  data-variant={variant}
+  data-morph-inicial={morph ? 'oculto' : undefined}
+>
   <div class="site-header__bar">
     <a class="site-header__logo" id="header-logo" href="/" aria-label={site.name}>
       <Logo />
@@ -357,15 +364,22 @@ const destacado = actual >= 0 ? actual : 0;
   if (cabecera) {
     // Cualquier sección con fondo oscuro debe llevar `data-fondo="oscuro"` o
     // estar en esta lista, o el logo se vuelve tinta sobre negro.
-    const oscuras = Array.from(
-      document.querySelectorAll<HTMLElement>(
-        '.hero, .cita, .proyectos, .portada, [data-fondo="oscuro"]',
-      ),
-    );
+    let oscuras: HTMLElement[] = [];
     // Secciones donde el logo estorba al contenido y se retira del todo.
-    const sinLogo = Array.from(
-      document.querySelectorAll<HTMLElement>('[data-oculta-logo]'),
-    );
+    let sinLogo: HTMLElement[] = [];
+
+    // El header sobrevive a las navegaciones sin recarga (transition:persist),
+    // pero las secciones que vigila son las de la página nueva.
+    const recensar = () => {
+      oscuras = Array.from(
+        document.querySelectorAll<HTMLElement>(
+          '.hero, .cita, .proyectos, .portada, [data-fondo="oscuro"]',
+        ),
+      );
+      sinLogo = Array.from(document.querySelectorAll<HTMLElement>('[data-oculta-logo]'));
+    };
+
+    recensar();
 
     const linea = () => cabecera.offsetHeight / 2;
 
@@ -394,5 +408,10 @@ const destacado = actual >= 0 ? actual : 0;
     revisar();
     window.addEventListener('scroll', alScroll, { passive: true });
     window.addEventListener('resize', revisar);
+
+    document.addEventListener('astro:after-swap', () => {
+      recensar();
+      revisar();
+    });
   }
 </script>
