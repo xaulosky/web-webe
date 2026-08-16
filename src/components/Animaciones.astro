@@ -86,22 +86,12 @@
   // El CSS oculta los elementos mientras html lleve `con-js`. Si este script
   // reventara, hay que devolver la visibilidad: es preferible perder la
   // animación antes que dejar contenido invisible.
-  const revelar = () => {
-    try {
-      preparar();
-    } catch (error) {
-      document.documentElement.classList.remove('con-js');
-      console.error('Revelado desactivado:', error);
-    }
-  };
-
-  revelar();
-
-  // En las fichas de marca se navega sin recargar: el módulo ya no se vuelve a
-  // evaluar, pero el contenido es nuevo y hay que volver a observarlo. Sin
-  // esto la página siguiente se quedaría en blanco, porque el CSS la oculta
-  // hasta que este script la revela.
-  document.addEventListener('astro:after-swap', revelar);
+  try {
+    preparar();
+  } catch (error) {
+    document.documentElement.classList.remove('con-js');
+    console.error('Revelado desactivado:', error);
+  }
 
   /* ---------- 2. Suavizado del scroll ---------- */
   const conPuntero = window.matchMedia('(hover: hover) and (pointer: fine)');
