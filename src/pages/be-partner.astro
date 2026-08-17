@@ -1,13 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
 import HeroPagina from '../components/HeroPagina.astro';
-import Proceso from '../components/Proceso.astro';
-import Acordeon from '../components/Acordeon.astro';
 import SeccionContacto from '../components/SeccionContacto.astro';
 import ContactForm from '../components/ContactForm.astro';
-import Clientes from '../components/Clientes.astro';
 ---
 
+{/* La página se queda sólo con el formulario: el proceso, los atributos y la
+    banda de clientes que había en medio viven en otras páginas y aquí sólo
+    alejaban del formulario, que es lo único que se viene a hacer. */}
 <Base
   title="Seamos partners"
   description="Acompañamos a arquitectos, interioristas y empresas en el desarrollo integral de proyectos de equipamiento para oficinas."
@@ -21,39 +21,6 @@ import Clientes from '../components/Clientes.astro';
     lineas={[{ fuerte: 'Seamos' }, { suave: 'partners' }]}
   />
 
-  <section class="intro" data-anima="grupo">
-    <p class="intro__texto">
-      Acompañamos a arquitectos, interioristas y empresas en el desarrollo
-      integral de proyectos de equipamiento para oficinas. Con un proceso
-      cercano y continuo que nos permite transformar cada necesidad en la
-      solución ideal.
-    </p>
-  </section>
-
-  <section class="etapas">
-    <div class="etapas__encabezado" data-anima="grupo">
-      <h2>
-        Cómo trabajamos<br />
-        en cada proyecto
-      </h2>
-    </div>
-
-    <Proceso />
-  </section>
-
-  <section class="razones">
-    <div class="razones__encabezado" data-anima="grupo">
-      <h2>
-        Más que promesas<br />
-        nuestra manera de trabajar
-      </h2>
-    </div>
-
-    <Acordeon />
-  </section>
-
-  <Clientes />
-
   <section class="postular" id="postular">
     <div class="postular__encabezado" data-anima="grupo">
       <h2>
@@ -61,9 +28,10 @@ import Clientes from '../components/Clientes.astro';
         y de cómo podemos aportar
       </h2>
       <p>
-        Déjanos tus datos y una idea de lo que necesitas. Nos gusta entrar
-        temprano en los proyectos: cuanto antes conversemos, más podemos aportar
-        en decisiones de plazo, presupuesto y equipamiento.
+        Acompañamos a arquitectos, interioristas y empresas en el desarrollo
+        integral de proyectos de equipamiento para oficinas. Déjanos tus datos y
+        una idea de lo que necesitas: cuanto antes conversemos, más podemos
+        aportar en decisiones de plazo, presupuesto y equipamiento.
       </p>
     </div>
 
@@ -76,50 +44,13 @@ import Clientes from '../components/Clientes.astro';
 </Base>
 
 <style>
-  .intro {
-    padding: clamp(3rem, 7vw, 7rem) clamp(1.5rem, 6vw, 7rem)
-      clamp(2rem, 5vw, 5rem) clamp(1.5rem, 16.2vw, 18rem);
-  }
-
-  .intro__texto {
-    margin: 0;
-    max-width: 34ch;
-    font-size: clamp(1.25rem, 2.1vw, 1.95rem);
-    font-weight: 300;
-    line-height: 1.45;
-    letter-spacing: -0.01em;
-  }
-
-  .etapas {
-    padding-bottom: clamp(3rem, 8vw, 8rem);
-  }
-
-  .etapas__encabezado,
-  .razones__encabezado {
-    padding: 0 clamp(1.5rem, 6vw, 7rem) clamp(2rem, 5vw, 4rem)
-      clamp(1.5rem, 16.7vw, 18rem);
-  }
-
-  .razones {
-    padding-bottom: clamp(3rem, 7vw, 7rem);
-  }
-
-  .etapas h2,
-  .razones h2 {
-    margin: 0;
-    font-size: clamp(1.35rem, 2vw, 1.85rem);
-    font-weight: 500;
-    line-height: 1.35;
-    letter-spacing: -0.01em;
-  }
-
-  /* Texto a la izquierda y formulario a la derecha, con la misma sangría que
-     el resto de la página. */
+  /* Texto a la izquierda y formulario a la derecha, con la misma sangría que el
+     resto del sitio. Sin las secciones de en medio el bloque respira más. */
   .postular {
     display: grid;
     grid-template-columns: 38% 1fr;
     gap: clamp(2rem, 6vw, 6rem);
-    padding: clamp(3rem, 7vw, 7rem) clamp(1.5rem, 8vw, 8rem) clamp(3rem, 7vw, 7rem)
+    padding: clamp(4rem, 9vw, 9rem) clamp(1.5rem, 8vw, 8rem) clamp(4rem, 9vw, 9rem)
       clamp(1.5rem, 16.7vw, 18rem);
   }
 
@@ -147,9 +78,6 @@ import Clientes from '../components/Clientes.astro';
   }
 
   @media (max-width: 860px) {
-    .intro,
-    .etapas__encabezado,
-    .razones__encabezado,
     .postular {
       padding-inline: clamp(1.5rem, 6vw, 2.5rem);
     }
