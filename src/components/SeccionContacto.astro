@@ -3,7 +3,11 @@ import Marquesina from './Marquesina.astro';
 import IconoRed from './IconoRed.astro';
 import { site, marquesinaContacto } from '../config/site';
 
-const mapa = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.address)}`;
+const consulta = encodeURIComponent(site.address);
+// `output=embed` no necesita clave de API, así que el mapa funciona en cPanel
+// sin nada que configurar ni facturar.
+const mapaIncrustado = `https://www.google.com/maps?q=${consulta}&z=16&hl=es&output=embed`;
+const mapaEnlace = `https://www.google.com/maps/search/?api=1&query=${consulta}`;
 ---
 
 <section class="contacto" id="contacto">
@@ -30,8 +34,13 @@ const mapa = `https://www.google.com/maps/search/?api=1&query=${encodeURICompone
         }
       </ul>
 
+      {/* La dirección es el enlace a Maps: el iframe ya trae el suyo propio y
+          dos botones iguales encima del mapa sobraban. Este además es un
+          enlace de verdad, que funciona aunque el iframe no cargue. */}
       <address class="contacto__direccion">
-        {site.direccion.map((linea) => <span>{linea}</span>)}
+        <a href={mapaEnlace} target="_blank" rel="noopener">
+          {site.direccion.map((linea) => <span>{linea}</span>)}
+        </a>
       </address>
     </div>
 
@@ -41,9 +50,17 @@ const mapa = `https://www.google.com/maps/search/?api=1&query=${encodeURICompone
         juntos las mejores soluciones para tu proyecto.
       </p>
 
-      <a class="contacto__mapa" href={mapa} target="_blank" rel="noopener">
-        <span>Ver ubicación en Google Maps</span>
-      </a>
+      <div class="contacto__mapa">
+        {/* Diferido: el iframe de Google trae bastante peso y no hace falta
+            hasta que la sección se acerca. */}
+        <iframe
+          src={mapaIncrustado}
+          title={`Ubicación de ${site.name}: ${site.address}`}
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen
+        ></iframe>
+      </div>
     </div>
   </div>
 </section>
@@ -109,7 +126,6 @@ const mapa = `https://www.google.com/maps/search/?api=1&query=${encodeURICompone
   }
 
   .contacto__direccion {
-    display: grid;
     font-style: normal;
     font-size: 0.8125rem;
     font-weight: 300;
@@ -117,6 +133,15 @@ const mapa = `https://www.google.com/maps/search/?api=1&query=${encodeURICompone
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--color-muted);
+  }
+
+  .contacto__direccion a {
+    display: grid;
+    transition: color 0.25s ease;
+  }
+
+  .contacto__direccion a:hover {
+    color: var(--color-ink);
   }
 
   .contacto__intro {
@@ -156,23 +181,29 @@ const mapa = `https://www.google.com/maps/search/?api=1&query=${encodeURICompone
     opacity: 0.55;
   }
 
-  /* Marcador de posición del mapa hasta tener el asset definitivo. */
   .contacto__mapa {
-    display: grid;
-    place-items: center;
+    position: relative;
     margin-top: clamp(2rem, 4vw, 3.5rem);
     aspect-ratio: 745 / 350;
+    overflow: hidden;
     border-radius: clamp(0.75rem, 1.2vw, 1.15rem);
     background: var(--color-brand-100);
-    font-size: 0.8125rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-muted);
-    transition: background-color 0.25s ease;
   }
 
-  .contacto__mapa:hover {
-    background: var(--color-brand-200);
+  .contacto__mapa iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    /* El resto del sitio es monocromo: el mapa entra en gris y recupera el
+       color al pasar por encima, que además delata que es interactivo. */
+    filter: grayscale(1) contrast(1.05);
+    transition: filter 0.4s ease;
+  }
+
+  .contacto__mapa:hover iframe,
+  .contacto__mapa:focus-within iframe {
+    filter: none;
   }
 
   @media (max-width: 900px) {
