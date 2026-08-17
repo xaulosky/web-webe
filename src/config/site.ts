@@ -279,9 +279,14 @@ export const CONTACT_ENDPOINT = '/api/contacto.php';
 // diseño — los logos no comparten altura, están equilibrados ópticamente.
 // TODO: falta el copy real de cada marca (el diseño trae lorem), y las fotos
 // de todas menos Novara.
-// Seis fotos de 1920×650 por marca (Rossi pendiente).
+// Cada carpeta trae dos formatos distintos y hay que respetarlos: una portada
+// apaisada de 1920×650 para el hero de la ficha, y cinco fotos de 1200×960 para
+// la galería. Convertirlas todas al formato de portada dejaba las de galería
+// recortadas a una franja.
 const fotosMarca = (slug: string) =>
-  [1, 2, 3, 4, 5, 6].map((n) => `/marcas/fotos/${slug}-${n}.webp`);
+  [1, 2, 3, 4, 5].map((n) => `/marcas/fotos/${slug}-${n}.webp`);
+
+const portadaMarca = (slug: string) => `/marcas/fotos/${slug}-portada.webp`;
 
 export const marcas = [
   {
@@ -295,7 +300,7 @@ export const marcas = [
     ancho: 222.48,
     alto: 47.66,
     escala: 5.9,
-    foto: '/marcas/fotos/novara-1.webp',
+    foto: portadaMarca('novara'),
     descripcion:
       'Novara desarrolla soluciones de mobiliario corporativo que combinan funcionalidad, diseño y bienestar para crear ambientes de trabajo más humanos y productivos. Su portafolio contempla sistemas de trabajo, mesas, almacenamiento y soluciones colaborativas, con propuestas versátiles y personalizables que se adaptan a distintas configuraciones y necesidades. La marca integra además diseño y sostenibilidad como parte de una propuesta orientada a la calidad y durabilidad.',
     rotuloCategorias: 'Mobiliario',
@@ -318,7 +323,7 @@ export const marcas = [
     ancho: 168.38,
     alto: 46.34,
     escala: 4.35,
-    foto: '/marcas/fotos/novus-1.webp',
+    foto: portadaMarca('novus'),
     descripcion:
       'NOVUS desarrolla soluciones técnicas para optimizar y organizar los espacios de trabajo, combinando ingeniería alemana, funcionalidad y ergonomía. Su propuesta incluye sistemas de soporte para monitores, organización del puesto de trabajo y soluciones modulares que permiten liberar espacio, mejorar la flexibilidad y adaptar cada estación a sus necesidades. Productos de alta calidad y larga duración, pensados para integrar tecnología y equipamiento de manera ordenada y eficiente.',
     rotuloCategorias: 'Equipamiento',
@@ -341,7 +346,7 @@ export const marcas = [
     ancho: 184.52,
     alto: 58.5,
     escala: 3.95,
-    foto: '/marcas/fotos/trisoft-1.webp',
+    foto: portadaMarca('trisoft'),
     descripcion:
       'Trisoft desarrolla soluciones acústicas y arquitectónicas que combinan diseño, confort y sostenibilidad para mejorar la experiencia de los espacios. Sus productos, fabricados a partir de PET reciclado, permiten controlar la reverberación y mejorar el confort sonoro mediante paneles, revestimientos, baffles, nubes y divisorias. Una propuesta versátil y personalizable, especialmente adecuada para oficinas y espacios corporativos donde la acústica forma parte integral del diseño.',
     rotuloCategorias: 'Equipamiento',
@@ -364,7 +369,7 @@ export const marcas = [
     ancho: 223.09,
     alto: 52.34,
     escala: 5.2,
-    foto: '/marcas/fotos/bkcontract-1.webp',
+    foto: portadaMarca('bkcontract'),
     descripcion:
       'BK Contract desarrolla mobiliario contemporáneo para espacios profesionales, corporativos y de uso colectivo, combinando diseño, funcionalidad y personalización. Su propuesta se caracteriza por líneas puras y atemporales, calidad en materiales y acabados, y una alta capacidad de adaptación a las necesidades de cada proyecto. Con fabricación europea y una filosofía centrada en la simplicidad y la innovación, crea soluciones que integran diseño y funcionalidad con una mirada sofisticada y duradera.',
     rotuloCategorias: 'Mobiliario',
@@ -410,7 +415,7 @@ export const marcas = [
     ancho: 223.79,
     alto: 54.32,
     escala: 5.1,
-    foto: '/marcas/fotos/belgotex-1.webp',
+    foto: portadaMarca('belgotex'),
     descripcion:
       'Belgotex desarrolla soluciones de revestimiento que combinan diseño, confort y alto desempeño. Su amplio portafolio de alfombras y pisos permite resolver distintos espacios y necesidades, integrando variedad estética, resistencia y soluciones técnicas para proyectos comerciales y corporativos. Una propuesta pensada para crear superficies que no solo acompañan el diseño, sino que también responden al uso cotidiano de cada espacio.',
     rotuloCategorias: 'Equipamiento',
@@ -433,7 +438,7 @@ export const marcas = [
     ancho: 209.59,
     alto: 45.61,
     escala: 5.4,
-    foto: '/marcas/fotos/frisokar-1.webp',
+    foto: portadaMarca('frisokar'),
     descripcion:
       'Frisokar desarrolla sillas para espacios de trabajo que combinan ergonomía, confort y funcionalidad. Su propuesta contempla distintas soluciones para ambientes operativos, ejecutivos y corporativos, incorporando sistemas de ajuste y configuraciones pensadas para acompañar diferentes formas de trabajar. Una amplia variedad de modelos permite responder a distintos niveles de uso y necesidades, con una propuesta orientada al bienestar y al desempeño cotidiano.',
     rotuloCategorias: 'Mobiliario',

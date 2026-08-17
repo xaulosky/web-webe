@@ -123,8 +123,8 @@ const resumen = (texto: string) =>
               src={i === 0 ? url : undefined}
               data-src={url}
               alt={`Espacio equipado con ${marca.nombre}`}
-              width="1920"
-              height="650"
+              width="1200"
+              height="960"
               loading="lazy"
               decoding="async"
               data-foto-de={i}
@@ -409,7 +409,7 @@ const resumen = (texto: string) =>
     opacity: 0.55;
   }
 
-  /* --- Foto: recuadro bajo, con la proporción real de las fotos (1920×650) --- */
+  /* --- Foto: el recuadro tiene su propia proporción y recorta con cover; las fotos de galería vienen en 1200×960 --- */
   .marcas__medio {
     position: relative;
     display: grid;
@@ -423,7 +423,7 @@ const resumen = (texto: string) =>
     cursor: none;
   }
 
-  /* Absolutas para que su alto intrínseco (650px) no imponga la altura de la
+  /* Absolutas para que su alto intrínseco no imponga la altura de la
      fila; el recorte lo resuelve object-fit. */
   .marcas__foto {
     position: absolute;

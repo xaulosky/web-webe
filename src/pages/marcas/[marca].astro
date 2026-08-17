@@ -12,10 +12,11 @@ export function getStaticPaths() {
 
 const { marca } = Astro.props;
 
-// Con una sola foto no hay carrusel que mostrar.
-// TODO: Rossi aún no manda fotos; mientras tanto usa la primera de Novara.
-const fotos = marca.fotos.length > 0 ? marca.fotos : [marca.foto].filter(Boolean);
-const portada = fotos[0] ?? '/marcas/fotos/novara-1.webp';
+// La portada es apaisada (1920×650) y va a sangre arriba; la galería son las
+// cinco de 1200×960. Son formatos distintos y no se pueden intercambiar.
+// TODO: Rossi aún no manda fotos; mientras tanto usa las de Novara.
+const fotos = marca.fotos.length > 0 ? marca.fotos : [];
+const portada = marca.foto || '/marcas/fotos/novara-portada.webp';
 ---
 
 <Base
@@ -62,8 +63,8 @@ const portada = fotos[0] ?? '/marcas/fotos/novara-1.webp';
           <img
             src={url}
             alt={`${marca.nombre} — imagen ${i + 1}`}
-            width="1920"
-            height="650"
+            width="1200"
+            height="960"
             loading="lazy"
             decoding="async"
             data-foto={i}
@@ -147,16 +148,20 @@ const portada = fotos[0] ?? '/marcas/fotos/novara-1.webp';
     align-content: start;
   }
 
+  /* Mismas columnas que la ficha: la galería arranca donde arranca el texto,
+     no centrada en la página. */
   .galeria {
-    padding-inline: clamp(1.5rem, 4vw, 4rem) clamp(1.5rem, 4vw, 4rem);
+    display: grid;
+    grid-template-columns: 16% 46% 1fr;
+    gap: clamp(1.5rem, 3vw, 3rem);
+    padding-inline: clamp(1.5rem, 10vw, 11rem) clamp(1.5rem, 8vw, 8rem);
     padding-bottom: clamp(2rem, 5vw, 5rem);
   }
 
   .galeria__marco {
     position: relative;
     display: grid;
-    max-width: 68rem;
-    margin-inline: auto;
+    grid-column: 2 / -1;
   }
 
   .galeria__marco img {
