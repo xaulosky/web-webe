@@ -190,11 +190,13 @@ const resumen = (texto: string) =>
       clamp(2rem, 6vh, 5rem) clamp(1.5rem, 16.2vw, 18rem);
   }
 
+  /* En tinta, no en el gris suave: la maqueta lo pone claramente más oscuro
+     que el listado de categorías, que sí va en el gris flojo. */
   .marcas__antetitulo {
     margin: 0;
     font-size: 0.9375rem;
     font-weight: 300;
-    color: var(--color-muted);
+    color: var(--color-ink);
   }
 
   /* Columna estrecha, como el diseño: el párrafo cae a seis líneas y ese
