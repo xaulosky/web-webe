@@ -1,186 +1,409 @@
 ---
+import Flecha from './Flecha.astro';
 import { CONTACT_ENDPOINT } from '../config/site';
 
-const campo =
-  'mt-1.5 w-full rounded-lg border border-black/10 bg-white px-3.5 py-2.5 text-sm outline-none transition-colors placeholder:text-black/35 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 disabled:opacity-60';
-const etiqueta = 'block text-sm font-medium';
+interface Props {
+  /** Se envía junto al mensaje para saber desde qué página escribieron. */
+  origen?: string;
+}
+
+const { origen = 'web' } = Astro.props;
+
+// Perfil de quien escribe: el PDF de contenidos define a los tres públicos de
+// «Seamos partners», y saberlo de entrada ahorra el primer correo de vuelta.
+const perfiles = ['Arquitecto/a', 'Interiorista', 'Empresa', 'Otro'] as const;
 ---
 
-<form
-  id="form-contacto"
-  action={CONTACT_ENDPOINT}
-  method="POST"
-  novalidate
-  class="space-y-5"
->
-  <!-- Honeypot: invisible para personas, tentador para bots. El PHP descarta
-       el envío si viene con contenido. -->
-  <div aria-hidden="true" class="absolute left-[-9999px] h-0 w-0 overflow-hidden">
+<form id="form-contacto" class="formulario" action={CONTACT_ENDPOINT} method="POST" novalidate>
+  {/* Honeypot: invisible para personas, tentador para bots. El PHP descarta el
+      envío si viene con contenido. */}
+  <div class="formulario__trampa" aria-hidden="true">
     <label>
       No llenar este campo
       <input type="text" name="website" tabindex="-1" autocomplete="off" />
     </label>
   </div>
 
-  <div>
-    <label for="nombre" class={etiqueta}>Nombre</label>
-    <input
-      type="text"
-      id="nombre"
-      name="nombre"
-      required
-      maxlength="80"
-      autocomplete="name"
-      placeholder="Tu nombre"
-      class={campo}
-    />
-    <p class="mt-1 hidden text-xs text-red-600" data-error-for="nombre"></p>
+  {/* Un bot rellena y envía en milisegundos; una persona no. El PHP compara
+      contra el instante en que se sirvió la página. */}
+  <input type="hidden" name="abierto" id="form-abierto" value="" />
+  <input type="hidden" name="origen" value={origen} />
+
+  <div class="formulario__rejilla">
+    <p class="formulario__campo">
+      <label for="nombre">Nombre</label>
+      <input
+        type="text"
+        id="nombre"
+        name="nombre"
+        required
+        maxlength="80"
+        autocomplete="name"
+        aria-describedby="error-nombre"
+      />
+      <span class="formulario__error" id="error-nombre" data-error-for="nombre"></span>
+    </p>
+
+    <p class="formulario__campo">
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        required
+        maxlength="120"
+        autocomplete="email"
+        aria-describedby="error-email"
+      />
+      <span class="formulario__error" id="error-email" data-error-for="email"></span>
+    </p>
+
+    <p class="formulario__campo">
+      <label for="empresa">Empresa <span class="formulario__opcional">(opcional)</span></label>
+      <input
+        type="text"
+        id="empresa"
+        name="empresa"
+        maxlength="80"
+        autocomplete="organization"
+      />
+    </p>
+
+    <p class="formulario__campo">
+      <label for="telefono">Teléfono <span class="formulario__opcional">(opcional)</span></label>
+      <input type="tel" id="telefono" name="telefono" maxlength="30" autocomplete="tel" />
+    </p>
+
+    <p class="formulario__campo formulario__campo--ancho">
+      <label for="perfil">Escribo como</label>
+      <select id="perfil" name="perfil">
+        {perfiles.map((perfil) => <option value={perfil}>{perfil}</option>)}
+      </select>
+    </p>
+
+    <p class="formulario__campo formulario__campo--ancho">
+      <label for="mensaje">Cuéntanos del proyecto</label>
+      <textarea
+        id="mensaje"
+        name="mensaje"
+        required
+        rows="5"
+        maxlength="2000"
+        aria-describedby="error-mensaje"></textarea>
+      <span class="formulario__error" id="error-mensaje" data-error-for="mensaje"></span>
+    </p>
   </div>
 
-  <div>
-    <label for="email" class={etiqueta}>Email</label>
-    <input
-      type="email"
-      id="email"
-      name="email"
-      required
-      maxlength="120"
-      autocomplete="email"
-      placeholder="tu@correo.cl"
-      class={campo}
-    />
-    <p class="mt-1 hidden text-xs text-red-600" data-error-for="email"></p>
+  <div class="formulario__pie">
+    <button type="submit" class="formulario__enviar">
+      <span>Enviar mensaje</span>
+      <Flecha />
+    </button>
+
+    <p class="formulario__nota">
+      Te respondemos al correo que dejes. No usamos tus datos para nada más.
+    </p>
   </div>
 
-  <div>
-    <label for="mensaje" class={etiqueta}>Mensaje</label>
-    <textarea
-      id="mensaje"
-      name="mensaje"
-      required
-      rows="5"
-      maxlength="2000"
-      placeholder="Cuéntanos en qué te podemos ayudar"
-      class={campo}></textarea>
-    <p class="mt-1 hidden text-xs text-red-600" data-error-for="mensaje"></p>
-  </div>
-
-  <button
-    type="submit"
-    class="w-full rounded-lg bg-brand-700 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-brand-800 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
-  >
-    Enviar mensaje
-  </button>
-
-  <p
-    id="form-estado"
-    role="status"
-    aria-live="polite"
-    class="hidden rounded-lg px-4 py-3 text-sm"
-  >
-  </p>
+  <p class="formulario__estado" id="form-estado" role="status" aria-live="polite"></p>
 </form>
+
+<style>
+  .formulario {
+    --linea: #d7d7d4;
+  }
+
+  .formulario__trampa {
+    position: absolute;
+    left: -9999px;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+  }
+
+  .formulario__rejilla {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1.5rem, 3vw, 2.5rem) clamp(1.5rem, 3vw, 3rem);
+  }
+
+  .formulario__campo {
+    margin: 0;
+    display: grid;
+  }
+
+  .formulario__campo--ancho {
+    grid-column: 1 / -1;
+  }
+
+  .formulario__campo label {
+    font-size: 0.75rem;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .formulario__opcional {
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+
+  /* Campos de línea, no de caja: el resto del sitio no tiene ni un recuadro
+     relleno y unas cajas con borde completo se veían pegadas encima. */
+  .formulario__campo :is(input, select, textarea) {
+    width: 100%;
+    margin-top: 0.5rem;
+    padding: 0.55rem 0 0.6rem;
+    border: 0;
+    border-bottom: 1px solid var(--linea);
+    border-radius: 0;
+    background: transparent;
+    font: inherit;
+    font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+    font-weight: 300;
+    color: var(--color-ink);
+    transition: border-color 0.25s ease;
+  }
+
+  .formulario__campo textarea {
+    resize: vertical;
+    line-height: 1.6;
+  }
+
+  .formulario__campo select {
+    /* La flecha nativa no combina; se dibuja una con el gris de la marca. */
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--color-muted) 50%),
+      linear-gradient(135deg, var(--color-muted) 50%, transparent 50%);
+    background-position:
+      right 0.75rem center,
+      right 0.4rem center;
+    background-size:
+      0.35rem 0.35rem,
+      0.35rem 0.35rem;
+    background-repeat: no-repeat;
+    padding-right: 1.75rem;
+    cursor: pointer;
+  }
+
+  .formulario__campo :is(input, select, textarea):focus {
+    outline: none;
+    border-bottom-color: var(--color-ink);
+  }
+
+  .formulario__campo :is(input, textarea)[aria-invalid='true'] {
+    border-bottom-color: #b4453a;
+  }
+
+  .formulario__error {
+    margin-top: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: #b4453a;
+  }
+
+  .formulario__error:empty {
+    display: none;
+  }
+
+  .formulario__pie {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(1rem, 2vw, 2rem);
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+
+  .formulario__enviar {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.95rem clamp(1.5rem, 3vw, 2.25rem);
+    border-radius: 999px;
+    background: var(--color-ink);
+    font-size: 0.8125rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #fff;
+    cursor: pointer;
+    transition:
+      gap 0.25s ease,
+      opacity 0.25s ease;
+  }
+
+  .formulario__enviar:hover:not(:disabled) {
+    gap: 1.4rem;
+  }
+
+  .formulario__enviar:disabled {
+    opacity: 0.55;
+    cursor: progress;
+  }
+
+  .formulario__enviar :global(.flecha) {
+    width: 1.1rem;
+    flex: none;
+  }
+
+  .formulario__nota {
+    margin: 0;
+    max-width: 30ch;
+    font-size: 0.75rem;
+    font-weight: 300;
+    line-height: 1.6;
+    color: var(--color-muted);
+  }
+
+  .formulario__estado {
+    margin: clamp(1.25rem, 2.5vw, 2rem) 0 0;
+    padding: 0.9rem 1.1rem;
+    border-left: 2px solid var(--color-ink);
+    background: var(--color-brand-50);
+    font-size: 0.875rem;
+    font-weight: 300;
+    line-height: 1.55;
+  }
+
+  .formulario__estado:empty {
+    display: none;
+  }
+
+  .formulario__estado[data-tipo='error'] {
+    border-left-color: #b4453a;
+    color: #8f2f26;
+  }
+
+  @media (max-width: 640px) {
+    .formulario__rejilla {
+      grid-template-columns: 1fr;
+    }
+
+    .formulario__pie {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
 
 <script>
   const form = document.getElementById('form-contacto') as HTMLFormElement | null;
-  const estado = document.getElementById('form-estado') as HTMLParagraphElement | null;
-  if (!form || !estado) throw new Error('form-contacto no encontrado');
+  const estado = document.getElementById('form-estado');
 
-  const boton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
-  const textoBoton = boton.textContent ?? '';
+  if (form && estado) {
+    const boton = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const rotulo = boton.querySelector('span')!;
+    const textoBoton = rotulo.textContent ?? 'Enviar mensaje';
+    const conError = ['nombre', 'email', 'mensaje'];
 
-  const mostrarError = (campo: string, mensaje: string) => {
-    const p = form.querySelector<HTMLElement>(`[data-error-for="${campo}"]`);
-    const input = form.elements.namedItem(campo) as HTMLInputElement | null;
-    if (p) {
-      p.textContent = mensaje;
-      p.classList.toggle('hidden', !mensaje);
-    }
-    input?.setAttribute('aria-invalid', mensaje ? 'true' : 'false');
-  };
+    // Marca de tiempo en el cliente: en un sitio estático el HTML se sirve
+    // cacheado, así que estamparla en el servidor no diría nada.
+    const abierto = form.querySelector<HTMLInputElement>('#form-abierto');
+    if (abierto) abierto.value = String(Date.now());
 
-  const limpiarErrores = () => {
-    for (const campo of ['nombre', 'email', 'mensaje']) mostrarError(campo, '');
-    estado.className = 'hidden rounded-lg px-4 py-3 text-sm';
-  };
+    const mostrarError = (campo: string, mensaje: string) => {
+      const aviso = form.querySelector<HTMLElement>(`[data-error-for="${campo}"]`);
+      const control = form.elements.namedItem(campo) as HTMLInputElement | null;
+      if (aviso) aviso.textContent = mensaje;
+      if (control) control.setAttribute('aria-invalid', mensaje ? 'true' : 'false');
+    };
 
-  const avisar = (mensaje: string, ok: boolean) => {
-    estado.textContent = mensaje;
-    estado.className = ok
-      ? 'rounded-lg bg-green-50 px-4 py-3 text-sm text-green-800'
-      : 'rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700';
-  };
+    const avisar = (mensaje: string, tipo: 'ok' | 'error') => {
+      estado.textContent = mensaje;
+      estado.dataset.tipo = tipo;
+    };
 
-  const validar = (datos: FormData) => {
-    let ok = true;
-    const nombre = String(datos.get('nombre') ?? '').trim();
-    const email = String(datos.get('email') ?? '').trim();
-    const mensaje = String(datos.get('mensaje') ?? '').trim();
+    const limpiar = () => {
+      for (const campo of conError) mostrarError(campo, '');
+      estado.textContent = '';
+      delete estado.dataset.tipo;
+    };
 
-    if (nombre.length < 2) {
-      mostrarError('nombre', 'Ingresa tu nombre.');
-      ok = false;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
-      mostrarError('email', 'Ingresa un email válido.');
-      ok = false;
-    }
-    if (mensaje.length < 10) {
-      mostrarError('mensaje', 'El mensaje debe tener al menos 10 caracteres.');
-      ok = false;
-    }
-    return ok;
-  };
+    const validar = (datos: FormData) => {
+      let ok = true;
+      const nombre = String(datos.get('nombre') ?? '').trim();
+      const email = String(datos.get('email') ?? '').trim();
+      const mensaje = String(datos.get('mensaje') ?? '').trim();
 
-  form.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    limpiarErrores();
-
-    const datos = new FormData(form);
-    if (!validar(datos)) {
-      form.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
-      return;
-    }
-
-    boton.disabled = true;
-    boton.textContent = 'Enviando…';
-
-    try {
-      const respuesta = await fetch(form.action, {
-        method: 'POST',
-        body: datos,
-        headers: { Accept: 'application/json' },
-      });
-      const resultado = await respuesta.json().catch(() => ({}) as Record<string, unknown>);
-
-      if (respuesta.ok && resultado.ok) {
-        form.reset();
-        avisar(
-          typeof resultado.message === 'string'
-            ? resultado.message
-            : '¡Gracias! Recibimos tu mensaje y te responderemos pronto.',
-          true,
-        );
-      } else {
-        // El PHP puede devolver errores por campo: { errors: { email: "..." } }
-        const errores = resultado.errors;
-        if (errores && typeof errores === 'object') {
-          for (const [campo, texto] of Object.entries(errores)) {
-            mostrarError(campo, String(texto));
-          }
-        }
-        avisar(
-          typeof resultado.message === 'string'
-            ? resultado.message
-            : 'No pudimos enviar tu mensaje. Inténtalo de nuevo.',
-          false,
-        );
+      if (nombre.length < 2) {
+        mostrarError('nombre', 'Necesitamos tu nombre para responderte.');
+        ok = false;
       }
-    } catch {
-      avisar('Hubo un problema de conexión. Inténtalo de nuevo en unos minutos.', false);
-    } finally {
-      boton.disabled = false;
-      boton.textContent = textoBoton;
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+        mostrarError('email', 'Revisa el correo: ahí te respondemos.');
+        ok = false;
+      }
+      if (mensaje.length < 10) {
+        mostrarError('mensaje', 'Cuéntanos un poco más, aunque sea en una línea.');
+        ok = false;
+      }
+      return ok;
+    };
+
+    // Al corregir un campo marcado, el aviso se va sin esperar a reenviar.
+    for (const campo of conError) {
+      const control = form.elements.namedItem(campo);
+      if (!(control instanceof HTMLElement)) continue;
+      control.addEventListener('input', () => {
+        if (control.getAttribute('aria-invalid') === 'true') mostrarError(campo, '');
+      });
     }
-  });
+
+    form.addEventListener('submit', async (evento) => {
+      evento.preventDefault();
+      limpiar();
+
+      const datos = new FormData(form);
+      if (!validar(datos)) {
+        form.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
+        return;
+      }
+
+      boton.disabled = true;
+      rotulo.textContent = 'Enviando…';
+
+      try {
+        const respuesta = await fetch(form.action, {
+          method: 'POST',
+          body: datos,
+          headers: { Accept: 'application/json' },
+        });
+        const resultado = (await respuesta.json().catch(() => ({}))) as Record<string, unknown>;
+
+        if (respuesta.ok && resultado.ok) {
+          form.reset();
+          if (abierto) abierto.value = String(Date.now());
+          avisar(
+            typeof resultado.message === 'string'
+              ? resultado.message
+              : 'Gracias. Recibimos tu mensaje y te respondemos a la brevedad.',
+            'ok',
+          );
+        } else {
+          // El PHP puede devolver errores por campo: { errors: { email: "…" } }
+          const errores = resultado.errors;
+          if (errores && typeof errores === 'object') {
+            for (const [campo, texto] of Object.entries(errores)) {
+              mostrarError(campo, String(texto));
+            }
+          }
+          avisar(
+            typeof resultado.message === 'string'
+              ? resultado.message
+              : 'No pudimos enviar tu mensaje. Inténtalo de nuevo.',
+            'error',
+          );
+        }
+      } catch {
+        avisar(
+          `Hubo un problema de conexión. Escríbenos a hola@webe.cl mientras lo revisamos.`,
+          'error',
+        );
+      } finally {
+        boton.disabled = false;
+        rotulo.textContent = textoBoton;
+      }
+    });
+  }
 </script>

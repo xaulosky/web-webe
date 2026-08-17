@@ -11,7 +11,8 @@ export const site = {
   email: 'hola@webe.cl',
   // TODO: teléfono (el diseño no lo muestra).
   phone: '+56 9 0000 0000',
-  direccion: ['Avenida Vitacura 3439, Oficina 203', 'Vitacura', 'Santiago, Chile'],
+  // Dos líneas: la comuna y la ciudad van juntas, sin cortar entre ellas.
+  direccion: ['Avenida Vitacura 3439, Oficina 203', 'Vitacura, Santiago, Chile'],
   address: 'Avenida Vitacura 3439, Oficina 203, Vitacura, Santiago, Chile',
   creditos: { texto: 'the—concept.studio', url: 'https://the-concept.studio/' },
   // TODO: URLs reales de los perfiles.

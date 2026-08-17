@@ -26,8 +26,13 @@
   --font-weight-medium: 500;
 }
 
+/* Sin scroll-behavior: smooth. El suavizado lo hace el JS escribiendo la
+   posición en cada fotograma, y las dos cosas juntas se estorban: el navegador
+   arranca su propia animación con cada escritura y la cancela al fotograma
+   siguiente, que es lo que se siente como saltos. Las anclas las suaviza el
+   mismo JS (ver Animaciones.astro). */
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
 }
 
 body {

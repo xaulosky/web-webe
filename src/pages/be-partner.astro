@@ -4,6 +4,7 @@ import HeroPagina from '../components/HeroPagina.astro';
 import Proceso from '../components/Proceso.astro';
 import Acordeon from '../components/Acordeon.astro';
 import SeccionContacto from '../components/SeccionContacto.astro';
+import ContactForm from '../components/ContactForm.astro';
 import Clientes from '../components/Clientes.astro';
 ---
 
@@ -53,6 +54,24 @@ import Clientes from '../components/Clientes.astro';
 
   <Clientes />
 
+  <section class="postular" id="postular">
+    <div class="postular__encabezado" data-anima="grupo">
+      <h2>
+        Hablemos de tu proyecto<br />
+        y de cómo podemos aportar
+      </h2>
+      <p>
+        Déjanos tus datos y una idea de lo que necesitas. Nos gusta entrar
+        temprano en los proyectos: cuanto antes conversemos, más podemos aportar
+        en decisiones de plazo, presupuesto y equipamiento.
+      </p>
+    </div>
+
+    <div class="postular__formulario" data-anima>
+      <ContactForm origen="be-partner" />
+    </div>
+  </section>
+
   <SeccionContacto />
 </Base>
 
@@ -94,10 +113,44 @@ import Clientes from '../components/Clientes.astro';
     letter-spacing: -0.01em;
   }
 
+  /* Texto a la izquierda y formulario a la derecha, con la misma sangría que
+     el resto de la página. */
+  .postular {
+    display: grid;
+    grid-template-columns: 38% 1fr;
+    gap: clamp(2rem, 6vw, 6rem);
+    padding: clamp(3rem, 7vw, 7rem) clamp(1.5rem, 8vw, 8rem) clamp(3rem, 7vw, 7rem)
+      clamp(1.5rem, 16.7vw, 18rem);
+  }
+
+  .postular h2 {
+    margin: 0;
+    font-size: clamp(1.35rem, 2vw, 1.85rem);
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+
+  .postular__encabezado p {
+    margin: clamp(1rem, 2vw, 1.5rem) 0 0;
+    max-width: 34ch;
+    font-size: clamp(0.9rem, 1.05vw, 1rem);
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--color-muted);
+  }
+
+  @media (max-width: 960px) {
+    .postular {
+      grid-template-columns: 1fr;
+    }
+  }
+
   @media (max-width: 860px) {
     .intro,
     .etapas__encabezado,
-    .razones__encabezado {
+    .razones__encabezado,
+    .postular {
       padding-inline: clamp(1.5rem, 6vw, 2.5rem);
     }
   }

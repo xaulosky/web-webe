@@ -15,7 +15,9 @@ const { id = 'descubre' } = Astro.props;
     <div class="nosotros__relleno"></div>
   </div>
 
-  <div class="nosotros__panel" data-anima="grupo">
+  {/* Sin data-anima: su entrada la marca el scroll del hero (--sale-hero) y
+      sumar el revelado genérico encima daba dos animaciones a la vez. */}
+  <div class="nosotros__panel">
     <p class="nosotros__antetitulo">Quiénes somos</p>
 
     <p class="nosotros__texto">
@@ -53,11 +55,24 @@ const { id = 'descubre' } = Astro.props;
     background: #fff;
   }
 
-  /* El contenido se apoya en la parte alta de la diagonal, a la derecha. */
+  /* El contenido se apoya en la parte alta de la diagonal, a la derecha, y
+     entra acompañando el final del hero: `--sale-hero` lo publica el scrub del
+     titular, así que el texto sube y aparece mientras el hero se apaga, en vez
+     de esperar a estar en pantalla para revelarse por su cuenta. */
   .nosotros__panel {
     position: relative;
     margin-left: 58.5%;
     padding: 7% 4% clamp(3rem, 6vw, 6rem) 0;
+    opacity: var(--sale-hero, 1);
+    transform: translateY(calc((1 - var(--sale-hero, 1)) * 2.5rem));
+    will-change: opacity, transform;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nosotros__panel {
+      opacity: 1;
+      transform: none;
+    }
   }
 
   /* Mismo tamaño y color que los botones del sitio, como pide el diseño. */

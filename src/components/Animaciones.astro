@@ -102,13 +102,19 @@
     const limite = () =>
       Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
 
-    // Cuánto se acerca al objetivo por frame. Más alto = más seco.
-    // Por debajo de ~0.2 el scroll se siente pesado.
-    const SUAVIDAD = 0.26;
+    // Cuánto se acerca al objetivo en un fotograma de 60 Hz. Más alto = más
+    // seco. Por debajo de ~0.2 el scroll se siente pesado.
+    const SUAVIDAD = 0.19;
+    const FOTOGRAMA = 1000 / 60;
+    /* Tope al avance de un solo fotograma. Sin esto, cuando el rAF llega tarde
+       —arranque del gesto, pestaña que vuelve al frente— el tiempo acumulado se
+       traduce en un salto grande de golpe, justo lo que hay que evitar. */
+    const AVANCE_MAXIMO = 0.34;
 
     let objetivo = window.scrollY;
     let actual = objetivo;
     let animando = false;
+    let ultimoInstante = 0;
 
     // deltaY no siempre viene en píxeles: en modo línea o página hay que
     // convertirlo o el scroll queda ridículamente corto.
@@ -118,17 +124,47 @@
       return evento.deltaY;
     };
 
-    const paso = () => {
-      const resta = objetivo - actual;
-      actual += resta * SUAVIDAD;
+    const paso = (instante: number) => {
+      // El avance se calcula con el tiempo real transcurrido, no por fotograma:
+      // a 120 Hz un factor fijo recorría el doble por segundo y el scroll se
+      // sentía distinto según el monitor. El tope de 4 fotogramas evita un
+      // tirón al volver de una pestaña en segundo plano.
+      const transcurrido = ultimoInstante
+        ? Math.min(instante - ultimoInstante, FOTOGRAMA * 4)
+        : FOTOGRAMA;
+      ultimoInstante = instante;
 
+      const avance = Math.min(
+        AVANCE_MAXIMO,
+        1 - Math.pow(1 - SUAVIDAD, transcurrido / FOTOGRAMA),
+      );
+      const resta = objetivo - actual;
+      actual += resta * avance;
+
+      // Medio píxel: por debajo de eso el navegador ya redondea al mismo entero
+      // y seguir animando sólo produce microtemblor.
       if (Math.abs(resta) < 0.5) {
         actual = objetivo;
         animando = false;
+        ultimoInstante = 0;
       }
 
-      window.scrollTo(0, actual);
+      window.scrollTo({ top: actual, behavior: 'instant' });
       if (animando) requestAnimationFrame(paso);
+    };
+
+    const arrancar = () => {
+      if (animando) return;
+      animando = true;
+      ultimoInstante = 0;
+      requestAnimationFrame(paso);
+    };
+
+    /** Lleva el scroll a una posición con el mismo suavizado que la rueda. */
+    const irA = (destino: number) => {
+      objetivo = Math.min(limite(), Math.max(0, destino));
+      actual = window.scrollY;
+      arrancar();
     };
 
     const activo = () =>
@@ -156,6 +192,7 @@
         // Si veníamos interpolando, cortamos: el gesto manda.
         if (animando) {
           animando = false;
+          ultimoInstante = 0;
           objetivo = actual = window.scrollY;
         }
         return; // scroll nativo
@@ -166,11 +203,7 @@
 
       evento.preventDefault();
       objetivo = Math.min(limite(), Math.max(0, objetivo + enPixeles(evento)));
-
-      if (!animando) {
-        animando = true;
-        requestAnimationFrame(paso);
-      }
+      arrancar();
     };
 
     /* Arrancamos con un listener pasivo que sólo clasifica el dispositivo. El
@@ -189,6 +222,23 @@
     };
 
     window.addEventListener('wheel', clasificar, { passive: true });
+
+    /* Las anclas las suavizaba `scroll-behavior: smooth`, que hubo que quitar
+       porque se estorbaba con la escritura por fotograma. Ahora el salto lo
+       interpola este mismo motor, con la misma curva que la rueda. */
+    document.addEventListener('click', (evento) => {
+      const enlace = (evento.target as HTMLElement)?.closest?.('a[href^="#"]');
+      if (!(enlace instanceof HTMLAnchorElement) || evento.defaultPrevented) return;
+
+      const id = decodeURIComponent(enlace.hash.slice(1));
+      const destino = id ? document.getElementById(id) : document.documentElement;
+      if (!destino) return;
+
+      evento.preventDefault();
+      irA(destino === document.documentElement ? 0 : window.scrollY + destino.getBoundingClientRect().top);
+      // La URL sigue reflejando el ancla, como en una navegación normal.
+      history.pushState(null, '', enlace.hash);
+    });
 
     // Teclado, anclas, arrastre de la barra: nos resincronizamos con la
     // posición real en vez de pelearnos con ella.

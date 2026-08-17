@@ -94,9 +94,12 @@ const { scrollTo = '#descubre' } = Astro.props;
 <style>
   /* El wrapper alto es la pista de scroll que scrubea la animación; el hero
      queda pegado arriba mientras dura. */
+  /* Pista de scroll del morph. A 250vh había que recorrer una pantalla y media
+     para pasar el hero y la sección siguiente tardaba en asomar; a 200vh todo
+     el relevo cabe en menos de una pantalla de scroll. */
   .hero-wrap {
     position: relative;
-    height: 250vh;
+    height: 200vh;
   }
 
   .hero {
@@ -478,6 +481,14 @@ const { scrollTo = '#descubre' } = Astro.props;
       hero?.style.setProperty('--oscurecer', String(suavizar(tramo(p, 0.1, 0.66))));
       claim.style.setProperty('--claim-in', String(suavizar(tramo(p, 0.62, 0.78))));
       marcasEl?.style.setProperty('--marcas-in', String(suavizar(tramo(p, 0.72, 0.88))));
+
+      // 5. La sección siguiente no espera a estar en pantalla para moverse: se
+      //    va asomando con el último tramo del hero, así el relevo entre las dos
+      //    se lee como una sola animación en vez de dos cosas encadenadas.
+      document.documentElement.style.setProperty(
+        '--sale-hero',
+        String(suavizar(tramo(p, 0.66, 0.94))),
+      );
     };
 
     if (sinMovimiento.matches) {
