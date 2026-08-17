@@ -369,6 +369,12 @@ const { scrollTo = '#descubre' } = Astro.props;
     let dx = 0;
     let dy = 0;
     let escala = 1;
+    /**
+     * Cuánto corre el titular por el solo hecho de estrecharse: al estar
+     * centrado, perder ancho lo empuja hacia la derecha. Se descuenta para que
+     * el «we» quede clavado mientras las otras palabras se van.
+     */
+    let desfase = 0;
 
     /**
      * FLIP: mide dónde queda "webe™" ya colapsado y a tamaño de hero, y lo
@@ -380,12 +386,17 @@ const { scrollTo = '#descubre' } = Astro.props;
       for (const pieza of encogibles) pieza.style.width = '';
       anchos = encogibles.map((pieza) => pieza.getBoundingClientRect().width);
 
-      // Estado final (colapsado, sin transform) para leer su geometría real.
+      // Estado inicial (abierto, sin transform): de aquí sale el borde
+      // izquierdo del «we», que es el punto que no se debe mover.
       const transformPrevio = morph.style.transform;
       morph.style.transform = 'none';
+      const inicio = morph.getBoundingClientRect();
+
+      // Estado final (colapsado, sin transform) para leer su geometría real.
       for (const pieza of encogibles) pieza.style.width = '0px';
 
       const fin = morph.getBoundingClientRect();
+      desfase = fin.left - inicio.left;
 
       // Un span vacío alineado a la línea base delata dónde está esa línea:
       // la caja de texto incluye interlineado y el SVG del logo no, así que
@@ -431,7 +442,7 @@ const { scrollTo = '#descubre' } = Astro.props;
       // 1. Las palabras se van y el bloque se junta. La tinta de las que caen
       //    se corre a la izquierda al ritmo del cierre: el enmascarado las
       //    oculta hacia la izquierda.
-      const cierre = suavizar(tramo(p, 0.02, 0.3));
+      const cierre = suavizar(tramo(p, 0.02, 0.26));
       title.style.setProperty('--fade', String(tramo(p, 0, 0.16)));
       encogibles.forEach((pieza, i) => {
         pieza.style.width = `${(anchos[i] ?? 0) * (1 - cierre)}px`;
@@ -440,25 +451,33 @@ const { scrollTo = '#descubre' } = Astro.props;
       });
 
       // 2. El bloque viaja al navbar en dos tiempos: primero se va del todo
-      //    hacia la izquierda y recién después sube. Los tramos no se solapan:
-      //    el pedido es que se desplace «totalmente» antes de subir.
-      const viajeX = suavizar(tramo(p, 0.1, 0.32));
-      const viajeY = suavizar(tramo(p, 0.32, 0.46));
-      const encoge = suavizar(tramo(p, 0.1, 0.44));
-      morph.style.transform = `translate(${dx * viajeX}px, ${dy * viajeY}px) scale(${
+      //    hacia la izquierda y recién después sube. Ninguno de los dos tramos
+      //    se solapa con el cierre: mientras las palabras caen, el «we» tiene
+      //    que quedarse completamente quieto —ni se corre ni se encoge— y es
+      //    «be» el que se acerca a él hasta formar «webe». El viaje empieza
+      //    cuando el cierre ya terminó.
+      const viajeX = suavizar(tramo(p, 0.28, 0.44));
+      const viajeY = suavizar(tramo(p, 0.44, 0.58));
+      const encoge = suavizar(tramo(p, 0.28, 0.56));
+      // El primer término anula el corrimiento del centrado, así que el «we» se
+      // queda donde estaba mientras el resto se cierra sobre él. El segundo es
+      // el viaje al navbar, que arranca desde esa posición sostenida: por eso
+      // lleva el desfase sumado.
+      const desplazaX = -desfase * cierre + (dx + desfase) * viajeX;
+      morph.style.transform = `translate(${desplazaX}px, ${dy * viajeY}px) scale(${
         1 + (escala - 1) * encoge
       })`;
 
       // 3. Relevo entre el texto y el logo oficial del navbar.
-      const relevo = tramo(p, 0.42, 0.5);
+      const relevo = tramo(p, 0.54, 0.62);
       title.style.opacity = String(1 - relevo);
       header.style.setProperty('--logo-opacity', String(relevo));
       header.dataset.morph = relevo >= 1 ? 'done' : 'running';
 
       // 4. Fase 2: el video se apaga, luego el claim, luego las marcas.
-      hero?.style.setProperty('--oscurecer', String(suavizar(tramo(p, 0.1, 0.6))));
-      claim.style.setProperty('--claim-in', String(suavizar(tramo(p, 0.5, 0.66))));
-      marcasEl?.style.setProperty('--marcas-in', String(suavizar(tramo(p, 0.6, 0.78))));
+      hero?.style.setProperty('--oscurecer', String(suavizar(tramo(p, 0.1, 0.66))));
+      claim.style.setProperty('--claim-in', String(suavizar(tramo(p, 0.62, 0.78))));
+      marcasEl?.style.setProperty('--marcas-in', String(suavizar(tramo(p, 0.72, 0.88))));
     };
 
     if (sinMovimiento.matches) {
