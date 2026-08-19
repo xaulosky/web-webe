@@ -331,6 +331,10 @@ const taxonomia = [
     let foto = 0;
     let visible = false;
     let reloj = 0;
+    /** Lo rellena el import de más abajo; hasta entonces no hay a dónde saltar. */
+    let siguienteProyecto = () => {};
+    /** Distingue el salto que damos nosotros del que hace el visitante. */
+    let saltandoSolo = false;
 
     const sinMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -355,11 +359,23 @@ const taxonomia = [
     const reiniciarReloj = () => {
       window.clearInterval(reloj);
       if (sinMovimiento.matches) return;
-      // Loop automático de las tres fotos.
+      // Pasan las tres fotos del proyecto y, cuando se acaban, entra el
+      // siguiente proyecto: el recorrido es continuo en vez de quedarse dando
+      // vueltas sobre el mismo.
       reloj = window.setInterval(() => {
         if (!visible) return;
-        foto = (foto + 1) % 3;
-        pintarFoto();
+
+        const total = fondos.filter(
+          (img) => Number(img.dataset.fondoDe) === actual,
+        ).length;
+
+        if (foto < total - 1) {
+          foto += 1;
+          pintarFoto();
+          return;
+        }
+
+        siguienteProyecto();
       }, 2400);
     };
 
@@ -384,6 +400,23 @@ const taxonomia = [
           // Un dato vacío se muestra como raya, no como celda en blanco.
           celda.textContent = String(proyecto[clave] || '—');
         }
+      };
+
+      /* El salto automático mueve la pista, no el estado: así el título
+         centrado y los datos de abajo siguen saliendo de una sola fuente, que
+         es el scroll. Al llegar al último vuelve al primero. */
+      siguienteProyecto = () => {
+        const destino = (actual + 1) % botones.length;
+        saltandoSolo = true;
+        botones[destino]?.scrollIntoView({
+          inline: 'center',
+          block: 'nearest',
+          behavior: 'smooth',
+        });
+        // El scroll suave tarda; el flag se levanta cuando ya llegó.
+        window.setTimeout(() => {
+          saltandoSolo = false;
+        }, 700);
       };
 
       /* Manda el título que quedó centrado en la pista, no el que se pulsó: así
@@ -415,6 +448,10 @@ const taxonomia = [
           requestAnimationFrame(() => {
             pedido = false;
             centrado();
+            // Si el que mueve la pista es el visitante, el reloj vuelve a
+            // empezar: no tiene sentido que le cambiemos el proyecto debajo
+            // mientras recorre.
+            if (!saltandoSolo) reiniciarReloj();
           });
         },
         { passive: true },
