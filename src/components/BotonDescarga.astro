@@ -1,7 +1,10 @@
 ---
-// Botón de descarga (botondescarga.svg). El marco no es una píldora: el canto
-// derecho baja en diagonal. Se dibuja como SVG de fondo y el texto va en HTML
-// para que sea seleccionable, accesible y use la tipografía del sitio.
+// Botón de descarga tal cual lo entregó el diseño: el SVG trae el marco de
+// canto diagonal, el icono y el rótulo ya vectorizados, así que se usa entero
+// en vez de rearmarlo con texto HTML encima —que es justo lo que el PDF pedía
+// corregir («usar el botón en SVG, porque se ve raro»)—.
+import svgCrudo from '../assets/boton-catalogo.svg?raw';
+
 interface Props {
   href?: string;
   /** Sin archivo se dibuja igual pero inactivo, para no ofrecer una descarga
@@ -11,6 +14,12 @@ interface Props {
 }
 
 const { href, inactivo = false, etiqueta = 'Descargar catálogo' } = Astro.props;
+
+// El original viene con un gris fijo; heredando el color, el estado inactivo y
+// el hover se resuelven desde el CSS sin tocar el trazado.
+const svg = svgCrudo
+  .replace(/\.cls-1\s*\{[^}]*\}/, '.cls-1{fill:currentColor;}')
+  .replace('<svg', '<svg class="descarga__grafico" aria-hidden="true" focusable="false"');
 
 // Sin archivo no es un enlace: un <a> sin href no es accesible ni navegable.
 const apagado = inactivo || !href;
@@ -24,70 +33,24 @@ const Elemento = apagado ? 'span' : 'a';
   aria-disabled={apagado ? 'true' : undefined}
   title={apagado ? 'Catálogo pendiente' : undefined}
 >
-  <svg class="descarga__marco" viewBox="0 0 211.05 67.79" preserveAspectRatio="none" aria-hidden="true">
-    <path
-      d="M183.2,67.29H12.24c-6.48,0-11.74-5.26-11.74-11.74V12.24C.5,5.76,5.76.5,12.24.5h189.99c5.66,0,9.67,5.54,7.89,10.92l-15.78,47.82c-1.59,4.81-6.08,8.06-11.15,8.06Z"
-      fill="none"
-      stroke="currentColor"
-      vector-effect="non-scaling-stroke"
-    ></path>
-  </svg>
-
-  <svg class="descarga__icono" viewBox="19.07 15.74 27.11 35.31" fill="currentColor" aria-hidden="true">
-    <path
-      d="M44.38,47.44h-23.52c-.99,0-1.79.8-1.79,1.79v1.82h27.11v-1.82c0-.99-.8-1.79-1.79-1.79Z"
-    ></path>
-    <path
-      d="M30.54,43.83h4.19c.94,0,1.82-.49,2.31-1.3l9.14-14.96h-2.69c-.94,0-1.82.49-2.31,1.3l-6.74,11.03v-23.16h-3.61v23.16l-6.74-11.03c-.49-.81-1.37-1.3-2.31-1.3h-2.69l9.14,14.96c.49.81,1.37,1.3,2.31,1.3Z"
-    ></path>
-  </svg>
-
-  <span class="descarga__texto" set:html={etiqueta.replace(' ', '<br />')} />
+  {/* El rótulo va vectorizado dentro del SVG: aquí queda el texto de verdad
+      para lectores de pantalla y buscadores. */}
+  <span class="sr-only">{etiqueta}</span>
+  <Fragment set:html={svg} />
 </Elemento>
 
 <style>
   .descarga {
-    /* Proporción del asset: así el preserveAspectRatio="none" del marco nunca
-       llega a deformar nada. */
-    position: relative;
-    display: grid;
-    grid-template-columns: auto auto;
-    align-items: center;
-    /* Centrado dentro del marco, como el SVG del diseño: pegado a la izquierda
-       el conjunto quedaba descolgado del canto diagonal. */
-    justify-content: center;
-    gap: clamp(0.8rem, 1.5vw, 1.3rem);
+    display: block;
     width: clamp(10.5rem, 14.5vw, 13.5rem);
-    aspect-ratio: 211.05 / 67.79;
-    /* El canto derecho baja en diagonal: el texto necesita más aire por ahí. */
-    padding-left: 4%;
-    padding-right: 10%;
     color: var(--color-ink);
     transition: color 0.25s ease;
   }
 
-  .descarga__marco {
-    position: absolute;
-    inset: 0;
+  .descarga__grafico {
+    display: block;
     width: 100%;
-    height: 100%;
-  }
-
-  /* En el SVG del diseño el icono ocupa el 43% del alto del marco; a 0.95rem
-     quedaba en el 29% y por eso el botón se veía raro. */
-  .descarga__icono {
-    position: relative;
-    width: 1.4rem;
     height: auto;
-  }
-
-  .descarga__texto {
-    position: relative;
-    font-size: 0.8rem;
-    font-weight: 500;
-    line-height: 1.3;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
   }
 
   a.descarga:hover {

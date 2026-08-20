@@ -1,10 +1,13 @@
 ---
-// Corte entre el hero y la sección siguiente: un escalón. Recorre 99 unidades
-// de ancho en 165 de alto, con dos arcos circulares de radio 34 en sentidos
-// opuestos —cóncavo abajo, donde termina el bloque oscuro, y convexo arriba,
-// donde empieza el panel blanco— unidos por un tramo recto a 16° de la
-// vertical. El ajuste pidió el ángulo algo más pronunciado y las curvas
-// ligeramente más amplias que la versión anterior (70 de ancho, radio 26,6).
+// Corte entre el hero y la sección siguiente: un escalón. Dos arcos circulares
+// de radio 34 en sentidos opuestos —cóncavo abajo, donde termina el bloque
+// oscuro, y convexo arriba, donde empieza el panel blanco— unidos por un tramo
+// recto a 18° de la vertical, que son los 108° de ángulo interior del diseño.
+//
+// Los puntos de unión no son a ojo: cada arco gira los 72° que faltan para
+// pasar de la tangente horizontal a esa inclinación, así que salen de
+// (r·sen72°, alto−r+r·cos72°) y su simétrico. Cambiar el ángulo obliga a
+// recalcularlos o los arcos dejan de empalmar sin quiebre con la recta.
 //
 // El escalón es un SVG de tamaño fijo y proporción intacta, y los tramos planos
 // se resuelven con cajas a cada lado. Estirarlo a todo el ancho deformaría los
@@ -29,7 +32,7 @@ const { quiebre = '56.2%' } = Astro.props;
     style="display:block"
   >
     <path
-      d="M0,165 A34,34 0 0 0 32.7,140.4 L65.9,24.6 A34,34 0 0 1 98.6,0 L118,0 L118,165 Z"
+      d="M0,165 A34,34 0 0 0 32.34,141.51 L70.68,23.49 A34,34 0 0 1 103.02,0 L118,0 L118,165 Z"
       fill="#fff"
     ></path>
   </svg>

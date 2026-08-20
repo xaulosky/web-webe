@@ -25,9 +25,9 @@ const { id, antetitulo, alineacion = 'izquierda' } = Astro.props;
 
 <style>
   .bloque {
-    /* El diseño pide 71,5° respecto de la horizontal, que son 18,5° de sesgo
-       desde la vertical. */
-    --inclinacion: -18.5deg;
+    /* Mismo canto que el escalón del hero: 18° desde la vertical, o sea los
+       108° de ángulo interior que define el diseño. */
+    --inclinacion: -18deg;
     --radio: clamp(2rem, 3.5vw, 3.5rem);
 
     position: relative;
