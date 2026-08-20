@@ -64,9 +64,11 @@ const { id, antetitulo } = Astro.props;
     display: grid;
     grid-template-columns: 53% 1fr;
     gap: clamp(1.5rem, 5vw, 5rem);
-    /* La foto arranca alta, justo debajo del escalón. */
-    padding: clamp(1.5rem, 4vw, 4rem) clamp(1.5rem, 5vw, 5rem)
-      clamp(2rem, 5vw, 5rem) clamp(1.5rem, 8vw, 9rem);
+    /* La sección sube --solape sobre lo anterior; el contenido lo descuenta y
+       arranca justo debajo del escalón. Sin esto la foto se montaba sobre el
+       hero, en la franja donde el blanco todavía no es macizo. */
+    padding: calc(var(--solape) + clamp(0.5rem, 1.5vw, 1.5rem))
+      clamp(1.5rem, 5vw, 5rem) clamp(2rem, 5vw, 5rem) clamp(1.5rem, 8vw, 9rem);
   }
 
   /* El texto acompaña la bajada: se queda fijo mientras la foto pasa y se
