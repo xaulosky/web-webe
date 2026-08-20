@@ -14,6 +14,11 @@
     aria-hidden="true"
     tabindex="-1"
   >
+    {/* Mismo criterio que el hero: vertical en pantallas altas y estrechas,
+        WebM primero y MP4 de respaldo para el Safari sin VP9. */}
+    <source src="/media/cita-vertical.webm" type="video/webm" media="(max-aspect-ratio: 3/4)" />
+    <source src="/media/cita.webm" type="video/webm" />
+    <source src="/media/cita-vertical.mp4" type="video/mp4" media="(max-aspect-ratio: 3/4)" />
     <source src="/media/cita.mp4" type="video/mp4" />
   </video>
   <div class="cita__scrim" aria-hidden="true"></div>

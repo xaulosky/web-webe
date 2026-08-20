@@ -150,7 +150,15 @@ const resumen = (texto: string) =>
           <defs>
             <path id="aro-ver-marca" fill="none" d="M 50,50 m -36,0 a 36,36 0 1,1 72,0 a 36,36 0 1,1 -72,0" />
           </defs>
-          <text><textPath href="#aro-ver-marca">VER MARCA — VER MARCA — </textPath></text>
+          {/* Tres vueltas en vez de dos y ajustado a la circunferencia exacta
+              del aro (2·π·36 ≈ 226): con dos repeticiones el texto llenaba el
+              71% y quedaba un hueco. lengthAdjust reparte el sobrante en los
+              espacios, no en los glifos, así que las letras no se deforman. */}
+          <text textLength="226" lengthAdjust="spacing"
+            ><textPath href="#aro-ver-marca"
+              >VER MARCA — VER MARCA — VER MARCA — </textPath
+            ></text
+          >
         </svg>
         <svg class="marcas__ver-flecha" viewBox="0 0 21.84 19.04" fill="currentColor" aria-hidden="true">
           <path d="M21.84,10.99v-.2s0-2.54,0-2.54v-.2c0-.66-.35-1.28-.91-1.62L10.42,0v1.89c0,.66.35,1.28.91,1.62l7.75,4.74H0s0,2.54,0,2.54h19.08s-7.75,4.74-7.75,4.74c-.57.35-.91.96-.91,1.62v1.89s10.51-6.42,10.51-6.42c.57-.35.91-.96.91-1.62Z"></path>
@@ -212,7 +220,11 @@ const resumen = (texto: string) =>
     align-items: stretch;
     justify-content: safe center;
     background: var(--fondo);
-    padding-inline: clamp(1rem, 4vw, 3rem);
+    /* Separación entre pestañas: los flancos de la activa salen de su caja y
+       sin este hueco se comían el logo de al lado. El padding lateral reserva
+       lo mismo para la primera y la última. */
+    gap: clamp(1.5rem, 3.2vw, 3.25rem);
+    padding-inline: clamp(1.5rem, 5vw, 4.5rem);
     overflow-x: auto;
     scroll-snap-type: x proximity;
     scrollbar-width: none;
@@ -470,15 +482,13 @@ const resumen = (texto: string) =>
     grid-area: 1 / 1;
   }
 
-  /* Texto algo menor y más suelto: a 9px con poco interletrado las dos vueltas
-     se leían apretadas contra el aro. */
+  /* El interletrado lo reparte textLength; aquí sólo manda el cuerpo. */
   .marcas__ver-aro {
     width: 100%;
     height: 100%;
     fill: currentColor;
     font-size: 7.6px;
     font-weight: 400;
-    letter-spacing: 2.4px;
     animation: aro-gira 20s linear infinite;
   }
 

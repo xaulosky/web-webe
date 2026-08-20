@@ -19,6 +19,20 @@ const { scrollTo = '#descubre' } = Astro.props;
   </style>
 </noscript>
 
+{/* El atributo poster no entiende de media queries, así que en pantallas
+    verticales se cambia antes del primer pintado; si no, el cartel del hero
+    sería el encuadre ancho recortado. */}
+<script is:inline>
+  if (window.matchMedia('(max-aspect-ratio: 3/4)').matches) {
+    document.addEventListener('DOMContentLoaded', () => {
+      const v = document.querySelector('.hero__video');
+      if (v) v.setAttribute('poster', '/media/hero-poster-vertical.jpg');
+      const c = document.querySelector('.cita__video');
+      if (c) c.setAttribute('poster', '/media/cita-poster-vertical.jpg');
+    });
+  }
+</script>
+
 <div class="hero-wrap" id="hero-wrap">
   <section class="hero">
     <video
@@ -32,6 +46,14 @@ const { scrollTo = '#descubre' } = Astro.props;
       aria-hidden="true"
       tabindex="-1"
     >
+      {/* Vertical en pantallas altas y estrechas: el horizontal recortado a
+          móvil dejaba fuera casi todo el encuadre. El navegador se queda con
+          el primer <source> que le sirve, así que el orden importa: WebM antes
+          que MP4, y dentro de cada formato el vertical antes que el ancho.
+          El MP4 va de respaldo por el parque de Safari sin VP9. */}
+      <source src="/media/hero-vertical.webm" type="video/webm" media="(max-aspect-ratio: 3/4)" />
+      <source src="/media/hero.webm" type="video/webm" />
+      <source src="/media/hero-vertical.mp4" type="video/mp4" media="(max-aspect-ratio: 3/4)" />
       <source src="/media/hero.mp4" type="video/mp4" />
     </video>
     <div class="hero__scrim" aria-hidden="true"></div>
