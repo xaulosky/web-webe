@@ -132,9 +132,12 @@ const { id = 'descubre' } = Astro.props;
       --solape: 10vh;
     }
 
+    /* Descuenta el solape: sin esto el antetítulo caía sobre la franja donde
+       todavía se ve el hero, encima del corte. */
     .nosotros__panel {
       margin-left: 0;
-      padding: 11% clamp(1.5rem, 6vw, 2.5rem) clamp(2.5rem, 8vw, 4rem);
+      padding: calc(var(--solape) + clamp(1.5rem, 6vw, 2.5rem))
+        clamp(1.5rem, 6vw, 2.5rem) clamp(2.5rem, 8vw, 4rem);
     }
   }
 </style>

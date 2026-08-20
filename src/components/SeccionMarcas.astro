@@ -541,13 +541,19 @@ const resumen = (texto: string) =>
       gap: clamp(1.5rem, 5vw, 2.5rem);
     }
 
-    /* En móvil la foto va arriba del texto, como en el diseño, y vuelve a su
-       proporción: en una columna no hay ficha con la que igualarse. */
+    /* En móvil la foto va arriba del texto, como en el diseño, y se muestra
+       cuadrada: a lo ancho de una columna, la franja apaisada del escritorio
+       quedaba en una tira de poco más de cien píxeles. */
     .marcas__medio {
       order: -1;
       cursor: auto;
-      aspect-ratio: 1920 / 650;
+      aspect-ratio: 1;
       min-height: 0;
+    }
+
+    /* Los logos de la barra, un punto más grandes. */
+    .marcas__pestana img {
+      width: clamp(3.75rem, 15vw, 5.5rem);
     }
 
     .marcas__ver {

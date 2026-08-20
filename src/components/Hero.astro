@@ -245,11 +245,11 @@ const { scrollTo = '#descubre' } = Astro.props;
   /* En móvil el titular va arriba y también en una sola línea: a 7vw ocupa
      ~83% del ancho, igual que en el diseño, y aguanta hasta 320px. */
   @media (max-width: 767px) {
+    /* Centrada: el claim de la fase 2 no se cruza con ella porque entra
+       cuando el titular ya se apagó. */
     .hero {
-      /* Arriba del centro para dejar sitio al claim de fase 2 y al badge, pero
-         no pegado al header: con 11vh el titular quedaba a 15px del navbar. */
-      align-items: flex-start;
-      padding-top: 34svh;
+      align-items: center;
+      padding-top: 0;
     }
 
     .hero__title {
