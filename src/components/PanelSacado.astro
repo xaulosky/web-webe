@@ -18,13 +18,18 @@ const { id, antetitulo } = Astro.props;
     <div class="sacado__relleno"></div>
   </div>
 
-  <div class="sacado__panel" data-anima="grupo">
-    {antetitulo && <p class="sacado__antetitulo">{antetitulo}</p>}
-    <slot />
-  </div>
+  {/* Las dos columnas en una misma rejilla: así el texto puede quedarse pegado
+      mientras la foto pasa por debajo. Apilados uno tras otro no habría contra
+      qué fijarlo. */}
+  <div class="sacado__cuerpo">
+    <div class="sacado__izquierda" data-anima>
+      <slot name="izquierda" />
+    </div>
 
-  <div class="sacado__izquierda" data-anima>
-    <slot name="izquierda" />
+    <div class="sacado__panel" data-anima="grupo">
+      {antetitulo && <p class="sacado__antetitulo">{antetitulo}</p>}
+      <slot />
+    </div>
   </div>
 </section>
 
@@ -54,11 +59,24 @@ const { id, antetitulo } = Astro.props;
     background: #fff;
   }
 
-  /* El texto se apoya en la parte alta de la diagonal, a la derecha. */
-  .sacado__panel {
+  .sacado__cuerpo {
     position: relative;
-    margin-left: 58.5%;
-    padding: 7% 4% clamp(2rem, 4vw, 4rem) 0;
+    display: grid;
+    grid-template-columns: 53% 1fr;
+    gap: clamp(1.5rem, 5vw, 5rem);
+    /* La foto arranca alta, justo debajo del escalón. */
+    padding: clamp(1.5rem, 4vw, 4rem) clamp(1.5rem, 5vw, 5rem)
+      clamp(2rem, 5vw, 5rem) clamp(1.5rem, 8vw, 9rem);
+  }
+
+  /* El texto acompaña la bajada: se queda fijo mientras la foto pasa y se
+     suelta cuando la columna termina. `align-self: start` es lo que lo hace
+     posible —estirado a toda la fila, sticky no tendría recorrido—. */
+  .sacado__panel {
+    position: sticky;
+    top: clamp(5rem, 11vh, 7rem);
+    align-self: start;
+    padding-bottom: clamp(2rem, 4vw, 4rem);
   }
 
   .sacado__antetitulo {
@@ -68,16 +86,8 @@ const { id, antetitulo } = Astro.props;
     color: var(--color-muted);
   }
 
-  /* La columna izquierda arranca cuando la diagonal ya dejó paso. */
   .sacado__izquierda {
     position: relative;
-    width: 53%;
-    padding: 0 clamp(1.5rem, 5vw, 5rem) clamp(2rem, 5vw, 5rem)
-      clamp(1.5rem, 8vw, 9rem);
-  }
-
-  .sacado__izquierda:empty {
-    padding: 0;
   }
 
   @media (max-width: 860px) {

@@ -145,25 +145,25 @@ const { scrollTo = '#descubre' } = Astro.props;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* El material original es muy luminoso; esto lo lleva al look del diseño. */
-    /* Arranca luminoso y se va apagando con el scroll, para que el claim de
-       la fase 2 tenga contraste. */
-    filter: saturate(0.32) sepia(0.1) brightness(calc(0.88 - 0.3 * var(--oscurecer, 0)))
-      contrast(1.04);
+    /* Sin tratamiento de color: el video ya viene con el look final. Sólo se
+       apaga con el scroll, y nada más que para que el claim de la fase 2 tenga
+       contraste encima. */
+    filter: brightness(calc(1 - 0.32 * var(--oscurecer, 0)));
   }
 
+  /* El velo general se retira: el video viene tratado y encimarle un degradado
+     lo ensuciaba. Queda sólo una sombra suave arriba y abajo, donde se apoyan
+     el logo del navbar y la fila de marcas. */
   .hero__scrim {
     position: absolute;
     inset: 0;
-    background:
-      linear-gradient(
-        180deg,
-        rgba(0, 0, 0, 0.4) 0%,
-        rgba(0, 0, 0, 0.2) 38%,
-        rgba(0, 0, 0, 0.24) 62%,
-        rgba(0, 0, 0, 0.44) 100%
-      ),
-      rgba(24, 22, 16, 0.2);
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.18) 0%,
+      rgba(0, 0, 0, 0) 22%,
+      rgba(0, 0, 0, 0) 70%,
+      rgba(0, 0, 0, 0.28) 100%
+    );
   }
 
   .hero__stage {
