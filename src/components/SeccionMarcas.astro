@@ -536,9 +536,13 @@ const resumen = (texto: string) =>
       padding-right: clamp(4rem, 18vw, 6rem);
     }
 
+    /* Márgenes iguales a los dos lados: en una columna heredaba la sangría
+       asimétrica del escritorio (12% a la izquierda contra 2,8% a la derecha) y
+       todo el bloque se veía corrido. */
     .marcas__detalle {
       grid-template-columns: 1fr;
       gap: clamp(1.5rem, 5vw, 2.5rem);
+      padding-inline: clamp(1.5rem, 6vw, 2.5rem);
     }
 
     /* En móvil la foto va arriba del texto, como en el diseño, y se muestra
