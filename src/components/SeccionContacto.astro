@@ -67,7 +67,16 @@ const mapaEnlace = `https://www.google.com/maps/search/?api=1&query=${consulta}`
 
 <style>
   .contacto {
-    padding-bottom: clamp(3rem, 6vw, 6rem);
+    /* El cuerpo del titular vive aquí porque de él sale la sangría a la que se
+       alinea la columna derecha. */
+    --titular: clamp(1.35rem, 2.7vw, 2.55rem);
+    --hueco: clamp(2rem, 5vw, 5rem);
+    /* Lo que ocupa «Comencemos con un » delante del correo, medido en em del
+       titular: al ser proporcional al cuerpo, la alineación aguanta en
+       cualquier ancho en vez de cuadrar sólo a un tamaño concreto. */
+    --sangria-correo: calc(var(--titular) * 10.86);
+
+    padding-bottom: clamp(2rem, 3.5vw, 3.5rem);
     overflow: hidden;
   }
 
@@ -77,7 +86,7 @@ const mapaEnlace = `https://www.google.com/maps/search/?api=1&query=${consulta}`
 
   .contacto__titular p {
     margin: 0;
-    font-size: clamp(1.35rem, 2.7vw, 2.55rem);
+    font-size: var(--titular);
     font-weight: 300;
     line-height: 1.35;
     letter-spacing: -0.01em;
@@ -93,11 +102,12 @@ const mapaEnlace = `https://www.google.com/maps/search/?api=1&query=${consulta}`
     padding-bottom: 0.1em;
   }
 
+  /* La columna derecha arranca justo donde arranca el correo del titular. */
   .contacto__cuerpo {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: clamp(2rem, 5vw, 5rem);
-    padding: clamp(2.5rem, 6vw, 6rem) clamp(1.5rem, 6vw, 7rem) 0
+    grid-template-columns: calc(var(--sangria-correo) - var(--hueco)) 1fr;
+    gap: var(--hueco);
+    padding: clamp(1.5rem, 3vw, 3rem) clamp(1.5rem, 6vw, 7rem) 0
       clamp(1.5rem, 16.5vw, 19rem);
   }
 
@@ -183,8 +193,10 @@ const mapaEnlace = `https://www.google.com/maps/search/?api=1&query=${consulta}`
 
   .contacto__mapa {
     position: relative;
-    margin-top: clamp(2rem, 4vw, 3.5rem);
-    aspect-ratio: 745 / 350;
+    margin-top: clamp(1.25rem, 2.2vw, 2rem);
+    /* Algo más apaisado: la columna izquierda tiene poco contenido y todo lo
+       que crece el mapa se traduce en vacío a su lado. */
+    aspect-ratio: 745 / 300;
     overflow: hidden;
     border-radius: clamp(0.75rem, 1.2vw, 1.15rem);
     background: var(--color-brand-100);
