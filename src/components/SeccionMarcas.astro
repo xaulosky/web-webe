@@ -416,9 +416,9 @@ const resumen = (texto: string) =>
     position: relative;
     display: grid;
     overflow: hidden;
-    /* Mismo radio que las pestañas de arriba: con 2vw las curvas se veían
-       bastante más abiertas que las de la barra. */
-    border-radius: var(--r);
+    /* Curva discreta: con el radio de las pestañas seguía leyéndose demasiado
+       redondeada para una foto de este tamaño. */
+    border-radius: clamp(0.5rem, 0.9vw, 0.85rem);
     /* La ficha marca la fila y el recuadro se estira hasta ahí; este suelo
        evita que quede una franja demasiado apaisada frente a la maqueta, que
        la dibuja en torno a 1.5:1. */

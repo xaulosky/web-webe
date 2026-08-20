@@ -37,6 +37,10 @@ const corridas = [clientes.slice(0, 10), clientes.slice(10)];
 <style>
   .clientes {
     display: grid;
+    /* Columna fija al ancho de la sección: las pistas miden max-content y, sin
+       esto, estiraban la columna y el título quedaba centrado respecto a ese
+       ancho enorme en vez de respecto a la pantalla. */
+    grid-template-columns: 100%;
     gap: clamp(0.5rem, 2vh, 1.5rem);
     padding-block: clamp(3.5rem, 9vw, 8rem);
     overflow: hidden;
