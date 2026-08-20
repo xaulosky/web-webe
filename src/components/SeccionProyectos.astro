@@ -1,4 +1,5 @@
 ---
+import PestanaFlanco from './PestanaFlanco.astro';
 import { proyectos } from '../config/site';
 
 // Todos los proyectos del array traen fotos: la carpeta define el destacado.
@@ -78,34 +79,44 @@ const taxonomia = [
     </ul>
   </div>
 
-  {/* Puntitos de las tres fotos del proyecto activo. */}
-  <div class="proyectos__puntos" role="tablist" aria-label="Fotos del proyecto">
-    {
-      [0, 1, 2].map((j) => (
-        <button
-          type="button"
-          role="tab"
-          data-ir-foto={j}
-          aria-selected={j === 0}
-          aria-label={`Foto ${j + 1}`}
-        />
-      ))
-    }
-  </div>
+  {/* El cajón de datos es una pestaña como las del resto del sitio: los cantos
+      suben a 18° a cada lado y el borde superior los une. Va centrado y los
+      puntitos se apoyan justo encima. */}
+  <div class="proyectos__cajon">
+    <div class="proyectos__puntos" role="tablist" aria-label="Fotos del proyecto">
+      {
+        [0, 1, 2].map((j) => (
+          <button
+            type="button"
+            role="tab"
+            data-ir-foto={j}
+            aria-selected={j === 0}
+            aria-label={`Foto ${j + 1}`}
+          />
+        ))
+      }
+    </div>
 
-  <dl class="proyectos__ficha">
-    {
-      taxonomia.map((dato) => (
-        <div class="proyectos__dato">
-          <svg viewBox={dato.vb} fill="currentColor" aria-hidden="true">
-            <path d={dato.icono} />
-          </svg>
-          <dt>{dato.rotulo}:</dt>
-          <dd data-campo={dato.clave}>{destacados[0][dato.clave] || '—'}</dd>
-        </div>
-      ))
-    }
-  </dl>
+    <div class="proyectos__marco">
+      <PestanaFlanco lado="izquierda" variante="trazo" color="rgba(255,255,255,0.45)" />
+
+      <dl class="proyectos__ficha">
+        {
+          taxonomia.map((dato) => (
+            <div class="proyectos__dato">
+              <svg viewBox={dato.vb} fill="currentColor" aria-hidden="true">
+                <path d={dato.icono} />
+              </svg>
+              <dt>{dato.rotulo}:</dt>
+              <dd data-campo={dato.clave}>{destacados[0][dato.clave] || '—'}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <PestanaFlanco lado="derecha" variante="trazo" color="rgba(255,255,255,0.45)" />
+    </div>
+  </div>
 </section>
 
 <style>
@@ -217,12 +228,60 @@ const taxonomia = [
     padding-block: clamp(0.5rem, 1.5vh, 1rem);
   }
 
+  /* El cajón entero se apoya abajo y va centrado, como pide el diseño. */
+  .proyectos__cajon {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    width: 100%;
+    margin-top: auto;
+  }
+
+  /* Altura fija a propósito: de ella sale el ancho de los cantos, y con la
+     altura dependiendo del contenido el cálculo era circular —el alto de la
+     fila lo fijaba el texto y el ancho del canto el alto— y los flancos
+     terminaban midiendo cero. */
+  .proyectos__marco {
+    --alto-cajon: clamp(4.5rem, 7.5vh, 6.5rem);
+    --canto: calc(var(--alto-cajon) * 103.02 / 165);
+
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    height: var(--alto-cajon);
+    max-width: min(88%, 92rem);
+  }
+
+  .proyectos__marco :global(.flanco) {
+    height: var(--alto-cajon);
+    width: var(--canto);
+  }
+
+  /* Desde la base de cada canto la línea sigue hasta el borde, como en el
+     diseño: la pestaña se lee montada sobre una línea continua. */
+  .proyectos__marco::before,
+  .proyectos__marco::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 100vw;
+    border-top: 1px solid rgba(255, 255, 255, 0.45);
+  }
+
+  .proyectos__marco::before {
+    right: calc(100% + var(--canto, 0px));
+  }
+
+  .proyectos__marco::after {
+    left: calc(100% + var(--canto, 0px));
+  }
+
   /* --- Puntitos del loop de fotos --- */
   .proyectos__puntos {
     position: relative;
     display: flex;
     gap: 0.6rem;
-    margin-top: auto;
+    margin-bottom: clamp(0.75rem, 2vh, 1.25rem);
     padding-top: clamp(1rem, 3vh, 2rem);
   }
 
@@ -240,20 +299,18 @@ const taxonomia = [
   }
 
   /* --- Los tres datos, en una fila centrada --- */
-  /* La línea que enmarca la info, como en el diseño: sube por la izquierda,
-     gira y recorre el ancho por encima de los datos hasta el canto derecho. */
+  /* El borde superior une los dos cantos; los laterales los dibujan los
+     flancos, que traen el ángulo del sitio. */
   .proyectos__ficha {
     position: relative;
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    justify-content: flex-start;
-    width: 100%;
-    margin: auto 0 0 clamp(1.5rem, 12vw, 12rem);
-    padding: clamp(1rem, 2.5vh, 1.75rem) 0 0 clamp(1rem, 2.5vw, 2.5rem);
-    border-top: 1px solid rgba(255, 255, 255, 0.4);
-    border-left: 1px solid rgba(255, 255, 255, 0.4);
-    border-top-left-radius: clamp(1rem, 2.4vw, 2.25rem);
+    justify-content: center;
+    margin: 0;
+    padding: clamp(1.5rem, 3.5vh, 2.5rem) clamp(0.5rem, 1.5vw, 1.5rem)
+      clamp(0.75rem, 1.5vh, 1.25rem);
+    border-top: 1px solid rgba(255, 255, 255, 0.45);
     font-size: clamp(0.75rem, 0.95vw, 0.9375rem);
     line-height: 1.5;
   }

@@ -9,26 +9,39 @@
 interface Props {
   lado: 'izquierda' | 'derecha';
   color?: string;
+  /** `trazo` dibuja sólo el canto, para las pestañas que son un contorno. */
+  variante?: 'relleno' | 'trazo';
+  class?: string;
 }
 
-const { lado, color = '#fff' } = Astro.props;
+const { lado, color = '#fff', variante = 'relleno', class: clase } = Astro.props;
 
 // Perfil calculado para 18°: los arcos giran los 72° que faltan desde la
-// tangente horizontal, de ahí los puntos de empalme.
-const izquierda =
-  'M0,165 A34,34 0 0 0 32.34,141.51 L70.68,23.49 A34,34 0 0 1 103.02,0 L103.02,165 Z';
-const derecha =
-  'M103.02,165 A34,34 0 0 1 70.68,141.51 L32.34,23.49 A34,34 0 0 0 0,0 L0,165 Z';
+// tangente horizontal, de ahí los puntos de empalme. El relleno cierra la
+// figura por el costado interior; el trazo se queda en la línea.
+const perfil = {
+  izquierda: 'M0,165 A34,34 0 0 0 32.34,141.51 L70.68,23.49 A34,34 0 0 1 103.02,0',
+  derecha: 'M103.02,165 A34,34 0 0 1 70.68,141.51 L32.34,23.49 A34,34 0 0 0 0,0',
+};
+
+const cierre = { izquierda: ' L103.02,165 Z', derecha: ' L0,165 Z' };
+const d = perfil[lado] + (variante === 'relleno' ? cierre[lado] : '');
 ---
 
 <svg
-  class="flanco"
+  class:list={['flanco', clase]}
   viewBox="0 0 103.02 165"
   preserveAspectRatio="none"
   aria-hidden="true"
   focusable="false"
 >
-  <path d={lado === 'izquierda' ? izquierda : derecha} fill={color}></path>
+  <path
+    d={d}
+    fill={variante === 'relleno' ? color : 'none'}
+    stroke={variante === 'trazo' ? color : undefined}
+    stroke-width={variante === 'trazo' ? 1 : undefined}
+    vector-effect={variante === 'trazo' ? 'non-scaling-stroke' : undefined}
+  ></path>
 </svg>
 
 <style>
