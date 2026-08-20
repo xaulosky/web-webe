@@ -15,16 +15,10 @@ const fotoDe = (marca: (typeof marcas)[number]) =>
   marca.fotos[0] ?? '/marcas/fotos/novara-1.webp';
 
 // En la home van las cinco primeras, que son las que definen a la marca; el
-// listado completo sigue en la ficha. Se agrupan de tres en fila como la
-// maqueta: dejando que el flex parta solo, el separador queda colgando al final
-// de la línea, y con el separador delante las líneas siguientes arrancan con un
-// punto y se ven escalonadas.
-const porFilas = (lista: readonly string[]) =>
-  lista.slice(0, 5).reduce<string[][]>((filas, categoria, i) => {
-    if (i % 3 === 0) filas.push([]);
-    filas[filas.length - 1].push(categoria);
-    return filas;
-  }, []);
+// listado completo sigue en la ficha. Una por línea: repartidas en filas se
+// leían escalonadas, con los separadores cayendo en sitios distintos según lo
+// largo que fuera cada nombre.
+const principales = (lista: readonly string[]) => lista.slice(0, 5);
 
 // En la home entran las dos primeras frases. Las descripciones completas rondan
 // los 470 caracteres —el doble del texto que dibuja la maqueta— y con la columna
@@ -101,15 +95,11 @@ const resumen = (texto: string) =>
             />
             <p class="marcas__descripcion">{resumen(marca.descripcion)}</p>
             {marca.categorias.length > 0 && (
-              <div class="marcas__categorias">
-                {porFilas(marca.categorias).map((fila) => (
-                  <ul>
-                    {fila.map((categoria) => (
-                      <li>{categoria}</li>
-                    ))}
-                  </ul>
+              <ul class="marcas__categorias">
+                {principales(marca.categorias).map((categoria) => (
+                  <li>{categoria}</li>
                 ))}
-              </div>
+              </ul>
             )}
           </div>
         ))
@@ -275,12 +265,15 @@ const resumen = (texto: string) =>
     pointer-events: none;
   }
 
+  /* 1px de solape: el borde del SVG y el de la pestaña son dos blancos que al
+     antialiasarse no empalman, y entre ambos asomaba una línea del gris del
+     fondo. */
   .marcas__flanco--izq {
-    right: 100%;
+    right: calc(100% - 1px);
   }
 
   .marcas__flanco--der {
-    left: 100%;
+    left: calc(100% - 1px);
   }
 
   .marcas__pestana[aria-selected='true'] .marcas__flanco {
@@ -368,12 +361,14 @@ const resumen = (texto: string) =>
     line-height: 1.7;
   }
 
+  /* Una por línea: repartidas en filas quedaban escalonadas, con el separador
+     cayendo en un sitio distinto según lo largo que fuera cada nombre. */
   .marcas__categorias {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    gap: 0.3rem;
     margin-top: clamp(1rem, 2.45vw, 2.45rem);
     font-size: 0.8125rem;
-    line-height: 1.9;
+    line-height: 1.5;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--color-muted);
@@ -381,10 +376,6 @@ const resumen = (texto: string) =>
 
   /* El separador va delante y no detrás: si la lista parte de línea, acompaña a
      su palabra en vez de quedar colgando al final de la anterior. */
-  .marcas__categorias li:not(:first-child)::before {
-    content: '·';
-    margin-inline: 0.5em;
-  }
 
   .marcas__todas {
     display: inline-flex;
