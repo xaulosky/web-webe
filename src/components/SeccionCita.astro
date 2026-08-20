@@ -24,11 +24,13 @@
   <div class="cita__scrim" aria-hidden="true"></div>
 
   <blockquote class="cita__texto" data-anima>
+    {/* Los cortes van marcados a mano: dejados al ancho disponible, la frase
+        caía en cuatro líneas o en dos según el viewport. Así son siempre tres,
+        partidas donde corresponde por sentido. */}
     <p>
-      <span class="cita__comilla">&ldquo;</span>El espacio que diseñas merece{' '}
-      <strong>el mobiliario</strong> que <strong>escogerías para tí</strong><span
-        class="cita__comilla">&rdquo;</span
-      >.
+      <span class="cita__comilla">&ldquo;</span>El espacio que diseñas<br />
+      merece <strong>el mobiliario</strong><br />
+      que <strong>escogerías para tí</strong><span class="cita__comilla">&rdquo;</span>.
     </p>
   </blockquote>
 </section>
@@ -74,9 +76,13 @@
     position: relative;
     margin: 0;
     padding-inline: 1.5rem;
-    /* Medida ajustada para que "que" caiga en la tercera línea, como el diseño. */
-    max-width: clamp(18rem, 46vw, 62rem);
+    /* Holgada: los saltos ya fijan las tres líneas y lo único que hace falta es
+       que ninguna se parta sola por falta de sitio. */
+    max-width: min(92vw, 68rem);
     text-align: center;
+    /* En pantallas estrechas la línea más larga manda sobre el cuerpo, para que
+       siga entrando sin partirse. */
+    text-wrap: balance;
   }
 
   .cita__texto p {
