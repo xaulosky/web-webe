@@ -6,8 +6,8 @@ import Clientes from '../components/Clientes.astro';
 import SeccionSobreCorte from '../components/SeccionSobreCorte.astro';
 import { proyectos } from '../config/site';
 
-// La portada usa la primera lámina del proyecto más grande.
-const portada = '/proyectos/fotos/enel-1.webp';
+// Portada propia de la página, no prestada de un proyecto.
+const portada = '/portadas/proyectos.webp';
 
 // BTG y Lockton todavía no traen ficha; se muestran igual por sus fotos, pero
 // sin la fila de datos vacía.
@@ -23,7 +23,7 @@ const conFicha = (p: (typeof proyectos)[number]) => Boolean(p.superficie);
     imagen={portada}
     alt="Oficinas equipadas por WEBE"
     ancho={1920}
-    alto={900}
+    alto={1081}
     lineas={[{ fuerte: 'Proyectos' }, { suave: 'destacados' }]}
   />
 
