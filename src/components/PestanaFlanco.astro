@@ -1,0 +1,42 @@
+---
+// Flanco de una pestaña: el mismo perfil del escalón del hero —arco cóncavo
+// abajo, recta a 18° de la vertical y arco convexo arriba— para que todas las
+// pestañas del sitio compartan el ángulo del diseño (108° de interior).
+//
+// Va como SVG de proporción intacta y ancho derivado del alto, no estirado: con
+// preserveAspectRatio="none" sobre una caja libre, el ángulo cambiaría con cada
+// pestaña según lo ancho que fuera su wordmark.
+interface Props {
+  lado: 'izquierda' | 'derecha';
+  color?: string;
+}
+
+const { lado, color = '#fff' } = Astro.props;
+
+// Perfil calculado para 18°: los arcos giran los 72° que faltan desde la
+// tangente horizontal, de ahí los puntos de empalme.
+const izquierda =
+  'M0,165 A34,34 0 0 0 32.34,141.51 L70.68,23.49 A34,34 0 0 1 103.02,0 L103.02,165 Z';
+const derecha =
+  'M103.02,165 A34,34 0 0 1 70.68,141.51 L32.34,23.49 A34,34 0 0 0 0,0 L0,165 Z';
+---
+
+<svg
+  class="flanco"
+  viewBox="0 0 103.02 165"
+  preserveAspectRatio="none"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d={lado === 'izquierda' ? izquierda : derecha} fill={color}></path>
+</svg>
+
+<style>
+  .flanco {
+    display: block;
+    /* El ancho sale del alto para conservar el ángulo exacto. */
+    height: 100%;
+    width: calc(var(--alto-pestana) * 103.02 / 165);
+    flex: none;
+  }
+</style>

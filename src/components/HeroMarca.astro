@@ -1,4 +1,5 @@
 ﻿---
+import PestanaFlanco from './PestanaFlanco.astro';
 import { marcas } from '../config/site';
 
 // Portada de la página de marca: foto a sangre y una pestaña blanca abajo a la
@@ -29,14 +30,21 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
       los logos a un `left` fijo, el hueco entre ambos cambiaba según lo ancho
       que fuera cada wordmark. */}
   <div class="marca-portada__pie">
+    {/* Tres piezas: los flancos llevan el canto a 18° y el centro se estira
+        con el wordmark. Con un solo bloque y border-radius, los costados salían
+        verticales y la pestaña no compartía el ángulo del resto del sitio. */}
     <div class="marca-portada__pestana" data-anima="portada">
-      <img
-        class="marca-portada__wordmark"
-        src={`/marcas/${activa.archivo}`}
-        alt={activa.nombre}
-        width={activa.ancho}
-        height={activa.alto}
-      />
+      <PestanaFlanco lado="izquierda" />
+      <div class="marca-portada__centro">
+        <img
+          class="marca-portada__wordmark"
+          src={`/marcas/${activa.archivo}`}
+          alt={activa.nombre}
+          width={activa.ancho}
+          height={activa.alto}
+        />
+      </div>
+      <PestanaFlanco lado="derecha" />
     </div>
 
     <nav class="marca-portada__otras" aria-label="Otras marcas">
@@ -144,49 +152,42 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
     opacity: 0.9;
   }
 
-  /* Pestaña de carpeta: blanca, esquinas superiores redondeadas y filetes
-     cóncavos que la enganchan con el blanco de la página. */
-  /* Pestaña más baja y más ceñida al wordmark, como pide el diseño. */
+  /* Pestaña de carpeta. La altura es fija a propósito: los flancos derivan su
+     ancho de ella para mantener el ángulo, así que no puede depender de lo alto
+     que resulte el wordmark de cada marca. */
   .marca-portada__pestana {
+    --alto-pestana: clamp(5.5rem, 9.5vw, 9.5rem);
+
     position: relative;
     flex: none;
-    margin-left: clamp(1.5rem, 4.7vw, 5rem);
-    padding: clamp(1.1rem, 2.2vw, 2.1rem) clamp(1.5rem, 3.4vw, 3.6rem);
+    display: flex;
+    align-items: stretch;
+    height: var(--alto-pestana);
+    /* El wordmark queda a la sangría del diseño, así que la pestaña arranca esa
+       distancia menos lo que ocupa su flanco; el max() evita que el flanco se
+       salga de pantalla cuando la sangría es menor que él. */
+    margin-left: max(0px, calc(10.6vw - var(--alto-pestana) * 103.02 / 165));
+  }
+
+  /* El blanco de en medio; los flancos traen el suyo en el propio trazado. */
+  .marca-portada__centro {
+    display: grid;
+    place-items: center;
+    /* 1px de solape a cada lado: el borde del SVG y el del div son dos blancos
+       distintos al antialiasarse y dejaban una costura vertical. */
+    margin-inline: -1px;
+    padding-inline: clamp(0.5rem, 1.2vw, 1.25rem);
     background: #fff;
-    border-radius: var(--radio) var(--radio) 0 0;
-  }
-
-  .marca-portada__pestana::before,
-  .marca-portada__pestana::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    width: var(--radio);
-    height: var(--radio);
-  }
-
-  .marca-portada__pestana::before {
-    right: 100%;
-    background: radial-gradient(
-      circle at 0 0,
-      transparent var(--radio),
-      #fff calc(var(--radio) + 0.5px)
-    );
-  }
-
-  .marca-portada__pestana::after {
-    left: 100%;
-    background: radial-gradient(
-      circle at 100% 0,
-      transparent var(--radio),
-      #fff calc(var(--radio) + 0.5px)
-    );
   }
 
   .marca-portada__wordmark {
     display: block;
     width: clamp(8rem, 17vw, 17rem);
+    /* Con altura de pestaña fija, los wordmarks más altos se ajustan solos en
+       vez de desbordarla. */
+    max-height: calc(var(--alto-pestana) - clamp(1.1rem, 2.2vw, 2.1rem) * 2);
     height: auto;
+    object-fit: contain;
   }
 
   @media (max-width: 860px) {
@@ -219,8 +220,8 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
     }
 
     .marca-portada__pestana {
-      margin-left: clamp(1rem, 4vw, 2rem);
-      padding-inline: clamp(1.5rem, 6vw, 2.5rem);
+      --alto-pestana: clamp(4.5rem, 22vw, 7rem);
+      margin-left: max(0px, calc(8vw - var(--alto-pestana) * 103.02 / 165));
     }
   }
 </style>
