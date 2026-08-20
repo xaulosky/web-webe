@@ -547,7 +547,10 @@ const resumen = (texto: string) =>
     .marcas__medio {
       order: -1;
       cursor: auto;
-      aspect-ratio: 1;
+      /* La proporción propia de las fotos (1200×960): cuadrada las recortaba de
+         más, y con la franja apaisada del escritorio quedaba una tira de poco
+         más de cien píxeles de alto. */
+      aspect-ratio: 1200 / 960;
       min-height: 0;
     }
 
