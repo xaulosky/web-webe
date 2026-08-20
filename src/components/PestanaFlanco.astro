@@ -34,9 +34,11 @@ const derecha =
 <style>
   .flanco {
     display: block;
-    /* El ancho sale del alto para conservar el ángulo exacto. */
+    /* La proporción la fija el propio elemento: el ancho sale del alto y el
+       ángulo queda en 18° sin depender de ninguna variable de fuera. */
     height: 100%;
-    width: calc(var(--alto-pestana) * 103.02 / 165);
+    aspect-ratio: 103.02 / 165;
+    width: auto;
     flex: none;
   }
 </style>

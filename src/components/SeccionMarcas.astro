@@ -1,5 +1,6 @@
 ---
 import Flecha from './Flecha.astro';
+import PestanaFlanco from './PestanaFlanco.astro';
 import { marcas, MARCA_PORTADA } from '../config/site';
 
 // La primera marca es la que abre destacada. Se muestran todas: la barra
@@ -7,21 +8,23 @@ import { marcas, MARCA_PORTADA } from '../config/site';
 const pestanas = marcas;
 const destacada = 0;
 
+// Una sola imagen por marca: aquí el recuadro es una muestra, no una galería.
+// El recorrido completo está en la ficha de cada marca.
 // TODO: Rossi aún no manda fotos; mientras tanto muestra la primera de Novara.
-const fotosDe = (marca: (typeof marcas)[number]) =>
-  marca.fotos.length > 0 ? marca.fotos : (['/marcas/fotos/novara-1.webp'] as const);
+const fotoDe = (marca: (typeof marcas)[number]) =>
+  marca.fotos[0] ?? '/marcas/fotos/novara-1.webp';
 
-// De a tres por fila, como el diseño. Agrupar en el marcado (en vez de dejar
-// que el flex parta solo) evita que el separador quede colgando al final de
-// una línea, y que un grid alinee columnas y abra huecos entre palabras.
+// En la home van las cinco primeras, que son las que definen a la marca; el
+// listado completo sigue en la ficha. Se agrupan de tres en fila como la
+// maqueta: dejando que el flex parta solo, el separador queda colgando al final
+// de la línea, y con el separador delante las líneas siguientes arrancan con un
+// punto y se ven escalonadas.
 const porFilas = (lista: readonly string[]) =>
-  lista.reduce<string[][]>((filas, categoria, i) => {
+  lista.slice(0, 5).reduce<string[][]>((filas, categoria, i) => {
     if (i % 3 === 0) filas.push([]);
     filas[filas.length - 1].push(categoria);
     return filas;
   }, []);
-
-const maxFotos = Math.max(...pestanas.map((marca) => fotosDe(marca).length));
 
 // En la home entran las dos primeras frases. Las descripciones completas rondan
 // los 470 caracteres —el doble del texto que dibuja la maqueta— y con la columna
@@ -54,9 +57,13 @@ const resumen = (texto: string) =>
           role="tab"
           data-marca={i}
           data-slug={marca.slug}
-          data-fotos={fotosDe(marca).length}
           aria-selected={i === destacada}
         >
+          {/* Los flancos con el canto a 18° sólo se ven en la activa; en las
+              demás quedan transparentes para no alterar el ancho de la barra. */}
+          <span class="marcas__flanco marcas__flanco--izq" aria-hidden="true">
+            <PestanaFlanco lado="izquierda" />
+          </span>
           <img
             src={`/marcas/${marca.archivo}`}
             alt={marca.nombre}
@@ -65,6 +72,9 @@ const resumen = (texto: string) =>
             loading="lazy"
             decoding="async"
           />
+          <span class="marcas__flanco marcas__flanco--der" aria-hidden="true">
+            <PestanaFlanco lado="derecha" />
+          </span>
         </button>
       ))
     }
@@ -112,42 +122,26 @@ const resumen = (texto: string) =>
       </a>
     </div>
 
-    {/* Slider de fotos por marca: cambia al elegir pestaña. Sólo la marca
-        inicial carga de entrada; el resto lleva la URL en data-src. */}
+    {/* Una imagen por marca, sin puntos: el recorrido de fotos vive en la ficha.
+        Sólo la marca inicial carga de entrada; el resto lleva la URL en
+        data-src y se descarga al seleccionarla. */}
     <div class="marcas__medio" id="marcas-medio" data-anima>
       {
-        pestanas.map((marca, i) =>
-          fotosDe(marca).map((url, j) => (
-            <img
-              class="marcas__foto"
-              src={i === 0 ? url : undefined}
-              data-src={url}
-              alt={`Espacio equipado con ${marca.nombre}`}
-              width="1200"
-              height="960"
-              loading="lazy"
-              decoding="async"
-              data-foto-de={i}
-              data-foto={j}
-              data-activo={i === 0 && j === 0 ? '' : undefined}
-            />
-          )),
-        )
+        pestanas.map((marca, i) => (
+          <img
+            class="marcas__foto"
+            src={i === 0 ? fotoDe(marca) : undefined}
+            data-src={fotoDe(marca)}
+            alt={`Espacio equipado con ${marca.nombre}`}
+            width="1200"
+            height="960"
+            loading="lazy"
+            decoding="async"
+            data-foto-de={i}
+            data-activo={i === 0 ? '' : undefined}
+          />
+        ))
       }
-
-      <div class="marcas__puntos" role="tablist" aria-label="Fotos de la marca">
-        {
-          Array.from({ length: maxFotos }, (_, j) => (
-            <button
-              type="button"
-              role="tab"
-              data-ir-foto={j}
-              aria-selected={j === 0}
-              aria-label={`Foto ${j + 1}`}
-            />
-          ))
-        }
-      </div>
 
       {/* La chapa sigue al cursor dentro de la foto; el clic navega. */}
       <a class="marcas__ver" id="marcas-ver" href={`/marcas/${pestanas[destacada].slug}`}>
@@ -200,13 +194,15 @@ const resumen = (texto: string) =>
   }
 
   /* Columna estrecha, como el diseño: el párrafo cae a seis líneas y ese
-     bloque compacto es justamente la forma que se busca. */
+     bloque compacto es justamente la forma que se busca. Mismo cuerpo que el
+     texto de «quiénes somos»: son los dos párrafos de apertura del sitio y
+     estaban desparejos. */
   .marcas__texto {
     margin: 0;
     max-width: 30ch;
-    font-size: clamp(1.1rem, 1.8vw, 1.6rem);
+    font-size: clamp(1.25rem, 2.25vw, 2.05rem);
     font-weight: 500;
-    line-height: 1.45;
+    line-height: 1.42;
     letter-spacing: -0.01em;
   }
 
@@ -253,38 +249,34 @@ const resumen = (texto: string) =>
      redondeadas y filetes cóncavos que la enganchan con la barra. */
   .marcas__pestana[aria-selected='true'] {
     background: var(--panel);
-    border-radius: var(--r) var(--r) 0 0;
+  }
+
+  /* Flancos: fuera del flujo, para que aparecer o desaparecer no mueva la barra.
+     El ancho sale del alto (103,02/165), que es lo que fija el ángulo en 18°. */
+  .marcas__flanco {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    aspect-ratio: 103.02 / 165;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+  }
+
+  .marcas__flanco--izq {
+    right: 100%;
+  }
+
+  .marcas__flanco--der {
+    left: 100%;
+  }
+
+  .marcas__pestana[aria-selected='true'] .marcas__flanco {
+    opacity: 1;
   }
 
   .marcas__pestana[aria-selected='true'] img {
     opacity: 1;
-  }
-
-  .marcas__pestana[aria-selected='true']::before,
-  .marcas__pestana[aria-selected='true']::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    width: var(--r);
-    height: var(--r);
-  }
-
-  .marcas__pestana[aria-selected='true']::before {
-    right: 100%;
-    background: radial-gradient(
-      circle at 0 0,
-      transparent var(--r),
-      var(--panel) calc(var(--r) + 0.5px)
-    );
-  }
-
-  .marcas__pestana[aria-selected='true']::after {
-    left: 100%;
-    background: radial-gradient(
-      circle at 100% 0,
-      transparent var(--r),
-      var(--panel) calc(var(--r) + 0.5px)
-    );
   }
 
   /* --- Ficha de la marca destacada --- */
@@ -365,21 +357,19 @@ const resumen = (texto: string) =>
   }
 
   .marcas__categorias {
-    display: grid;
-    gap: 0.3rem;
+    display: flex;
+    flex-wrap: wrap;
     margin-top: clamp(1rem, 2.45vw, 2.45rem);
     font-size: 0.8125rem;
+    line-height: 1.9;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--color-muted);
   }
 
-  .marcas__categorias ul {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  .marcas__categorias li:not(:last-child)::after {
+  /* El separador va delante y no detrás: si la lista parte de línea, acompaña a
+     su palabra en vez de quedar colgando al final de la anterior. */
+  .marcas__categorias li:not(:first-child)::before {
     content: '·';
     margin-inline: 0.5em;
   }
@@ -414,7 +404,9 @@ const resumen = (texto: string) =>
     position: relative;
     display: grid;
     overflow: hidden;
-    border-radius: clamp(1rem, 2vw, 1.75rem);
+    /* Mismo radio que las pestañas de arriba: con 2vw las curvas se veían
+       bastante más abiertas que las de la barra. */
+    border-radius: var(--r);
     /* La ficha marca la fila y el recuadro se estira hasta ahí; este suelo
        evita que quede una franja demasiado apaisada frente a la maqueta, que
        la dibuja en torno a 1.5:1. */
@@ -454,38 +446,6 @@ const resumen = (texto: string) =>
     visibility: visible;
   }
 
-  .marcas__puntos {
-    position: absolute;
-    bottom: clamp(0.75rem, 1.5vw, 1.25rem);
-    left: 50%;
-    display: flex;
-    gap: 0.6rem;
-    transform: translateX(-50%);
-    z-index: 2;
-  }
-
-  .marcas__puntos button {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.55);
-    cursor: pointer;
-    transition:
-      background-color 0.25s ease,
-      opacity 0.3s ease;
-  }
-
-  /* Los puntos que sobran (marcas con menos fotos) se desvanecen en vez de
-     desaparecer: si salieran del flujo, el grupo se recolocaría de golpe. */
-  .marcas__puntos button[data-fuera] {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .marcas__puntos button[aria-selected='true'] {
-    background: #fff;
-  }
-
   /* Chapa "ver marca": sigue al cursor; el JS coloca --x/--y. */
   .marcas__ver {
     position: absolute;
@@ -510,19 +470,21 @@ const resumen = (texto: string) =>
     grid-area: 1 / 1;
   }
 
+  /* Texto algo menor y más suelto: a 9px con poco interletrado las dos vueltas
+     se leían apretadas contra el aro. */
   .marcas__ver-aro {
     width: 100%;
     height: 100%;
     fill: currentColor;
-    font-size: 9px;
+    font-size: 7.6px;
     font-weight: 400;
-    letter-spacing: 1.6px;
+    letter-spacing: 2.4px;
     animation: aro-gira 20s linear infinite;
   }
 
   /* La flecha de marca, apuntando a la derecha. */
   .marcas__ver-flecha {
-    width: 26%;
+    width: 20%;
     height: auto;
   }
 
@@ -611,27 +573,23 @@ const resumen = (texto: string) =>
     const pestanas = Array.from(seccion.querySelectorAll<HTMLElement>('[data-marca]'));
     const paneles = Array.from(seccion.querySelectorAll<HTMLElement>('[data-panel]'));
     const fotos = Array.from(seccion.querySelectorAll<HTMLImageElement>('[data-foto-de]'));
-    const puntos = Array.from(seccion.querySelectorAll<HTMLElement>('[data-ir-foto]'));
     const medio = document.getElementById('marcas-medio');
     const ver = document.getElementById('marcas-ver') as HTMLAnchorElement | null;
 
     let activa = 0;
-    let foto = 0;
     // Cada cambio lleva su número: si llegan dos seguidos, el decode del
     // primero no debe activar su foto cuando ya se pidió otra marca.
     let turno = 0;
 
-    const laDe = (indice: number, j: number) =>
-      fotos.find(
-        (img) => Number(img.dataset.fotoDe) === indice && Number(img.dataset.foto) === j,
-      );
+    const laDe = (indice: number) =>
+      fotos.find((img) => Number(img.dataset.fotoDe) === indice);
 
     // La foto que se va queda de fondo hasta que la nueva termina de entrar.
     let limpiar: ReturnType<typeof setTimeout> | undefined;
 
     const pintarFotos = () => {
       const saliente = fotos.find((img) => img.hasAttribute('data-activo'));
-      const entrante = laDe(activa, foto);
+      const entrante = laDe(activa);
       if (saliente && saliente !== entrante) {
         saliente.setAttribute('data-saliente', '');
       }
@@ -646,12 +604,6 @@ const resumen = (texto: string) =>
           if (img !== entrante) img.removeAttribute('data-saliente');
         }
       }, 500);
-
-      const total = Number(pestanas[activa]?.dataset.fotos ?? 1);
-      puntos.forEach((punto, j) => {
-        punto.toggleAttribute('data-fuera', j >= total);
-        punto.setAttribute('aria-selected', String(j === foto));
-      });
     };
 
     // Las fotos de una marca se descargan recién cuando se la selecciona.
@@ -689,11 +641,10 @@ const resumen = (texto: string) =>
         panel.toggleAttribute('data-activo', Number(panel.dataset.panel) === indice);
       }
 
-      await lista(laDe(indice, 0));
+      await lista(laDe(indice));
       if (mio !== turno) return;
 
       activa = indice;
-      foto = 0;
       cargar(indice);
       pintarFotos();
     };
@@ -707,20 +658,9 @@ const resumen = (texto: string) =>
 
       // Al rozar la pestaña ya se va trayendo su primera foto, para que al
       // pulsar el cruce salga inmediato.
-      const adelantar = () => lista(laDe(i, 0));
+      const adelantar = () => lista(laDe(i));
       pestana.addEventListener('pointerenter', adelantar, { once: true });
       pestana.addEventListener('focus', adelantar, { once: true });
-    });
-
-    puntos.forEach((punto, j) => {
-      punto.addEventListener('click', async (evento) => {
-        evento.stopPropagation();
-        const mio = ++turno;
-        await lista(laDe(activa, j));
-        if (mio !== turno) return;
-        foto = j;
-        pintarFotos();
-      });
     });
 
     // La chapa sigue al cursor dentro del recuadro; el clic navega, salvo

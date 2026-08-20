@@ -1,5 +1,6 @@
 ﻿---
 import CortePaso from './CortePaso.astro';
+import Flecha from './Flecha.astro';
 
 interface Props {
   id?: string;
@@ -25,6 +26,13 @@ const { id = 'descubre' } = Astro.props;
       que entiende que los espacios influyen en la forma en que las personas
       trabajan, colaboran y se relacionan.
     </p>
+
+    <a class="nosotros__cta" href="/nosotros">
+      Conócenos
+      {/* El contenedor fija el tamaño: el SVG de marca es width:100% y una
+          regla con alcance de componente no lo alcanza desde aquí. */}
+      <span class="nosotros__cta-flecha"><Flecha /></span>
+    </a>
   </div>
 </section>
 
@@ -91,6 +99,30 @@ const { id = 'descubre' } = Astro.props;
     font-weight: 500;
     line-height: 1.42;
     letter-spacing: -0.01em;
+  }
+
+  .nosotros__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: clamp(2rem, 4vw, 3.5rem);
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid currentColor;
+    font-size: 0.8125rem;
+    font-weight: 300;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    transition: gap 0.25s ease;
+  }
+
+  .nosotros__cta:hover {
+    gap: 1.1rem;
+  }
+
+  .nosotros__cta-flecha {
+    display: block;
+    width: 1rem;
+    opacity: 0.55;
   }
 
   /* En móvil la diagonal queda muy plana para dividir columnas: el texto pasa

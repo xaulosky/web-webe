@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import HeroPagina from '../components/HeroPagina.astro';
 import SeccionContacto from '../components/SeccionContacto.astro';
+import SeccionSobreCorte from '../components/SeccionSobreCorte.astro';
 import ContactForm from '../components/ContactForm.astro';
 ---
 
@@ -21,24 +22,28 @@ import ContactForm from '../components/ContactForm.astro';
     lineas={[{ fuerte: 'Seamos' }, { suave: 'partners' }]}
   />
 
-  <section class="postular" id="postular">
-    <div class="postular__encabezado" data-anima="grupo">
-      <h2>
-        Hablemos de tu proyecto<br />
-        y de cómo podemos aportar
-      </h2>
-      <p>
-        Acompañamos a arquitectos, interioristas y empresas en el desarrollo
-        integral de proyectos de equipamiento para oficinas. Déjanos tus datos y
-        una idea de lo que necesitas: cuanto antes conversemos, más podemos
-        aportar en decisiones de plazo, presupuesto y equipamiento.
-      </p>
-    </div>
+  {/* El mismo escalón que separa el hero de la home: el blanco entra por
+      encima de la portada en vez de cortar en recto. */}
+  <SeccionSobreCorte id="postular">
+    <div class="postular">
+      <div class="postular__encabezado" data-anima="grupo">
+        <h2>
+          Hablemos de tu proyecto<br />
+          y de cómo podemos aportar
+        </h2>
+        <p>
+          Acompañamos a arquitectos, interioristas y empresas en el desarrollo
+          integral de proyectos de equipamiento para oficinas. Déjanos tus datos
+          y una idea de lo que necesitas: cuanto antes conversemos, más podemos
+          aportar en decisiones de plazo, presupuesto y equipamiento.
+        </p>
+      </div>
 
-    <div class="postular__formulario" data-anima>
-      <ContactForm origen="be-partner" />
+      <div class="postular__formulario" data-anima>
+        <ContactForm origen="be-partner" />
+      </div>
     </div>
-  </section>
+  </SeccionSobreCorte>
 
   <SeccionContacto />
 </Base>
@@ -46,11 +51,13 @@ import ContactForm from '../components/ContactForm.astro';
 <style>
   /* Texto a la izquierda y formulario a la derecha, con la misma sangría que el
      resto del sitio. Sin las secciones de en medio el bloque respira más. */
+  /* El contenido va dentro del envoltorio del escalón, así que el grid se
+     aplica ahí; el padding superior deja pasar la diagonal por encima. */
   .postular {
     display: grid;
     grid-template-columns: 38% 1fr;
     gap: clamp(2rem, 6vw, 6rem);
-    padding: clamp(4rem, 9vw, 9rem) clamp(1.5rem, 8vw, 8rem) clamp(4rem, 9vw, 9rem)
+    padding: clamp(7rem, 16vw, 16rem) clamp(1.5rem, 8vw, 8rem) clamp(4rem, 9vw, 9rem)
       clamp(1.5rem, 16.7vw, 18rem);
   }
 
@@ -79,6 +86,7 @@ import ContactForm from '../components/ContactForm.astro';
 
   @media (max-width: 860px) {
     .postular {
+      padding-top: clamp(5rem, 22vw, 9rem);
       padding-inline: clamp(1.5rem, 6vw, 2.5rem);
     }
   }

@@ -71,7 +71,6 @@ const taxonomia = [
               aria-current={i === 0 ? 'true' : undefined}
             >
               {proyecto.nombre}
-              {proyecto.ano && <sup>({proyecto.ano.slice(-2)})</sup>}
             </button>
           </li>
         ))
@@ -212,11 +211,10 @@ const taxonomia = [
     color: #fff;
   }
 
-  .proyectos__titulos button sup {
-    font-size: 0.4em;
-    font-weight: 300;
-    vertical-align: 1.7em;
-    margin-left: 0.15em;
+  /* Área de clic generosa: el botón medía sólo lo que la línea de texto, así
+     que la mitad superior del título no respondía. */
+  .proyectos__titulos button {
+    padding-block: clamp(0.5rem, 1.5vh, 1rem);
   }
 
   /* --- Puntitos del loop de fotos --- */
@@ -242,22 +240,30 @@ const taxonomia = [
   }
 
   /* --- Los tres datos, en una fila centrada --- */
+  /* La línea que enmarca la info, como en el diseño: sube por la izquierda,
+     gira y recorre el ancho por encima de los datos hasta el canto derecho. */
   .proyectos__ficha {
     position: relative;
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    justify-content: center;
+    justify-content: flex-start;
     width: 100%;
-    margin: 0;
-    padding: clamp(1rem, 2.5vh, 1.75rem) clamp(1.5rem, 4vw, 4rem) 0;
+    margin: auto 0 0 clamp(1.5rem, 12vw, 12rem);
+    padding: clamp(1rem, 2.5vh, 1.75rem) 0 0 clamp(1rem, 2.5vw, 2.5rem);
+    border-top: 1px solid rgba(255, 255, 255, 0.4);
+    border-left: 1px solid rgba(255, 255, 255, 0.4);
+    border-top-left-radius: clamp(1rem, 2.4vw, 2.25rem);
     font-size: clamp(0.75rem, 0.95vw, 0.9375rem);
     line-height: 1.5;
   }
 
+  /* Los datos se alinean por arriba, no por la línea base: con el alcance en
+     dos líneas, la base dejaba su icono y su rótulo descolgados respecto a los
+     otros dos. */
   .proyectos__dato {
     display: flex;
-    align-items: baseline;
+    align-items: flex-start;
     gap: 0.5rem;
     padding-inline: clamp(0.75rem, 1.6vw, 1.75rem);
   }
@@ -268,12 +274,21 @@ const taxonomia = [
   }
 
   .proyectos__dato svg {
-    align-self: center;
+    /* A la altura de la primera línea del texto, no del bloque entero. */
     flex: 0 0 auto;
     width: clamp(0.9rem, 1.1vw, 1.1rem);
     height: auto;
+    margin-top: 0.15em;
     color: rgba(255, 255, 255, 0.75);
   }
+
+  /* El alcance es mucho más largo que los otros dos datos: sin un tope se comía
+     el ancho y dejaba una segunda línea de dos palabras. */
+  .proyectos__dato dd {
+    max-width: 44ch;
+  }
+
+
 
   .proyectos__dato dt {
     font-weight: 500;

@@ -8,6 +8,8 @@ const corridas = [clientes.slice(0, 10), clientes.slice(10)];
 ---
 
 <section class="clientes" aria-label="Clientes" data-fondo="oscuro">
+  <p class="clientes__titulo">Hemos habilitado oficinas para</p>
+
   {
     corridas.map((corrida, i) => (
       <div class="clientes__pista" data-sentido={i === 0 ? 'izquierda' : 'derecha'}>
@@ -36,11 +38,19 @@ const corridas = [clientes.slice(0, 10), clientes.slice(10)];
   .clientes {
     display: grid;
     gap: clamp(0.5rem, 2vh, 1.5rem);
-    padding-block: clamp(2.5rem, 7vw, 6rem);
+    padding-block: clamp(3.5rem, 9vw, 8rem);
     overflow: hidden;
     /* Los logos vienen en blanco sobre transparente: necesitan fondo oscuro.
        De paso enlaza con la sección de proyectos, que también lo es. */
     background: #2d2d2d;
+  }
+
+  .clientes__titulo {
+    margin: 0 0 clamp(1.5rem, 3vw, 2.5rem);
+    font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+    font-weight: 300;
+    text-align: center;
+    color: #fff;
   }
 
   .clientes__pista {
@@ -65,7 +75,7 @@ const corridas = [clientes.slice(0, 10), clientes.slice(10)];
     /* Todos comparten lienzo de 300×200, así que una sola caja los iguala.
        El ajuste pidió los logos un poco más grandes. */
     width: 100%;
-    height: clamp(2.75rem, 4.2vw, 4rem);
+    height: clamp(3.25rem, 5.2vw, 5rem);
     object-fit: contain;
     opacity: 0.55;
     transition: opacity 0.3s ease;

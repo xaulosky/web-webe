@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import HeroPagina from '../components/HeroPagina.astro';
 import SeccionContacto from '../components/SeccionContacto.astro';
 import Clientes from '../components/Clientes.astro';
+import SeccionSobreCorte from '../components/SeccionSobreCorte.astro';
 import { proyectos } from '../config/site';
 
 // La portada usa la primera lámina del proyecto más grande.
@@ -26,13 +27,17 @@ const conFicha = (p: (typeof proyectos)[number]) => Boolean(p.superficie);
     lineas={[{ fuerte: 'Proyectos' }, { suave: 'destacados' }]}
   />
 
-  <section class="intro" data-anima="grupo">
-    <p class="intro__texto">
-      Cada proyecto refleja una forma de trabajar basada en la experiencia, el
-      acompañamiento y la búsqueda de soluciones acordes a las necesidades de
-      cada cliente.
-    </p>
-  </section>
+  {/* El mismo escalón que separa el hero de la home: el blanco entra por
+      encima de la portada en vez de cortar en recto. */}
+  <SeccionSobreCorte>
+    <div class="intro" data-anima="grupo">
+      <p class="intro__texto">
+        Cada proyecto refleja una forma de trabajar basada en la experiencia, el
+        acompañamiento y la búsqueda de soluciones acordes a las necesidades de
+        cada cliente.
+      </p>
+    </div>
+  </SeccionSobreCorte>
 
   <div class="listado">
     {
@@ -100,8 +105,10 @@ const conFicha = (p: (typeof proyectos)[number]) => Boolean(p.superficie);
 </Base>
 
 <style>
+  /* El padding va en el contenido interior del envoltorio del escalón; el de
+     arriba deja pasar la diagonal por encima. */
   .intro {
-    padding: clamp(3rem, 7vw, 7rem) clamp(1.5rem, 6vw, 7rem)
+    padding: clamp(7rem, 16vw, 16rem) clamp(1.5rem, 6vw, 7rem)
       clamp(2rem, 5vw, 5rem) clamp(1.5rem, 16.2vw, 18rem);
   }
 
@@ -210,6 +217,7 @@ const conFicha = (p: (typeof proyectos)[number]) => Boolean(p.superficie);
 
   @media (max-width: 900px) {
     .intro {
+      padding-top: clamp(5rem, 22vw, 9rem);
       padding-inline: clamp(1.5rem, 6vw, 2.5rem);
     }
 

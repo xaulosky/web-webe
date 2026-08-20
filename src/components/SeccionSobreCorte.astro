@@ -1,0 +1,71 @@
+---
+import CortePaso from './CortePaso.astro';
+
+// Sección blanca que entra por encima de la portada con el escalón del diseño,
+// el mismo que separa el hero de la home de «quiénes somos». Se sube sobre lo
+// anterior y el blanco sigue macizo hacia abajo.
+//
+// Vive aparte para que las tres páginas compartan un solo escalón: repetido a
+// mano en cada una, el día que cambie el ángulo habría que acordarse de las
+// tres.
+interface Props {
+  id?: string;
+  /** Dónde queda el canto alto del escalón, en % del ancho. */
+  quiebre?: string;
+  /** Cuánto sube sobre la sección anterior. */
+  solape?: string;
+  class?: string;
+}
+
+const { id, quiebre, solape = '22vh', class: clase } = Astro.props;
+---
+
+<section
+  class:list={['sobre-corte', clase]}
+  id={id}
+  style={`--solape:${solape}`}
+>
+  <div class="sobre-corte__fondo" aria-hidden="true">
+    <CortePaso quiebre={quiebre} />
+    <div class="sobre-corte__relleno"></div>
+  </div>
+
+  <div class="sobre-corte__contenido">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .sobre-corte {
+    position: relative;
+    /* Por encima de una portada pegajosa, que al ser sticky pinta como
+       posicionada. */
+    z-index: 1;
+    margin-top: calc(-1 * var(--solape));
+  }
+
+  .sobre-corte__fondo {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Sube 1px para solaparse con el escalón: si no, queda una costura entre los
+     dos blancos. */
+  .sobre-corte__relleno {
+    flex: 1;
+    margin-top: -1px;
+    background: #fff;
+  }
+
+  .sobre-corte__contenido {
+    position: relative;
+  }
+
+  @media (max-width: 860px) {
+    .sobre-corte {
+      --solape: 10vh;
+    }
+  }
+</style>
