@@ -150,8 +150,10 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
     /* Los logos se apoyan en la misma línea de base que el wordmark de la
        pestaña: por eso el padding inferior es el mismo que el suyo. */
     align-items: flex-end;
-    justify-content: space-between;
-    gap: clamp(0.75rem, 2vw, 2.25rem);
+    /* Agrupados con separación pareja en vez de repartidos por todo el ancho:
+       con space-between quedaban sueltos y desordenados. */
+    justify-content: flex-start;
+    gap: clamp(1.25rem, 3.4vw, 3.5rem);
     padding: 0 clamp(1.5rem, 3vw, 3rem) clamp(1.1rem, 2.2vw, 2.1rem)
       clamp(1rem, 2.5vw, 2.5rem);
     overflow-x: auto;
@@ -169,8 +171,8 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
   }
 
   .marca-portada__otras img {
-    /* Una pizca más chicos, como la barra de pestañas de la portada. */
-    width: clamp(3rem, 5.4vw, 5.75rem);
+    /* Una pizca más grandes, ahora que están agrupados y no repartidos. */
+    width: clamp(3.25rem, 6.2vw, 6.5rem);
     height: auto;
     opacity: 0.72;
     /* Son logos blancos sobre foto: el degradado general no basta cuando la
@@ -188,7 +190,7 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
      ancho de ella para mantener el ángulo, así que no puede depender de lo alto
      que resulte el wordmark de cada marca. */
   .marca-portada__pestana {
-    --alto-pestana: clamp(4.5rem, 7.4vw, 7.4rem);
+    --alto-pestana: clamp(4rem, 6.2vw, 6.2rem);
 
     position: relative;
     flex: none;
@@ -214,7 +216,7 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
 
   .marca-portada__wordmark {
     display: block;
-    width: clamp(6.5rem, 13vw, 13rem);
+    width: clamp(5.5rem, 10.5vw, 10.5rem);
     /* Con altura de pestaña fija, los wordmarks más altos se ajustan solos en
        vez de desbordarla. */
     max-height: calc(var(--alto-pestana) - clamp(1.1rem, 2.2vw, 2.1rem) * 2);
