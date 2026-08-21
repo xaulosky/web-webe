@@ -551,31 +551,42 @@ const resumen = (texto: string) =>
     .marcas__medio {
       order: -1;
       cursor: auto;
-      /* La proporción propia de las fotos (1200×960): cuadrada las recortaba de
-         más, y con la franja apaisada del escritorio quedaba una tira de poco
-         más de cien píxeles de alto. */
-      aspect-ratio: 1200 / 960;
+      /* Cuadrada, como pide el diseño de celu. Las fotos son 1200×960, así que
+         se recorta un poco a los lados; a lo ancho de una columna es lo que
+         hace que se lea como una foto y no como una franja. */
+      aspect-ratio: 1;
       min-height: 0;
     }
 
     /* Los logos de la barra, un punto más grandes. */
     .marcas__pestana img {
-      width: clamp(3.75rem, 15vw, 5.5rem);
+      width: clamp(4.5rem, 19vw, 6.5rem);
+    }
+
+    /* Y la pestaña con ellos: el flanco sale de su alto, así que subiendo el
+       aire vertical crece el conjunto y no sólo el wordmark. */
+    .marcas__pestana {
+      padding: clamp(0.8rem, 2.6vw, 1.2rem) clamp(1.1rem, 3.4vw, 2rem);
     }
 
     .marcas__ver {
       display: none;
     }
 
-    /* La barra es un carrusel: la activa queda centrada y las vecinas asoman. */
+    /* La barra es un carrusel: la activa queda centrada y las vecinas asoman.
+       El aire lateral es lo que permite centrar también la primera y la última;
+       a un cuarto del ancho se quedaban cortas. */
     .marcas__pestanas {
       justify-content: flex-start;
-      padding-inline: 25%;
+      padding-inline: 36%;
       scroll-snap-type: x mandatory;
     }
 
+    /* Cada pestaña mide lo que su wordmark. Atada a la mitad del ancho de la
+       barra, el logo no podía crecer: se topaba con el borde de la caja y
+       quedaba más chico que lo pedido, por grande que fuera su `width`. */
     .marcas__pestana {
-      flex: 0 0 50%;
+      flex: 0 0 auto;
     }
   }
 </style>
