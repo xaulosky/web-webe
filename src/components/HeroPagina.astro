@@ -8,13 +8,21 @@ interface Props {
   lineas: readonly { readonly fuerte?: string; readonly suave?: string }[];
   ancho?: number;
   alto?: number;
+  /** Encuadre alternativo para pantallas angostas, si la foto ancha no sirve. */
+  imagenAngosta?: string;
 }
 
-const { imagen, alt, lineas, ancho = 1900, alto = 943 } = Astro.props;
+const { imagen, alt, lineas, ancho = 1900, alto = 943, imagenAngosta } = Astro.props;
 ---
 
 <section class="portada">
-  <img class="portada__foto" src={imagen} alt={alt} width={ancho} height={alto} fetchpriority="high" />
+  {/* Una portada a sangre recorta muchísimo: lo que en escritorio es un plano
+      general, en celu se convierte en un primer plano. Cuando hay un encuadre
+      hecho para vertical, se usa ese. */}
+  <picture>
+    {imagenAngosta && <source srcset={imagenAngosta} media="(max-width: 860px)" />}
+    <img class="portada__foto" src={imagen} alt={alt} width={ancho} height={alto} fetchpriority="high" />
+  </picture>
   <div class="portada__scrim" aria-hidden="true"></div>
 
   <h1 class="portada__titulo" data-anima="portada">

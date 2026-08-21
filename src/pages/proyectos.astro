@@ -217,7 +217,10 @@ const conFicha = (p: (typeof proyectos)[number]) => Boolean(p.superficie);
 
   @media (max-width: 900px) {
     .intro {
-      padding-top: clamp(5rem, 22vw, 9rem);
+      /* Sólo el aire bajo el escalón: el hueco que deja pasar la diagonal lo
+         pone ahora el propio envoltorio, y sumados los dos el texto quedaba
+         descolgado media pantalla. */
+      padding-top: clamp(2rem, 7vw, 3rem);
       padding-inline: clamp(1.5rem, 6vw, 2.5rem);
     }
 

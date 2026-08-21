@@ -13,6 +13,11 @@ interface Props {
 const { slug, foto } = Astro.props;
 const activa = marcas.find((marca) => marca.slug === slug)!;
 const otras = marcas.filter((marca) => marca.slug !== slug);
+
+// En celu la pestaña y los logos van en una sola tira horizontal, cada uno en
+// el lugar que le toca a su marca. El orden viaja como variable CSS porque el
+// DOM no puede reordenarse: en escritorio la pestaña sigue yendo primero.
+const orden = (s: string) => marcas.findIndex((marca) => marca.slug === s);
 ---
 
 <section class="marca-portada" data-fondo="oscuro">
@@ -27,8 +32,8 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
         data-src={marca.foto}
         alt={marca.slug === slug ? `Espacio equipado con ${activa.nombre}` : ''}
         aria-hidden={marca.slug === slug ? undefined : 'true'}
-        width="1920"
-        height="650"
+        width="1200"
+        height="960"
         fetchpriority={marca.slug === slug ? 'high' : undefined}
         data-foto-de={marca.slug}
         data-activa={marca.slug === slug ? '' : undefined}
@@ -40,11 +45,15 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
   {/* Pestaña y logos en una misma fila: con la pestaña posicionada aparte y
       los logos a un `left` fijo, el hueco entre ambos cambiaba según lo ancho
       que fuera cada wordmark. */}
-  <div class="marca-portada__pie">
+  <div class="marca-portada__pie" data-scroll-propio>
     {/* Tres piezas: los flancos llevan el canto a 18° y el centro se estira
         con el wordmark. Con un solo bloque y border-radius, los costados salían
         verticales y la pestaña no compartía el ángulo del resto del sitio. */}
-    <div class="marca-portada__pestana" data-anima="portada">
+    <div
+      class="marca-portada__pestana"
+      data-anima="portada"
+      style={`--orden:${orden(slug)}`}
+    >
       <PestanaFlanco lado="izquierda" />
       <div class="marca-portada__centro">
         <img
@@ -61,7 +70,11 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
     <nav class="marca-portada__otras" aria-label="Otras marcas">
       {
         otras.map((marca) => (
-          <a href={`/marcas/${marca.slug}`} data-asoma={marca.slug}>
+          <a
+            href={`/marcas/${marca.slug}`}
+            data-asoma={marca.slug}
+            style={`--orden:${orden(marca.slug)}`}
+          >
             {/* Sobre la foto va la versión blanca oficial. */}
             <img
               src={`/marcas/${marca.blanco}`}
@@ -225,37 +238,70 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
   }
 
   @media (max-width: 860px) {
+    /* Casi cuadrada, la proporción de la imagen 1 que ahora hace de portada. */
     .marca-portada {
-      min-height: min(60vh, 30rem);
+      min-height: min(100vw + 3rem, 72vh);
     }
 
-    /* No caben seis logos junto a la pestaña: se van sobre la foto, arriba, y
-       corren en horizontal. */
+    /* Las seis marcas en una sola tira que corre en horizontal, cada una en su
+       lugar y la pestaña entre ellas: es la del diseño. Antes los logos se iban
+       arriba, sueltos sobre la foto, porque no caben todos al lado de la
+       pestaña; en una tira que se desplaza sí caben. */
     .marca-portada__pie {
-      display: block;
+      align-items: flex-end;
+      gap: clamp(1.25rem, 5vw, 2.5rem);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
     }
 
-    .marca-portada__otras {
-      position: absolute;
-      right: 0;
-      left: 0;
-      top: clamp(5rem, 12vh, 7rem);
-      justify-content: flex-start;
-      max-width: 100%;
-      padding: 0 clamp(1.5rem, 6vw, 2.5rem);
-    }
-
-    .marca-portada__otras::-webkit-scrollbar {
+    .marca-portada__pie::-webkit-scrollbar {
       display: none;
+    }
+
+    /* Media pantalla de aire a cada lado para que la primera y la última marca
+       también puedan quedar centradas. Van como cajas de la propia tira: el
+       padding de un contenedor con scroll no siempre se respeta al final. */
+    .marca-portada__pie::before,
+    .marca-portada__pie::after {
+      content: '';
+      flex: 0 0 50vw;
+    }
+
+    .marca-portada__pie::before {
+      order: -1;
+    }
+
+    .marca-portada__pie::after {
+      order: 999;
+    }
+
+    /* El nav deja de ser caja para que sus logos sean piezas de la misma tira
+       que la pestaña y puedan intercalarse con ella. */
+    .marca-portada__otras {
+      display: contents;
+    }
+
+    .marca-portada__pestana,
+    .marca-portada__otras a {
+      order: var(--orden);
+      flex: 0 0 auto;
+      scroll-snap-align: center;
+    }
+
+    .marca-portada__pestana {
+      --alto-pestana: clamp(4rem, 17vw, 5.5rem);
+
+      margin-left: 0;
+    }
+
+    /* Los logos se apoyan en la misma línea de base que el wordmark. */
+    .marca-portada__otras a {
+      padding-bottom: clamp(1rem, 3.5vw, 1.5rem);
     }
 
     .marca-portada__otras img {
       width: 4.25rem;
-    }
-
-    .marca-portada__pestana {
-      --alto-pestana: clamp(4.5rem, 22vw, 7rem);
-      margin-left: max(0px, calc(8vw - var(--alto-pestana) * 103.02 / 165));
     }
   }
 </style>
@@ -313,6 +359,56 @@ const otras = marcas.filter((marca) => marca.slug !== slug);
       enlace.addEventListener('pointerleave', () => asomar(inicial));
       enlace.addEventListener('blur', () => asomar(inicial));
     }
+
+    // --- La tira de celu ---
+    // Ahí las seis marcas van en una fila que se desplaza y no hay hover del
+    // que colgarse: manda la que quede centrada, igual que el slider de
+    // proyectos. La pestaña arranca en el medio.
+    const tira = seccion.querySelector<HTMLElement>('.marca-portada__pie');
+    const pestana = seccion.querySelector<HTMLElement>('.marca-portada__pestana');
+    if (!tira || !pestana) return;
+
+    const corre = () => tira.scrollWidth > tira.clientWidth + 1;
+
+    const centrar = (pieza: HTMLElement, suave = false) => {
+      const destino = pieza.offsetLeft + pieza.offsetWidth / 2 - tira.clientWidth / 2;
+      tira.scrollTo({ left: destino, behavior: suave ? 'smooth' : 'auto' });
+    };
+
+    if (corre()) centrar(pestana);
+
+    // Al desplazarla se asoma la portada de la marca que va quedando al medio;
+    // la pestaña recupera la suya cuando vuelve a ser la centrada.
+    let pedido = false;
+    tira.addEventListener(
+      'scroll',
+      () => {
+        if (pedido || !corre()) return;
+        pedido = true;
+        requestAnimationFrame(() => {
+          pedido = false;
+          const medio = tira.getBoundingClientRect().left + tira.clientWidth / 2;
+          const piezas: [HTMLElement, string][] = [
+            [pestana, inicial],
+            ...enlaces.map((e) => [e, e.dataset.asoma!] as [HTMLElement, string]),
+          ];
+
+          let elegido = inicial;
+          let menor = Infinity;
+          for (const [pieza, slug] of piezas) {
+            const caja = pieza.getBoundingClientRect();
+            const distancia = Math.abs(caja.left + caja.width / 2 - medio);
+            if (distancia < menor) {
+              menor = distancia;
+              elegido = slug;
+            }
+          }
+
+          asomar(elegido);
+        });
+      },
+      { passive: true },
+    );
   }
 
   montarPortadaMarca();

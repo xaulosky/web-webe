@@ -364,13 +364,61 @@ const taxonomia = [
   }
 
   @media (max-width: 860px) {
+    /* En celu la foto se lee como un cuadrado arriba y los datos caen debajo
+       sobre negro. A pantalla completa la imagen quedaba altísima y estrecha, y
+       los tres datos se leían sobre lo que tocara de ella. */
     .proyectos {
+      --alto-datos: 12rem;
+
       aspect-ratio: auto;
-      min-height: 100svh;
-      padding-top: 7.5rem;
+      min-height: calc(100vw + var(--alto-datos));
+      /* Los títulos suben, pero no tanto como para meterse bajo el logo del
+         encabezado, que ocupa los primeros 4.5rem. */
+      padding-top: 6rem;
+      padding-bottom: 0;
+      background: #000;
+    }
+
+    /* La foto llega hasta donde empieza la pestaña y ni un píxel más: de ahí
+       para abajo manda el negro. */
+    .proyectos__fondo,
+    .proyectos__scrim {
+      bottom: auto;
+      height: 100vw;
+    }
+
+    /* Negro a sangre por detrás del cajón, para que la pestaña se recorte
+       contra él en vez de contra la foto. */
+    .proyectos__cajon::before {
+      content: '';
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: var(--alto-datos);
+      background: #000;
+    }
+
+    /* La pestaña se queda de alto fijo —de ahí sale el ángulo de sus cantos—
+       pero el cajón crece con los tres datos apilados. Por eso los filetes que
+       salen de los cantos ya no van al pie del cajón sino a la base de la
+       pestaña, que es donde nacen. */
+    .proyectos__marco {
+      --alto-cajon: 3.25rem;
+
+      height: auto;
+      align-items: flex-start;
+      max-width: min(92%, 92rem);
+    }
+
+    .proyectos__marco::before,
+    .proyectos__marco::after {
+      top: var(--alto-cajon);
+      bottom: auto;
     }
 
     .proyectos__ficha {
+      flex: 1;
       flex-direction: column;
       align-items: flex-start;
       gap: 0.6rem;
@@ -383,6 +431,12 @@ const taxonomia = [
 
     .proyectos__dato + .proyectos__dato {
       border-left: 0;
+    }
+
+    /* Sobre negro el valor va en gris y el rótulo se queda en blanco: es lo que
+       separa el dato de su nombre ahora que no hay filete entre columnas. */
+    .proyectos__dato dd {
+      color: rgba(255, 255, 255, 0.62);
     }
   }
 </style>

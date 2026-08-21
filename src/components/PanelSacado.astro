@@ -95,16 +95,32 @@ const { id, antetitulo } = Astro.props;
   @media (max-width: 860px) {
     .sacado {
       --solape: 10vh;
+      /* Pestaña más chica en celu, igual que en el resto de los cortes. */
+      --paso: clamp(3rem, 8vh, 5rem);
     }
 
+    /* Una sola columna y el texto delante: en celu el orden es cajón de texto,
+       foto apaisada y luego lo que siga. Sin esta regla seguían las dos
+       columnas de escritorio y la foto se montaba sobre el titular. */
+    .sacado__cuerpo {
+      grid-template-columns: 1fr;
+      gap: clamp(1.5rem, 6vw, 2.5rem);
+      padding: 0 0 clamp(2rem, 8vw, 3rem);
+    }
+
+    /* Sin sticky: en una columna no tiene contra qué fijarse. El padding de
+       arriba deja pasar el escalón entero antes de que empiece el texto. */
     .sacado__panel {
+      order: -1;
+      position: static;
       margin-left: 0;
-      padding: 11% clamp(1.5rem, 6vw, 2.5rem) clamp(2rem, 6vw, 3rem);
+      padding: calc(var(--solape) + var(--paso) + clamp(1.5rem, 6vw, 2.5rem))
+        clamp(1.5rem, 6vw, 2.5rem) 0;
     }
 
     .sacado__izquierda {
       width: 100%;
-      padding: 0 clamp(1.5rem, 6vw, 2.5rem) clamp(2rem, 8vw, 3rem);
+      padding: 0 clamp(1.5rem, 6vw, 2.5rem);
     }
   }
 </style>

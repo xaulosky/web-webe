@@ -12,25 +12,33 @@ import { cifras } from '../config/site';
   description="WEBE nace de la unión de profesionales con experiencia en equipamiento corporativo."
   header="overlay"
 >
+  {/* Enroque pedido: en celu la portada es la vertical de los socios y la
+      apaisada del showroom baja al panel. En escritorio siguen al revés: la
+      vertical estirada a una portada a sangre les corta la cabeza. */}
   <HeroPagina
     imagen="/nosotros/hero.webp"
-    alt="Socios de WEBE en el showroom"
+    imagenAngosta="/nosotros/equipo.webp"
+    alt="Los tres socios de WEBE"
     ancho={1900}
     alto={943}
     lineas={[{ fuerte: 'Nuestro' }, { suave: 'equipo' }]}
   />
 
   <PanelSacado>
-    <img
-      slot="izquierda"
-      class="nosotros__equipo"
-      src="/nosotros/equipo.webp"
-      alt="Los tres socios de WEBE"
-      width="1200"
-      height="1286"
-      loading="lazy"
-      decoding="async"
-    />
+    <picture slot="izquierda" class="nosotros__foto">
+      {/* La que no salió de portada: en celu la apaisada, en escritorio la
+          vertical. */}
+      <source srcset="/nosotros/hero.webp" media="(max-width: 860px)" />
+      <img
+        class="nosotros__equipo"
+        src="/nosotros/equipo.webp"
+        alt="Los socios de WEBE en el showroom"
+        width="797"
+        height="854"
+        loading="lazy"
+        decoding="async"
+      />
+    </picture>
 
     <p class="nosotros__creencia">
       Creemos que un buen proyecto no depende únicamente del mobiliario, sino de
@@ -68,6 +76,12 @@ import { cifras } from '../config/site';
 </Base>
 
 <style>
+  /* Sin esto la picture es en línea y el ancho de la foto no tendría contra
+     qué resolver su 100%. */
+  .nosotros__foto {
+    display: block;
+  }
+
   .nosotros__equipo {
     width: 100%;
     height: auto;

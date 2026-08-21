@@ -17,13 +17,16 @@ interface Props {
   class?: string;
 }
 
-const { id, quiebre, solape = '22vh', class: clase } = Astro.props;
+// El solape sólo viaja como estilo en línea si alguien lo pide: con un valor
+// por omisión escrito ahí, ganaba siempre a la hoja y el ajuste de celu —donde
+// el corte sube mucho menos— no llegaba a aplicarse nunca.
+const { id, quiebre, solape, class: clase } = Astro.props;
 ---
 
 <section
   class:list={['sobre-corte', clase]}
   id={id}
-  style={`--solape:${solape}`}
+  style={solape ? `--solape:${solape}` : undefined}
 >
   <div class="sobre-corte__fondo" aria-hidden="true">
     <CortePaso quiebre={quiebre} />
@@ -37,6 +40,9 @@ const { id, quiebre, solape = '22vh', class: clase } = Astro.props;
 
 <style>
   .sobre-corte {
+    /* Cuánto sube sobre la sección anterior. */
+    --solape: 22vh;
+
     position: relative;
     /* Por encima de una portada pegajosa, que al ser sticky pinta como
        posicionada. */
@@ -66,6 +72,16 @@ const { id, quiebre, solape = '22vh', class: clase } = Astro.props;
   @media (max-width: 860px) {
     .sobre-corte {
       --solape: 10vh;
+      /* Pestaña más chica en celu: al alto de escritorio el escalón se comía
+         media pantalla y el titular quedaba dentro de la diagonal. */
+      --paso: clamp(3rem, 8vh, 5rem);
+    }
+
+    /* El escalón pasa entero por encima antes de que empiece el texto. Va aquí
+       y no en cada página porque la cuenta —lo que sube más lo que mide el
+       escalón— es la misma para las tres. */
+    .sobre-corte__contenido {
+      padding-top: calc(var(--solape) + var(--paso));
     }
   }
 </style>

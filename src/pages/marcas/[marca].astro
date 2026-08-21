@@ -12,11 +12,11 @@ export function getStaticPaths() {
 
 const { marca } = Astro.props;
 
-// La portada es apaisada (1920×650) y va a sangre arriba; la galería son las
-// cinco de 1200×960. Son formatos distintos y no se pueden intercambiar.
+// La portada es la imagen 1 de la marca y va a sangre arriba; la galería son
+// las cinco, esa incluida.
 // TODO: Rossi aún no manda fotos; mientras tanto usa las de Novara.
 const fotos = marca.fotos.length > 0 ? marca.fotos : [];
-const portada = marca.foto || '/marcas/fotos/novara-portada.webp';
+const portada = marca.foto || '/marcas/fotos/novara-1.webp';
 ---
 
 <Base
@@ -238,6 +238,17 @@ const portada = marca.foto || '/marcas/fotos/novara-portada.webp';
       grid-template-columns: 1fr;
       gap: clamp(2rem, 7vw, 3rem);
       padding-inline: clamp(1.5rem, 6vw, 2.5rem);
+    }
+
+    /* La galería toma todo el ancho: con las tres columnas de escritorio se
+       quedaba encajada en las dos de la derecha, hecha una postal. */
+    .galeria {
+      grid-template-columns: 1fr;
+      padding-inline: clamp(1.5rem, 6vw, 2.5rem);
+    }
+
+    .galeria__marco {
+      grid-column: 1 / -1;
     }
 
     .volver {

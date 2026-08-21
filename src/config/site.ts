@@ -287,7 +287,9 @@ export const CONTACT_ENDPOINT = '/api/contacto.php';
 const fotosMarca = (slug: string) =>
   [1, 2, 3, 4, 5].map((n) => `/marcas/fotos/${slug}-${n}.webp`);
 
-const portadaMarca = (slug: string) => `/marcas/fotos/${slug}-portada.webp`;
+// La portada de cada ficha es su imagen 1, no la apaisada de la carpeta: es la
+// que muestra el espacio completo y la que pide el diseño.
+const portadaMarca = (slug: string) => `/marcas/fotos/${slug}-1.webp`;
 
 export const marcas = [
   {

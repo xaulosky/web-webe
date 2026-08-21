@@ -87,7 +87,12 @@
 
   .cita__texto p {
     margin: 0;
-    font-size: clamp(1.5rem, 4.2vw, 4rem);
+    /* Dos topes. El clamp pone el tamaño que toca por diseño; el segundo lo
+       baja si no cabe. La línea más larga —«que escogerías para tí”.»— mide
+       algo menos de 11.9 em, así que ese es el cuerpo máximo que entra en el
+       ancho disponible. Sin él, por debajo de unos 350 px mandaba el mínimo del
+       clamp, la línea no entraba y los tres saltos se partían en seis. */
+    font-size: min(clamp(1.5rem, 4.2vw, 4rem), (92vw - 3rem) / 11.9);
     font-weight: 300;
     line-height: 1.22;
     letter-spacing: -0.01em;

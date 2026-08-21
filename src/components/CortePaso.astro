@@ -41,8 +41,10 @@ const { quiebre = '56.2%' } = Astro.props;
 
 <style>
   .corte {
-    /* Manda el alto; el ancho sale de la proporción del escalón. */
-    --alto-paso: clamp(5rem, 13.5vh, 11rem);
+    /* Manda el alto; el ancho sale de la proporción del escalón. Quien lo
+       envuelve puede achicarlo con `--paso` —en celu la pestaña va más chica—
+       sin que el ángulo cambie: el ancho se recalcula solo. */
+    --alto-paso: var(--paso, clamp(5rem, 13.5vh, 11rem));
 
     position: relative;
     height: var(--alto-paso);

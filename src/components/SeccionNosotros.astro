@@ -130,13 +130,15 @@ const { id = 'descubre' } = Astro.props;
   @media (max-width: 860px) {
     .nosotros {
       --solape: 10vh;
+      /* Pestaña más chica en celu, igual que en el resto de los cortes. */
+      --paso: clamp(3rem, 8vh, 5rem);
     }
 
-    /* Descuenta el solape: sin esto el antetítulo caía sobre la franja donde
-       todavía se ve el hero, encima del corte. */
+    /* Descuenta el solape y el escalón: sin esto el antetítulo caía dentro de
+       la diagonal, sobre la franja donde todavía se ve el hero. */
     .nosotros__panel {
       margin-left: 0;
-      padding: calc(var(--solape) + clamp(1.5rem, 6vw, 2.5rem))
+      padding: calc(var(--solape) + var(--paso) + clamp(1.5rem, 6vw, 2.5rem))
         clamp(1.5rem, 6vw, 2.5rem) clamp(2.5rem, 8vw, 4rem);
     }
   }
