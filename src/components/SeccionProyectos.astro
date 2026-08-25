@@ -98,7 +98,12 @@ const taxonomia = [
     </div>
 
     <div class="proyectos__marco">
-      <PestanaFlanco lado="izquierda" variante="trazo" color="rgba(255,255,255,0.45)" />
+      <PestanaFlanco
+        lado="izquierda"
+        variante="trazo"
+        pie="recto"
+        color="rgba(255,255,255,0.45)"
+      />
 
       <dl class="proyectos__ficha">
         {
@@ -114,7 +119,12 @@ const taxonomia = [
         }
       </dl>
 
-      <PestanaFlanco lado="derecha" variante="trazo" color="rgba(255,255,255,0.45)" />
+      <PestanaFlanco
+        lado="derecha"
+        variante="trazo"
+        pie="recto"
+        color="rgba(255,255,255,0.45)"
+      />
     </div>
   </div>
 </section>
@@ -248,7 +258,7 @@ const taxonomia = [
      que llega a ocupar el alcance más largo. */
   .proyectos__marco {
     --alto-cajon: clamp(5.5rem, 10vh, 8.5rem);
-    --canto: calc(var(--alto-cajon) * 103.02 / 165);
+    --canto: calc(var(--alto-cajon) * 78.32 / 165);
 
     position: relative;
     display: flex;
@@ -290,7 +300,10 @@ const taxonomia = [
   .proyectos__ficha {
     position: relative;
     display: flex;
-    flex-wrap: wrap;
+    /* Los tres datos, siempre en una fila. Envolviendo, el alcance se caía a
+       una segunda línea y el cajón se leía en dos alturas distintas según el
+       ancho de la ventana. */
+    flex-wrap: nowrap;
     align-items: baseline;
     justify-content: center;
     margin: 0;
@@ -308,7 +321,10 @@ const taxonomia = [
   /* Los datos se alinean por arriba, no por la línea base: con el alcance en
      dos líneas, la base dejaba su icono y su rótulo descolgados respecto a los
      otros dos. */
+  /* Los dos cortos no se encogen: su texto es una sola línea y encogerlos sólo
+     los partiría. */
   .proyectos__dato {
+    flex: 0 0 auto;
     display: flex;
     align-items: flex-start;
     gap: 0.5rem;
@@ -349,9 +365,12 @@ const taxonomia = [
     font-weight: 300;
   }
 
-  /* El alcance es largo: puede envolver sin estirar la fila entera. */
+  /* El alcance es el que cede: envuelve dentro de su celda en vez de tirar la
+     fila abajo. `min-width: 0` es lo que le permite bajar de su ancho natural;
+     sin él, una celda de flex no se encoge por debajo de su contenido. */
   .proyectos__dato:last-child {
     flex: 0 1 auto;
+    min-width: 0;
     max-width: 44rem;
   }
 

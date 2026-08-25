@@ -11,26 +11,52 @@ interface Props {
   color?: string;
   /** `trazo` dibuja sólo el canto, para las pestañas que son un contorno. */
   variante?: 'relleno' | 'trazo';
+  /** `recto` corta la recta al llegar al pie, sin el arco que la tumba. */
+  pie?: 'curvo' | 'recto';
   class?: string;
 }
 
-const { lado, color = '#fff', variante = 'relleno', class: clase } = Astro.props;
+const {
+  lado,
+  color = '#fff',
+  variante = 'relleno',
+  pie = 'curvo',
+  class: clase,
+} = Astro.props;
 
 // Perfil calculado para 18°: los arcos giran los 72° que faltan desde la
 // tangente horizontal, de ahí los puntos de empalme. El relleno cierra la
 // figura por el costado interior; el trazo se queda en la línea.
-const perfil = {
-  izquierda: 'M0,165 A34,34 0 0 0 32.34,141.51 L70.68,23.49 A34,34 0 0 1 103.02,0',
-  derecha: 'M103.02,165 A34,34 0 0 1 70.68,141.51 L32.34,23.49 A34,34 0 0 0 0,0',
-};
+//
+// El remate recto se queda sin el arco de abajo y prolonga la recta hasta el
+// pie. Los puntos salen de la pendiente, no del ojo: tan(18°) = 0,3249, así que
+// desde (70,68 · 23,49) hasta y=165 la recta se corre 141,51 × 0,3249 = 45,98.
+// Eso deja el arranque en x=24,70 del perfil curvo, y el ancho útil en
+// 103,02 − 24,70 = 78,32; el viewBox se ajusta a esa medida para que la caja no
+// arrastre aire muerto por el lado de fuera.
+const perfiles = {
+  curvo: {
+    ancho: 103.02,
+    izquierda: 'M0,165 A34,34 0 0 0 32.34,141.51 L70.68,23.49 A34,34 0 0 1 103.02,0',
+    derecha: 'M103.02,165 A34,34 0 0 1 70.68,141.51 L32.34,23.49 A34,34 0 0 0 0,0',
+    cierre: { izquierda: ' L103.02,165 Z', derecha: ' L0,165 Z' },
+  },
+  recto: {
+    ancho: 78.32,
+    izquierda: 'M0,165 L45.98,23.49 A34,34 0 0 1 78.32,0',
+    derecha: 'M78.32,165 L32.34,23.49 A34,34 0 0 0 0,0',
+    cierre: { izquierda: ' L78.32,165 Z', derecha: ' L0,165 Z' },
+  },
+} as const;
 
-const cierre = { izquierda: ' L103.02,165 Z', derecha: ' L0,165 Z' };
-const d = perfil[lado] + (variante === 'relleno' ? cierre[lado] : '');
+const perfil = perfiles[pie];
+const d = perfil[lado] + (variante === 'relleno' ? perfil.cierre[lado] : '');
 ---
 
 <svg
   class:list={['flanco', clase]}
-  viewBox="0 0 103.02 165"
+  viewBox={`0 0 ${perfil.ancho} 165`}
+  style={`--proporcion:${perfil.ancho} / 165`}
   preserveAspectRatio="none"
   aria-hidden="true"
   focusable="false"
@@ -50,7 +76,7 @@ const d = perfil[lado] + (variante === 'relleno' ? cierre[lado] : '');
     /* La proporción la fija el propio elemento: el ancho sale del alto y el
        ángulo queda en 18° sin depender de ninguna variable de fuera. */
     height: 100%;
-    aspect-ratio: 103.02 / 165;
+    aspect-ratio: var(--proporcion, 103.02 / 165);
     width: auto;
     flex: none;
   }
