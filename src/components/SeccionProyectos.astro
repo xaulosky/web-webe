@@ -129,7 +129,9 @@ const taxonomia = [
        que la pantalla completa anterior. El contenido nunca la desborda
        porque min-height:auto la deja crecer si hiciera falta. */
     aspect-ratio: 1920 / 900;
-    padding: clamp(2rem, 4vh, 3.5rem) 0 clamp(1.5rem, 3.5vh, 2.5rem);
+    /* Sin aire abajo: el cajón se apoya en el borde y sus cantos llegan hasta
+       él en vez de morir en el aire. */
+    padding: clamp(2rem, 4vh, 3.5rem) 0 0;
     overflow: hidden;
     background: #2d2d2d;
     color: #fff;
@@ -237,19 +239,22 @@ const taxonomia = [
     margin-top: auto;
   }
 
-  /* Altura fija a propósito: de ella sale el ancho de los cantos, y con la
-     altura dependiendo del contenido el cálculo era circular —el alto de la
-     fila lo fijaba el texto y el ancho del canto el alto— y los flancos
-     terminaban midiendo cero. */
+  /* Alto y ancho fijos a propósito. Del alto sale el ancho de los cantos, y
+     con el alto dependiendo del contenido el cálculo era circular —el alto de
+     la fila lo fijaba el texto y el ancho del canto el alto— y los flancos
+     terminaban midiendo cero. El ancho es fijo por otra razón: dejándolo al
+     contenido, cada proyecto daba un cajón de un ancho distinto y los cantos
+     saltaban de sitio al pasar de uno a otro. El alto da para las dos líneas
+     que llega a ocupar el alcance más largo. */
   .proyectos__marco {
-    --alto-cajon: clamp(4.5rem, 7.5vh, 6.5rem);
+    --alto-cajon: clamp(5.5rem, 10vh, 8.5rem);
     --canto: calc(var(--alto-cajon) * 103.02 / 165);
 
     position: relative;
     display: flex;
     align-items: stretch;
     height: var(--alto-cajon);
-    max-width: min(88%, 92rem);
+    width: min(88%, 92rem);
   }
 
   .proyectos__marco :global(.flanco) {
@@ -294,6 +299,10 @@ const taxonomia = [
     border-top: 1px solid rgba(255, 255, 255, 0.45);
     font-size: clamp(0.75rem, 0.95vw, 0.9375rem);
     line-height: 1.5;
+    /* Ocupa todo el cajón: los datos se apoyan arriba y la segunda línea del
+       alcance crece hacia abajo, sin recolocar a los otros dos. */
+    flex: 1;
+    align-content: flex-start;
   }
 
   /* Los datos se alinean por arriba, no por la línea base: con el alcance en
@@ -321,9 +330,11 @@ const taxonomia = [
   }
 
   /* El alcance es mucho más largo que los otros dos datos: sin un tope se comía
-     el ancho y dejaba una segunda línea de dos palabras. */
+     el ancho y dejaba una segunda línea de dos palabras. El tope se calcula
+     para que el más largo —el del casino de BTG— quepa en dos líneas; con uno
+     más estrecho se iba a tres y desbordaba el cajón. */
   .proyectos__dato dd {
-    max-width: 44ch;
+    max-width: 62ch;
   }
 
 
@@ -501,17 +512,27 @@ const taxonomia = [
         }
       };
 
+      /* Mueve la pista a mano en vez de con scrollIntoView. Aunque se le pida
+         `block: 'nearest'`, si el título no está del todo a la vista arrastra
+         también el scroll de la página: estando un poco más abajo, cada cambio
+         de proyecto daba un tirón. Escribiendo scrollLeft sólo se mueve la
+         pista. */
+      const llevarAlCentro = (boton: HTMLElement) => {
+        pista.scrollTo({
+          left: boton.offsetLeft + boton.offsetWidth / 2 - pista.clientWidth / 2,
+          behavior: 'smooth',
+        });
+      };
+
       /* El salto automático mueve la pista, no el estado: así el título
          centrado y los datos de abajo siguen saliendo de una sola fuente, que
          es el scroll. Al llegar al último vuelve al primero. */
       siguienteProyecto = () => {
         const destino = (actual + 1) % botones.length;
+        const boton = botones[destino];
+        if (!boton) return;
         saltandoSolo = true;
-        botones[destino]?.scrollIntoView({
-          inline: 'center',
-          block: 'nearest',
-          behavior: 'smooth',
-        });
+        llevarAlCentro(boton);
         // El scroll suave tarda; el flag se levanta cuando ya llegó.
         window.setTimeout(() => {
           saltandoSolo = false;
@@ -558,9 +579,7 @@ const taxonomia = [
 
       // Al pulsar un título se lo lleva al centro; el scroll hace el resto.
       botones.forEach((boton) => {
-        boton.addEventListener('click', () => {
-          boton.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
-        });
+        boton.addEventListener('click', () => llevarAlCentro(boton));
       });
 
       centrado();

@@ -23,7 +23,12 @@ const corridas = [clientes.slice(0, 10), clientes.slice(10)];
                 aria-hidden={copia === 1 ? 'true' : undefined}
                 width="300"
                 height="200"
-                loading="lazy"
+                {/* Sin lazy: son veinte archivos de 3 kB —96 kB los veinte— y
+                    diferirlos sólo servía para que fueran apareciendo dentro de
+                    una cinta que ya se está moviendo. En Safari eso se ve como
+                    si la animación arrancara a trompicones. La prioridad baja
+                    los deja detrás de lo que se ve al abrir. */}
+                fetchpriority="low"
                 decoding="async"
               />
             </div>
@@ -61,6 +66,10 @@ const corridas = [clientes.slice(0, 10), clientes.slice(10)];
     display: flex;
     width: max-content;
     animation: correr-clientes 46s linear infinite;
+    /* Safari no promociona la cinta por su cuenta y repinta veinte logos en
+       cada fotograma. Con esto la compone una sola vez y sólo la desplaza. */
+    will-change: transform;
+    backface-visibility: hidden;
   }
 
   .clientes__pista[data-sentido='derecha'] {

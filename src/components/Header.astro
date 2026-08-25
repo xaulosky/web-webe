@@ -142,13 +142,36 @@ const destacado = actual >= 0 ? actual : 0;
     opacity: var(--logo-opacity, 1);
   }
 
+  /* El logo lleva su propio color en vez de heredar el del header. Heredado,
+     viraba a tinta en el mismo instante en que empezaba a apagarse sobre la
+     ficha de marca: se veía un logo oscuro un suspiro antes de desaparecer, que
+     es el parpadeo. Con color propio, el viraje puede esperar. */
+  .site-header[data-variant='overlay'] .site-header__logo {
+    color: #fff;
+  }
+
+  .site-header[data-variant='overlay'][data-tema='oscuro'] .site-header__logo {
+    color: var(--color-ink);
+  }
+
   /* Fundido al retirarse y al volver, en vez de un salto. Se deja fuera el
      morph del hero de la home: ahí `--logo-opacity` se escribe en cada
      fotograma y una transición encima lo dejaría corriendo por detrás del
      scroll. Cuando termina (`data-morph='done'`) ya puede fundir. */
   .site-header:not([data-morph-inicial='oculto']) .site-header__logo,
   .site-header[data-morph='done'] .site-header__logo {
-    transition: opacity 0.35s ease;
+    transition:
+      opacity 0.3s ease,
+      color 0.3s ease;
+  }
+
+  /* Al retirarse, el color espera a que el logo ya sea invisible. Al volver
+     manda la regla de arriba y cambia a la vez que aparece, que arranca de
+     opacidad cero y no se nota. */
+  .site-header[data-variant='overlay'][data-logo='oculto'] .site-header__logo {
+    transition:
+      opacity 0.3s ease,
+      color 0s linear 0.3s;
   }
 
   .site-header[data-morph-inicial='oculto'] .site-header__logo {
@@ -385,8 +408,16 @@ const destacado = actual >= 0 ? actual : 0;
 
     const revisar = () => {
       const y = linea();
-      cabecera.dataset.tema = oscuras.some((zona) => cruza(zona, y)) ? 'claro' : 'oscuro';
-      if (sinLogo.some((zona) => cruza(zona, y))) cabecera.dataset.logo = 'oculto';
+      // Las dos preguntas antes de tocar el DOM. `cruza` mide con
+      // getBoundingClientRect y eso obliga al navegador a recalcular estilos:
+      // preguntando entre una escritura y la otra, el cambio de color arrancaba
+      // en un recálculo donde el logo todavía no se había marcado como oculto,
+      // y se le veía virar a tinta mientras se apagaba.
+      const sobreOscuro = oscuras.some((zona) => cruza(zona, y));
+      const seRetira = sinLogo.some((zona) => cruza(zona, y));
+
+      cabecera.dataset.tema = sobreOscuro ? 'claro' : 'oscuro';
+      if (seRetira) cabecera.dataset.logo = 'oculto';
       else delete cabecera.dataset.logo;
     };
 
