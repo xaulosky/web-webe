@@ -2,9 +2,9 @@
 import PestanaFlanco from './PestanaFlanco.astro';
 import { marcas } from '../config/site';
 
-// Portada de la página de marca: foto a sangre y una pestaña blanca abajo a la
-// izquierda con el wordmark. El resto de las marcas quedan fantasma sobre la
-// foto, a la misma altura, y llevan a su propia página.
+// Portada de la página de marca: foto a sangre y una pestaña blanca abajo con
+// el wordmark. El resto de las marcas quedan fantasma a la misma altura y
+// llevan a su propia página.
 interface Props {
   slug: string;
   foto: string;
@@ -21,25 +21,15 @@ const orden = (s: string) => marcas.findIndex((marca) => marca.slug === s);
 ---
 
 <section class="marca-portada" data-fondo="oscuro">
-  {/* Todas las portadas apiladas: al pasar por un logo se asoma la suya, como
-      un slider. Sólo la de la marca abierta se descarga de entrada; el resto
-      lleva la URL en data-src y entra al rozarla. */}
-  {
-    marcas.map((marca) => (
-      <img
-        class="marca-portada__foto"
-        src={marca.slug === slug ? foto : undefined}
-        data-src={marca.foto}
-        alt={marca.slug === slug ? `Espacio equipado con ${activa.nombre}` : ''}
-        aria-hidden={marca.slug === slug ? undefined : 'true'}
-        width="1200"
-        height="960"
-        fetchpriority={marca.slug === slug ? 'high' : undefined}
-        data-foto-de={marca.slug}
-        data-activa={marca.slug === slug ? '' : undefined}
-      />
-    ))
-  }
+  {/* Una sola foto, la de la marca abierta. */}
+  <img
+    class="marca-portada__foto"
+    src={foto}
+    alt={`Espacio equipado con ${activa.nombre}`}
+    width="1200"
+    height="960"
+    fetchpriority="high"
+  />
   <div class="marca-portada__scrim" aria-hidden="true"></div>
 
   {/* Pestaña y logos en una misma fila: con la pestaña posicionada aparte y
@@ -72,7 +62,6 @@ const orden = (s: string) => marcas.findIndex((marca) => marca.slug === s);
         otras.map((marca) => (
           <a
             href={`/marcas/${marca.slug}`}
-            data-asoma={marca.slug}
             style={`--orden:${orden(marca.slug)}`}
           >
             {/* Sobre la foto va la versión blanca oficial. */}
@@ -113,29 +102,11 @@ const orden = (s: string) => marcas.findIndex((marca) => marca.slug === s);
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0;
-    transition: opacity 0.55s ease;
-  }
-
-  /* La que se va queda opaca por debajo hasta que la nueva termina de entrar:
-     cruzando ambas a la vez, en el punto medio ninguna cubre del todo y se
-     transparenta el fondo. */
-  .marca-portada__foto[data-saliente] {
-    opacity: 1;
-    z-index: 0;
-    transition: none;
-  }
-
-  .marca-portada__foto[data-activa] {
-    opacity: 1;
-    z-index: 1;
   }
 
   /* La banda baja se oscurece más: ahí van los logos blancos y con fotos
-     claras (Trisoft, Belgotex) se perdían del todo. */
-  /* Orden de capas: fotos (0 y 1), degradado (2) y el pie encima (3). Al dar
-     z-index a la foto activa quedaba por delante del pie, que estaba en auto, y
-     tapaba la pestaña y los logos. */
+     claras (Trisoft, Belgotex) se perdían del todo.
+     Orden de capas: foto (auto), degradado (2) y el pie encima (3). */
   .marca-portada__scrim {
     position: absolute;
     inset: 0;
@@ -161,6 +132,11 @@ const orden = (s: string) => marcas.findIndex((marca) => marca.slug === s);
     width: 100%;
     gap: clamp(1.25rem, 3.4vw, 3.5rem);
     padding-inline: clamp(1.5rem, 10.6vw, 12rem) clamp(1.5rem, 3vw, 3rem);
+    /* Hueco para que los flancos de la pestaña puedan bajar 2px por debajo de
+       la portada: la tira tiene scroll y eso recorta también en vertical. El
+       margen negativo devuelve esos 2px, así que nada se mueve de sitio. */
+    margin-bottom: -2px;
+    padding-bottom: 2px;
     overflow-x: auto;
     scroll-snap-type: x proximity;
     scrollbar-width: none;
@@ -214,6 +190,17 @@ const orden = (s: string) => marcas.findIndex((marca) => marca.slug === s);
     display: flex;
     align-items: stretch;
     height: var(--alto-pestana);
+  }
+
+  /* Los flancos bajan 2px por debajo de la portada. Su borde inferior es un SVG
+     y se antialiasa; dentro de la portada ese medio píxel translúcido se
+     mezclaba con la foto y dejaba una raya gris a cada lado del wordmark. Ahí
+     abajo cae sobre el blanco de la sección siguiente, que es del mismo color,
+     y no se ve. Crecen a lo alto y a lo ancho por igual, así que el ángulo no
+     se mueve. */
+  .marca-portada__pestana :global(.flanco) {
+    height: calc(100% + 2px);
+    margin-bottom: -2px;
   }
 
   /* Entra sólo deslizándose. El revelado de portada la funde desde opacidad
@@ -294,110 +281,18 @@ const orden = (s: string) => marcas.findIndex((marca) => marca.slug === s);
 </style>
 
 <script>
-  // Al pasar por un logo se asoma su portada, como un slider; al salir vuelve
-  // la de la marca abierta. La foto entrante se espera a estar pintable antes
-  // de cruzarla: activarla sin haber cargado deja la sección en negro un
-  // instante, que es lo que se ve como parpadeo.
-  function montarPortadaMarca() {
-    const seccion = document.querySelector<HTMLElement>('.marca-portada');
-    if (!seccion) return;
-
-    const fotos = Array.from(seccion.querySelectorAll<HTMLImageElement>('[data-foto-de]'));
-    const enlaces = Array.from(seccion.querySelectorAll<HTMLElement>('[data-asoma]'));
-    const inicial = fotos.find((f) => f.hasAttribute('data-activa'))?.dataset.fotoDe;
-    if (!inicial) return;
-
-    let turno = 0;
-    let limpiar: ReturnType<typeof setTimeout> | undefined;
-
-    const lista = async (img: HTMLImageElement | undefined) => {
-      if (!img) return;
-      if (!img.src && img.dataset.src) img.src = img.dataset.src;
-      if (img.complete && img.naturalWidth > 0) return;
-      try {
-        await img.decode();
-      } catch {
-        /* imagen rota o cancelada: seguimos igual */
-      }
-    };
-
-    const asomar = async (slug: string) => {
-      const mio = ++turno;
-      const entrante = fotos.find((f) => f.dataset.fotoDe === slug);
-      if (!entrante || entrante.hasAttribute('data-activa')) return;
-
-      await lista(entrante);
-      if (mio !== turno) return;
-
-      const saliente = fotos.find((f) => f.hasAttribute('data-activa'));
-      if (saliente && saliente !== entrante) saliente.setAttribute('data-saliente', '');
-      for (const f of fotos) f.toggleAttribute('data-activa', f === entrante);
-
-      clearTimeout(limpiar);
-      limpiar = setTimeout(() => {
-        for (const f of fotos) if (f !== entrante) f.removeAttribute('data-saliente');
-      }, 600);
-    };
-
-    for (const enlace of enlaces) {
-      const slug = enlace.dataset.asoma!;
-      enlace.addEventListener('pointerenter', () => asomar(slug));
-      enlace.addEventListener('focus', () => asomar(slug));
-      enlace.addEventListener('pointerleave', () => asomar(inicial));
-      enlace.addEventListener('blur', () => asomar(inicial));
-    }
-
-    // --- La tira de celu ---
-    // Ahí las seis marcas van en una fila que se desplaza y no hay hover del
-    // que colgarse: manda la que quede centrada, igual que el slider de
-    // proyectos. La pestaña arranca en el medio.
-    const tira = seccion.querySelector<HTMLElement>('.marca-portada__pie');
-    const pestana = seccion.querySelector<HTMLElement>('.marca-portada__pestana');
+  // En celu las siete marcas van en una tira que se desplaza y no caben a la
+  // vez: la pestaña arranca centrada para que se vea dónde está la marca
+  // abierta. En escritorio entran todas y no hay nada que mover.
+  function centrarPestanaDeMarca() {
+    const tira = document.querySelector<HTMLElement>('.marca-portada__pie');
+    const pestana = document.querySelector<HTMLElement>('.marca-portada__pestana');
     if (!tira || !pestana) return;
+    if (tira.scrollWidth <= tira.clientWidth + 1) return;
 
-    const corre = () => tira.scrollWidth > tira.clientWidth + 1;
-
-    const centrar = (pieza: HTMLElement, suave = false) => {
-      const destino = pieza.offsetLeft + pieza.offsetWidth / 2 - tira.clientWidth / 2;
-      tira.scrollTo({ left: destino, behavior: suave ? 'smooth' : 'auto' });
-    };
-
-    if (corre()) centrar(pestana);
-
-    // Al desplazarla se asoma la portada de la marca que va quedando al medio;
-    // la pestaña recupera la suya cuando vuelve a ser la centrada.
-    let pedido = false;
-    tira.addEventListener(
-      'scroll',
-      () => {
-        if (pedido || !corre()) return;
-        pedido = true;
-        requestAnimationFrame(() => {
-          pedido = false;
-          const medio = tira.getBoundingClientRect().left + tira.clientWidth / 2;
-          const piezas: [HTMLElement, string][] = [
-            [pestana, inicial],
-            ...enlaces.map((e) => [e, e.dataset.asoma!] as [HTMLElement, string]),
-          ];
-
-          let elegido = inicial;
-          let menor = Infinity;
-          for (const [pieza, slug] of piezas) {
-            const caja = pieza.getBoundingClientRect();
-            const distancia = Math.abs(caja.left + caja.width / 2 - medio);
-            if (distancia < menor) {
-              menor = distancia;
-              elegido = slug;
-            }
-          }
-
-          asomar(elegido);
-        });
-      },
-      { passive: true },
-    );
+    tira.scrollLeft = pestana.offsetLeft + pestana.offsetWidth / 2 - tira.clientWidth / 2;
   }
 
-  montarPortadaMarca();
-  document.addEventListener('astro:page-load', montarPortadaMarca);
+  centrarPestanaDeMarca();
+  document.addEventListener('astro:page-load', centrarPestanaDeMarca);
 </script>
