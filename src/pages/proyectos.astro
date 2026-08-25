@@ -116,11 +116,12 @@ const conFicha = (p: (typeof proyectos)[number]) => Boolean(p.superficie);
 <style>
   /* El padding va en el contenido interior del envoltorio del escalón; el de
      arriba deja pasar la diagonal por encima. */
-  /* La sangría izquierda deja pasar el logo del encabezado: a 16,2vw el texto
-     arrancaba justo donde termina el wordmark y se leían pegados. */
+  /* La sangría es la del titular de la portada (17,2vw): el párrafo arranca al
+     mismo nivel que «Proyectos destacados». Ya no hace falta empujarlo más allá
+     para esquivar el logo, porque sobre esta sección se retira. */
   .intro {
     padding: clamp(7rem, 16vw, 16rem) clamp(1.5rem, 6vw, 7rem)
-      clamp(2rem, 5vw, 5rem) clamp(1.5rem, 22vw, 24rem);
+      clamp(2rem, 5vw, 5rem) clamp(1.5rem, 17.2vw, 19rem);
   }
 
   .intro__texto {
