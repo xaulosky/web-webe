@@ -42,7 +42,10 @@ const conFicha = (p: (typeof proyectos)[number]) => Boolean(p.superficie);
     </div>
   </SeccionSobreCorte>
 
-  <div class="listado">
+  {/* data-oculta-logo: el listado es un blanco a toda página y el logo del
+      encabezado se le monta encima; se retira mientras lo cruza y vuelve solo
+      al quedar atrás. */}
+  <div class="listado" data-oculta-logo>
     {
       proyectos.map((proyecto, i) => (
         <article class="proyecto" data-anima="grupo">
