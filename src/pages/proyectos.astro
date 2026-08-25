@@ -117,12 +117,15 @@ const conFicha = (p: (typeof proyectos)[number]) => Boolean(p.superficie);
      arrancaba justo donde termina el wordmark y se leían pegados. */
   .intro {
     padding: clamp(7rem, 16vw, 16rem) clamp(1.5rem, 6vw, 7rem)
-      clamp(2rem, 5vw, 5rem) clamp(1.5rem, 19.5vw, 21rem);
+      clamp(2rem, 5vw, 5rem) clamp(1.5rem, 22vw, 24rem);
   }
 
   .intro__texto {
     margin: 0;
-    max-width: 30ch;
+    /* 38ch, no 30: con la columna estrecha «acompañamiento» no entraba en la
+       segunda línea y bajaba a la tercera dejando su artículo arriba. Medido:
+       la línea más larga pide 36ch, así que 38 la acomoda con holgura. */
+    max-width: 38ch;
     font-size: clamp(1.25rem, 2.1vw, 1.95rem);
     font-weight: 300;
     line-height: 1.45;
