@@ -471,7 +471,7 @@ export const marcas = [
   {
     nombre: 'Novara',
     slug: 'novara',
-    // TODO: PDF del catálogo. Sin archivo el botón se dibuja inactivo.
+    // TODO: falta su PDF; sin archivo el botón se dibuja inactivo. Igual Rossi.
     catalogo: { etiqueta: 'Catálogo Novara 2025-26', archivo: '' },
     fotos: fotosMarca('novara'),
     archivo: 'novara.svg',
@@ -495,7 +495,7 @@ export const marcas = [
   {
     nombre: 'Novus',
     slug: 'novus',
-    catalogo: { etiqueta: 'Catálogo Novus 2025-26', archivo: '' },
+    catalogo: { etiqueta: 'Catálogo Novus 2025-26', archivo: '/catalogos/novus.pdf' },
     fotos: fotosMarca('novus'),
     archivo: 'novus.svg',
     blanco: 'novus-blanco.svg',
@@ -518,7 +518,7 @@ export const marcas = [
   {
     nombre: 'Trisoft',
     slug: 'trisoft',
-    catalogo: { etiqueta: 'Catálogo Trisoft 2025-26', archivo: '' },
+    catalogo: { etiqueta: 'Catálogo Trisoft 2025-26', archivo: '/catalogos/trisoft.pdf' },
     fotos: fotosMarca('trisoft'),
     archivo: 'trisoft.svg',
     blanco: 'trisoft-blanco.svg',
@@ -541,7 +541,10 @@ export const marcas = [
   {
     nombre: 'BK Contract',
     slug: 'bkcontract',
-    catalogo: { etiqueta: 'Catálogo BK Contract 2025-26', archivo: '' },
+    catalogo: {
+      etiqueta: 'Catálogo BK Contract 2025-26',
+      archivo: '/catalogos/bkcontract.pdf',
+    },
     fotos: fotosMarca('bkcontract'),
     archivo: 'bkcontract.svg',
     blanco: 'bkcontract-blanco.svg',
@@ -587,7 +590,7 @@ export const marcas = [
   {
     nombre: 'Belgotex',
     slug: 'belgotex',
-    catalogo: { etiqueta: 'Catálogo Belgotex 2025-26', archivo: '' },
+    catalogo: { etiqueta: 'Catálogo Belgotex 2025-26', archivo: '/catalogos/belgotex.pdf' },
     fotos: fotosMarca('belgotex'),
     archivo: 'belgotex.svg',
     blanco: 'belgotex-blanco.svg',
@@ -610,7 +613,7 @@ export const marcas = [
   {
     nombre: 'Frisokar',
     slug: 'frisokar',
-    catalogo: { etiqueta: 'Catálogo Frisokar 2025-26', archivo: '' },
+    catalogo: { etiqueta: 'Catálogo Frisokar 2025-26', archivo: '/catalogos/frisokar.pdf' },
     fotos: fotosMarca('frisokar'),
     archivo: 'frisokar.svg',
     blanco: 'frisokar-blanco.svg',
