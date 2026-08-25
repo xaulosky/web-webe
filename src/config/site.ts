@@ -88,119 +88,292 @@ const alcanceSinSilleria =
   'Equipamiento de Mobiliario para Bench, Privados, Salas de Reunión y Áreas Colaborativas.';
 const alcanceReuniones =
   'Equipamiento de Mobiliario para Bench, Privados, Salas de Reunión.';
-// (Colliers, pendiente de fotos, usaba «…para Bench y Salas de Reunión.»)
+const alcanceBenchReuniones = 'Equipamiento de Mobiliario para Bench y Salas de Reunión.';
 const alcanceBenchRegulable =
   'Equipamiento de Mobiliario para Bench (Estaciones de trabajo con regulación altura).';
 
-// Proyectos destacados: los que tienen carpeta de fotos. Cada uno trae sus
-// tres láminas de 1920×900 para el fondo de la sección. `ano` alimenta el
-// superíndice de la nube (sus dos últimos dígitos).
-// TODO: Colliers queda fuera hasta que lleguen sus fotos. BTG Pactual y
-// Lockton no traen ficha (superficie/puestos/alcance) ni año todavía.
-const fotosDe = (slug: string) =>
-  [1, 2, 3].map((n) => `/proyectos/fotos/${slug}-${n}.webp`);
+// Carpetas de fotos que existen hoy. Un proyecto publicado necesita sus tres
+// láminas de 1920×900: son el fondo de la sección de la home y la galería de la
+// página. Sin ellas el slider pinta negro y la ficha una caja vacía, así que el
+// listado de abajo trae los veinte proyectos pero sólo salen los que las
+// tienen. Sumar la carpeta y el slug aquí basta para publicar el suyo.
+const conFotos = new Set([
+  'siemens',
+  'lippi',
+  'metlife',
+  'ccu',
+  'transbank',
+  'bnp',
+  'enel',
+  'onnet',
+  'ninez',
+  'btg',
+  'lockton',
+]);
 
-export const proyectos = [
+const fotosDe = (slug: string) =>
+  conFotos.has(slug) ? [1, 2, 3].map((n) => `/proyectos/fotos/${slug}-${n}.webp`) : [];
+
+// Fichas de los proyectos, en el orden que mandó el cliente: del más nuevo al
+// más antiguo. `ano` alimenta el superíndice de la nube con sus dos últimos
+// dígitos.
+//
+// `ubicacion` y `arquitectura` todavía no se dibujan: la ficha muestra
+// superficie, puestos y alcance. Quedan guardados para cuando se decida dónde
+// van.
+const fichas = [
+  {
+    nombre: 'Howden Chile',
+    slug: 'howden',
+    ubicacion: 'Avenida Apoquindo 4660, Oficina 301A',
+    superficie: '1.200 m²',
+    puestos: '100',
+    alcance: alcanceCompleto,
+    arquitectura: 'Lira Arquitectos',
+    ano: '2026',
+    fotos: fotosDe('howden'),
+  },
+  {
+    nombre: 'Deportes Sparta',
+    slug: 'sparta',
+    ubicacion: 'Avenida Presidente Kennedy 5682, Oficina 1103',
+    superficie: '1.100 m²',
+    puestos: '130',
+    alcance: alcanceCompleto,
+    arquitectura: 'Equipo Deportes Sparta',
+    ano: '2026',
+    fotos: fotosDe('sparta'),
+  },
   {
     nombre: 'Siemens Energy',
     slug: 'siemens',
+    ubicacion: 'Avenida Presidente Riesco 5335, Piso 18',
     superficie: '1.000 m²',
     puestos: '65',
     alcance: alcanceBenchRegulable,
+    arquitectura: 'Equipo Colliers',
     ano: '2026',
     fotos: fotosDe('siemens'),
   },
   {
+    nombre: 'Colliers',
+    slug: 'colliers',
+    ubicacion: 'El Regidor 66, Oficinas 601, 701 y 801',
+    superficie: '2.250 m²',
+    puestos: '180',
+    alcance: alcanceBenchReuniones,
+    arquitectura: 'Equipo Colliers',
+    ano: '2026',
+    fotos: fotosDe('colliers'),
+  },
+  {
     nombre: 'The Andes Brand (Lippi)',
     slug: 'lippi',
+    ubicacion: 'Avenida Vitacura 2939, Pisos 5 y 7',
     superficie: '2.100 m²',
     puestos: '200',
     alcance: alcanceSinSilleria,
+    arquitectura: 'Virtual Studio',
     ano: '2026',
     fotos: fotosDe('lippi'),
   },
   {
+    nombre: 'Empresas Torre',
+    slug: 'torre',
+    ubicacion: 'Parque Logístico, Avenida Eduardo Frei Montalva 8600',
+    superficie: '1.100 m²',
+    puestos: '70',
+    alcance: alcanceCompleto,
+    arquitectura: 'Equipo Empresas Torre',
+    ano: '2026',
+    fotos: fotosDe('torre'),
+  },
+  {
     nombre: 'MetLife',
     slug: 'metlife',
+    ubicacion: 'Almirante Pastene 194, Piso 6',
     superficie: '1.300 m²',
     puestos: '120',
     alcance: alcanceCompleto,
+    arquitectura: 'Equipo CentralCorp',
     ano: '2026',
     fotos: fotosDe('metlife'),
   },
   {
     nombre: 'CCU',
     slug: 'ccu',
+    ubicacion: 'Vitacura 2670, Pisos 5, 6, 7, 8 y 19',
     superficie: '4.500 m²',
     puestos: '400',
     alcance: alcanceCompleto,
+    arquitectura: 'Claro Arquitectos',
     ano: '2025',
     fotos: fotosDe('ccu'),
   },
   {
     nombre: 'Transbank',
     slug: 'transbank',
+    ubicacion: 'Cerro El Plomo 5260, Torre A, Piso 16',
     superficie: '2.500 m²',
     puestos: '230',
     alcance: alcanceReuniones,
+    arquitectura: 'Equipo Colliers',
     ano: '2025',
     fotos: fotosDe('transbank'),
   },
   {
+    nombre: 'Servicio de Evaluación Ambiental (SEA)',
+    slug: 'sea',
+    ubicacion: 'Huérfanos 670, Pisos 13, 14, 15 y 16',
+    superficie: '3.500 m²',
+    puestos: '230',
+    alcance: alcanceReuniones,
+    arquitectura: 'Aforo',
+    ano: '2025',
+    fotos: fotosDe('sea'),
+  },
+  {
+    nombre: 'OCA Global',
+    slug: 'oca',
+    ubicacion: 'El Gobernador 020',
+    superficie: '1.900 m²',
+    puestos: '240',
+    alcance: alcanceCompleto,
+    arquitectura: 'Arquitectura y Construcciones Buildpro',
+    ano: '2025',
+    fotos: fotosDe('oca'),
+  },
+  {
     nombre: 'BNP Paribas',
     slug: 'bnp',
+    ubicacion: 'Avenida Vitacura 2670, Piso 9',
     superficie: '2.500 m²',
     puestos: '200',
     alcance: alcanceReuniones,
+    arquitectura: 'Equipo CASBRO',
     ano: '2025',
     fotos: fotosDe('bnp'),
   },
   {
     nombre: 'ENEL',
     slug: 'enel',
+    ubicacion: 'Roger de Flor 2725, Torre 2, MUT',
     superficie: '15.000 m²',
     puestos: '800',
     alcance: alcanceReuniones,
+    arquitectura: 'CQ Arquitectos',
     ano: '2024',
     fotos: fotosDe('enel'),
   },
   {
     nombre: 'OnNet',
     slug: 'onnet',
+    ubicacion: 'Alonso de Córdova 5870, Piso 4',
     superficie: '1.500 m²',
     puestos: '185',
     alcance: alcanceReuniones,
+    arquitectura: 'Equipo Casbro',
     ano: '2024',
     fotos: fotosDe('onnet'),
   },
   {
+    nombre: 'Mathiesen',
+    slug: 'mathiesen',
+    ubicacion: 'Avenida del Parque 4265, Piso 3',
+    superficie: '1.500 m²',
+    puestos: '100',
+    alcance: alcanceReuniones,
+    arquitectura: 'Equipo Casbro',
+    ano: '2024',
+    fotos: fotosDe('mathiesen'),
+  },
+  {
+    nombre: 'Everest Chile',
+    slug: 'everest',
+    ubicacion: 'Isidora Goyenechea 2800, Piso 31',
+    superficie: '800 m²',
+    puestos: '60',
+    alcance: alcanceReuniones,
+    arquitectura: 'Equipo Contract',
+    ano: '2024',
+    fotos: fotosDe('everest'),
+  },
+  {
+    nombre: 'ABB Chile',
+    slug: 'abb',
+    ubicacion: 'Avenida Andrés Bello 2447, Piso 11',
+    superficie: '2.000 m²',
+    puestos: '120',
+    alcance: alcanceReuniones,
+    arquitectura: 'Equipo Contract',
+    ano: '2023',
+    fotos: fotosDe('abb'),
+  },
+  {
+    nombre: 'BUK',
+    slug: 'buk',
+    ubicacion: 'Roger de Flor 2775, Torre 3, Piso 16',
+    superficie: '1.500 m²',
+    puestos: '160',
+    alcance: alcanceReuniones,
+    arquitectura: 'Lira Arquitectos',
+    ano: '2023',
+    fotos: fotosDe('buk'),
+  },
+  {
+    nombre: 'EMIN',
+    slug: 'emin',
+    ubicacion: 'Asturias 350, Piso 8',
+    superficie: '1.000 m²',
+    puestos: '80',
+    alcance: alcanceReuniones,
+    arquitectura: 'Equipo Contract',
+    ano: '2023',
+    fotos: fotosDe('emin'),
+  },
+  {
     nombre: 'Subsecretaría de la Niñez y la Adolescencia',
     slug: 'ninez',
+    // TODO: el cliente mandó «Dirección» como marcador; falta la real.
+    ubicacion: '',
     superficie: '5.000 m²',
     puestos: '450',
     alcance: alcanceReuniones,
+    arquitectura: 'BV Arquitectos',
     ano: '2023',
     fotos: fotosDe('ninez'),
   },
+  // Estos dos traen fotos pero no vinieron en el listado de fichas: se publican
+  // por sus fotos y sin la fila de datos.
   {
     nombre: 'BTG Pactual',
     slug: 'btg',
+    ubicacion: '',
     superficie: '',
     puestos: '',
     alcance: '',
+    arquitectura: '',
     ano: '',
     fotos: fotosDe('btg'),
   },
   {
     nombre: 'Lockton',
     slug: 'lockton',
+    ubicacion: '',
     superficie: '',
     puestos: '',
     alcance: '',
+    arquitectura: '',
     ano: '',
     fotos: fotosDe('lockton'),
   },
 ] as const;
+
+// Los que se muestran: sólo los que tienen sus tres láminas.
+export const proyectos = fichas.filter((ficha) => ficha.fotos.length > 0);
+
+// Los que esperan fotos, a la vista mientras llegan.
+export const proyectosSinFotos = fichas.filter((ficha) => ficha.fotos.length === 0);
 
 // Logos de clientes, debajo de proyectos. Todos vienen en un lienzo de 300×200
 // con fondo transparente, así que comparten caja y no necesitan escala propia.
@@ -208,7 +381,7 @@ export const proyectos = [
 export const clientes = [
   { nombre: 'Howden', archivo: 'howden.webp' },
   { nombre: 'Deportes Sparta', archivo: 'sparta.webp' },
-  { nombre: 'Colliers', archivo: 'oca.webp' },
+  { nombre: 'OCA Global', archivo: 'oca.webp' },
   { nombre: 'MetLife', archivo: 'metlife.webp' },
   { nombre: 'CCU', archivo: 'ccu.webp' },
   { nombre: 'Transbank', archivo: 'transbank.webp' },
