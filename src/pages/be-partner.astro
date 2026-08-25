@@ -57,8 +57,11 @@ import ContactForm from '../components/ContactForm.astro';
     display: grid;
     grid-template-columns: 38% 1fr;
     gap: clamp(2rem, 6vw, 6rem);
+    /* La sangría izquierda deja pasar el logo del encabezado: a 16,7vw el
+       titular arrancaba justo donde termina el wordmark. Misma cuenta que en
+       la intro de proyectos. */
     padding: clamp(7rem, 16vw, 16rem) clamp(1.5rem, 8vw, 8rem) clamp(4rem, 9vw, 9rem)
-      clamp(1.5rem, 16.7vw, 18rem);
+      clamp(1.5rem, 19.5vw, 21rem);
   }
 
   .postular h2 {

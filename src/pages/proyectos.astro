@@ -31,10 +31,13 @@ const conFicha = (p: (typeof proyectos)[number]) => Boolean(p.superficie);
       encima de la portada en vez de cortar en recto. */}
   <SeccionSobreCorte>
     <div class="intro" data-anima="grupo">
+      {/* «el acompañamiento» va con espacio duro: suelto, el corte de línea
+          dejaba un «el» colgando al final de la anterior. El comentario va
+          fuera del párrafo porque dentro se come el espacio de al lado. */}
       <p class="intro__texto">
-        Cada proyecto refleja una forma de trabajar basada en la experiencia, el
-        acompañamiento y la búsqueda de soluciones acordes a las necesidades de
-        cada cliente.
+        Cada proyecto refleja una forma de trabajar basada en la experiencia,
+        el&nbsp;acompañamiento y la búsqueda de soluciones acordes a las
+        necesidades de cada cliente.
       </p>
     </div>
   </SeccionSobreCorte>
@@ -107,9 +110,11 @@ const conFicha = (p: (typeof proyectos)[number]) => Boolean(p.superficie);
 <style>
   /* El padding va en el contenido interior del envoltorio del escalón; el de
      arriba deja pasar la diagonal por encima. */
+  /* La sangría izquierda deja pasar el logo del encabezado: a 16,2vw el texto
+     arrancaba justo donde termina el wordmark y se leían pegados. */
   .intro {
     padding: clamp(7rem, 16vw, 16rem) clamp(1.5rem, 6vw, 7rem)
-      clamp(2rem, 5vw, 5rem) clamp(1.5rem, 16.2vw, 18rem);
+      clamp(2rem, 5vw, 5rem) clamp(1.5rem, 19.5vw, 21rem);
   }
 
   .intro__texto {
