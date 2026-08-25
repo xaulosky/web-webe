@@ -58,13 +58,6 @@ import { cifras } from '../config/site';
   </PanelSacado>
 
   <section class="atributos">
-    <div class="atributos__encabezado" data-anima="grupo">
-      <h2>
-        Más que promesas<br />
-        nuestra manera de trabajar
-      </h2>
-    </div>
-
     <Acordeon />
   </section>
 
@@ -108,32 +101,7 @@ import { cifras } from '../config/site';
   }
 
   .atributos {
-    padding-bottom: clamp(3rem, 7vw, 7rem);
+    padding-block: clamp(2.5rem, 6vw, 6rem) clamp(3rem, 7vw, 7rem);
   }
 
-  .atributos__encabezado {
-    padding: 0 clamp(1.5rem, 6vw, 7rem) clamp(2.5rem, 6vw, 6rem)
-      clamp(1.5rem, 16.7vw, 18rem);
-  }
-
-  .atributos__antetitulo {
-    margin: 0 0 clamp(0.75rem, 1.5vw, 1.25rem);
-    font-size: 0.9375rem;
-    font-weight: 300;
-    color: var(--color-muted);
-  }
-
-  .atributos h2 {
-    margin: 0;
-    font-size: clamp(1.35rem, 2vw, 1.85rem);
-    font-weight: 500;
-    line-height: 1.35;
-    letter-spacing: -0.01em;
-  }
-
-  @media (max-width: 860px) {
-    .atributos__encabezado {
-      padding-inline: clamp(1.5rem, 6vw, 2.5rem);
-    }
-  }
 </style>
