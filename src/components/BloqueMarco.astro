@@ -8,12 +8,22 @@ interface Props {
   antetitulo?: string;
   /** Dónde se apoya el texto dentro del marco. */
   alineacion?: 'izquierda' | 'derecha';
+  /** Ancho de la columna de texto, en ch. Por omisión, 36. */
+  ancho?: number;
+  /** Cualquier otro atributo pasa tal cual a la sección (p. ej. data-*). */
+  [dato: string]: unknown;
 }
 
-const { id, antetitulo, alineacion = 'izquierda' } = Astro.props;
+const { id, antetitulo, alineacion = 'izquierda', ancho, ...resto } = Astro.props;
 ---
 
-<section class="bloque" id={id} data-alineacion={alineacion}>
+<section
+  class="bloque"
+  id={id}
+  data-alineacion={alineacion}
+  style={ancho ? `--ancho-texto:${ancho}ch` : undefined}
+  {...resto}
+>
   <div class="bloque__marco" aria-hidden="true"></div>
 
   <div class="bloque__contenido" data-anima="grupo">
@@ -73,7 +83,7 @@ const { id, antetitulo, alineacion = 'izquierda' } = Astro.props;
 
   .bloque__texto {
     margin: clamp(1.5rem, 3vw, 2.5rem) 0 0;
-    max-width: 36ch;
+    max-width: var(--ancho-texto, 36ch);
     font-size: clamp(1.25rem, 2.38vw, 2.15rem);
     font-weight: 500;
     line-height: 1.42;

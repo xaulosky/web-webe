@@ -2,8 +2,12 @@
 import BloqueMarco from './BloqueMarco.astro';
 ---
 
-<BloqueMarco id="we-work">
-  Cada proyecto refleja una forma de trabajar basada en la experiencia, el
-  acompañamiento y la búsqueda de soluciones acordes a las necesidades de cada
-  cliente.
+{/* 37ch, uno más que el resto: a 36 «acompañamiento» no entraba en la segunda
+    línea y bajaba a la tercera dejando su artículo solo arriba. El espacio duro
+    los mantiene juntos si alguna vez no cupieran.
+    data-oculta-logo: el logo del encabezado cae justo sobre este párrafo. */}
+<BloqueMarco id="we-work" ancho={37} data-oculta-logo>
+  Cada proyecto refleja una forma de trabajar basada en la experiencia,
+  el&nbsp;acompañamiento y la búsqueda de soluciones acordes a las necesidades
+  de cada cliente.
 </BloqueMarco>
