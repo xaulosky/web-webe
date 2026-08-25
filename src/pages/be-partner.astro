@@ -55,18 +55,20 @@ import ContactForm from '../components/ContactForm.astro';
      aplica ahí; el padding superior deja pasar la diagonal por encima. */
   .postular {
     display: grid;
-    grid-template-columns: 38% 1fr;
+    /* 46%, no 38: con el titular a su cuerpo nuevo, en la columna estrecha se
+       partía en cuatro líneas en vez de las dos que marcan sus saltos. */
+    grid-template-columns: 46% 1fr;
     gap: clamp(2rem, 6vw, 6rem);
-    /* La sangría izquierda deja pasar el logo del encabezado: a 16,7vw el
-       titular arrancaba justo donde termina el wordmark. Misma cuenta que en
-       la intro de proyectos. */
+    /* La sangría es la del titular de la portada (17,2vw): el «Hablemos de tu
+       proyecto» arranca al mismo nivel que «Seamos partners», y con la misma
+       holgura que este respecto al logo del encabezado. */
     padding: clamp(7rem, 16vw, 16rem) clamp(1.5rem, 8vw, 8rem) clamp(4rem, 9vw, 9rem)
-      clamp(1.5rem, 19.5vw, 21rem);
+      clamp(1.5rem, 17.2vw, 19rem);
   }
 
   .postular h2 {
     margin: 0;
-    font-size: clamp(1.35rem, 2vw, 1.85rem);
+    font-size: clamp(1.5rem, 2.35vw, 2.2rem);
     font-weight: 500;
     line-height: 1.35;
     letter-spacing: -0.01em;
@@ -75,13 +77,15 @@ import ContactForm from '../components/ContactForm.astro';
   .postular__encabezado p {
     margin: clamp(1rem, 2vw, 1.5rem) 0 0;
     max-width: 34ch;
-    font-size: clamp(0.9rem, 1.05vw, 1rem);
+    font-size: clamp(1rem, 1.2vw, 1.15rem);
     font-weight: 300;
     line-height: 1.7;
     color: var(--color-muted);
   }
 
-  @media (max-width: 960px) {
+  /* Se apila antes que a 960: entre esa medida y 1080 la columna del titular se
+     quedaba corta y lo partía en tres líneas. */
+  @media (max-width: 1080px) {
     .postular {
       grid-template-columns: 1fr;
     }
