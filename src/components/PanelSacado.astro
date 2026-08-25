@@ -62,7 +62,7 @@ const { id, antetitulo } = Astro.props;
   .sacado__cuerpo {
     position: relative;
     display: grid;
-    grid-template-columns: 53% 1fr;
+    grid-template-columns: 42% 1fr;
     gap: clamp(1.5rem, 5vw, 5rem);
     /* La sección sube --solape sobre lo anterior; el contenido lo descuenta y
        arranca justo debajo del escalón. Sin esto la foto se montaba sobre el
@@ -71,12 +71,9 @@ const { id, antetitulo } = Astro.props;
       clamp(1.5rem, 5vw, 5rem) clamp(2rem, 5vw, 5rem) clamp(1.5rem, 8vw, 9rem);
   }
 
-  /* El texto acompaña la bajada: se queda fijo mientras la foto pasa y se
-     suelta cuando la columna termina. `align-self: start` es lo que lo hace
-     posible —estirado a toda la fila, sticky no tendría recorrido—. */
+  /* El texto se apoya arriba y baja con la página, sin quedarse fijo mientras
+     la foto pasa: el paralaje se retiró. */
   .sacado__panel {
-    position: sticky;
-    top: clamp(5rem, 11vh, 7rem);
     align-self: start;
     padding-bottom: clamp(2rem, 4vw, 4rem);
   }
@@ -108,11 +105,9 @@ const { id, antetitulo } = Astro.props;
       padding: 0 0 clamp(2rem, 8vw, 3rem);
     }
 
-    /* Sin sticky: en una columna no tiene contra qué fijarse. El padding de
-       arriba deja pasar el escalón entero antes de que empiece el texto. */
+    /* El padding de arriba deja pasar el escalón entero antes del texto. */
     .sacado__panel {
       order: -1;
-      position: static;
       margin-left: 0;
       padding: calc(var(--solape) + var(--paso) + clamp(1.5rem, 6vw, 2.5rem))
         clamp(1.5rem, 6vw, 2.5rem) 0;
