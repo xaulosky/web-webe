@@ -93,6 +93,11 @@ const orden = (s: string) => marcas.findIndex((marca) => marca.slug === s);
 <style>
   .marca-portada {
     --radio: clamp(1.75rem, 3.2vw, 3.5rem);
+    /* Alto de la pestaña. Es fijo a propósito: los flancos derivan su ancho de
+       él para mantener el ángulo, así que no puede depender de lo alto que
+       resulte el wordmark de cada marca. Vive aquí y no en la pestaña porque
+       los logos vecinos lo usan para alinearse con ella. */
+    --alto-pestana: clamp(4rem, 6.2vw, 6.2rem);
 
     position: relative;
     display: flex;
@@ -178,10 +183,13 @@ const orden = (s: string) => marcas.findIndex((marca) => marca.slug === s);
     scroll-snap-align: center;
   }
 
-  /* Los logos se apoyan en la misma línea de base que el wordmark: por eso el
-     padding inferior es el mismo que el suyo. */
+  /* Cada logo ocupa una caja del alto de la pestaña y se centra en ella: así
+     todos comparten eje con el wordmark. Apoyados por la base quedaban
+     desparejos, porque no hay dos wordmarks de la misma altura. */
   .marca-portada__otras a {
-    padding-bottom: clamp(1.1rem, 2.2vw, 2.1rem);
+    display: flex;
+    align-items: center;
+    height: var(--alto-pestana);
   }
 
   .marca-portada__otras img {
@@ -200,16 +208,25 @@ const orden = (s: string) => marcas.findIndex((marca) => marca.slug === s);
     opacity: 0.9;
   }
 
-  /* Pestaña de carpeta. La altura es fija a propósito: los flancos derivan su
-     ancho de ella para mantener el ángulo, así que no puede depender de lo alto
-     que resulte el wordmark de cada marca. */
+  /* Pestaña de carpeta. */
   .marca-portada__pestana {
-    --alto-pestana: clamp(4rem, 6.2vw, 6.2rem);
-
     position: relative;
     display: flex;
     align-items: stretch;
     height: var(--alto-pestana);
+  }
+
+  /* Entra sólo deslizándose. El revelado de portada la funde desde opacidad
+     cero, y a media entrada un blanco macizo sobre una foto deja ver lo que
+     tiene detrás: las patas de las sillas se leen cruzándola como rayas. */
+  .marca-portada__pie .marca-portada__pestana {
+    animation-name: entrar-pestana;
+  }
+
+  @keyframes entrar-pestana {
+    from {
+      transform: translateY(1.75rem);
+    }
   }
 
   /* El blanco de en medio; los flancos traen el suyo en el propio trazado. */
@@ -236,6 +253,8 @@ const orden = (s: string) => marcas.findIndex((marca) => marca.slug === s);
   @media (max-width: 860px) {
     /* Casi cuadrada, la proporción de la imagen 1 que ahora hace de portada. */
     .marca-portada {
+      --alto-pestana: clamp(4rem, 17vw, 5.5rem);
+
       min-height: min(100vw + 3rem, 72vh);
     }
 
@@ -263,9 +282,6 @@ const orden = (s: string) => marcas.findIndex((marca) => marca.slug === s);
       order: 999;
     }
 
-    .marca-portada__pestana {
-      --alto-pestana: clamp(4rem, 17vw, 5.5rem);
-    }
 
     .marca-portada__otras a {
       padding-bottom: clamp(1rem, 3.5vw, 1.5rem);
