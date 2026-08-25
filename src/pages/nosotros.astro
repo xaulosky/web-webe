@@ -41,20 +41,21 @@ import { cifras } from '../config/site';
     </picture>
 
     <p class="nosotros__creencia">
-      Creemos que un buen proyecto no depende únicamente del mobiliario, sino de
-      las decisiones que lo hacen posible. Por eso buscamos ser un partner
-      cercano, aportando experiencia, criterio y acompañamiento en cada etapa
-      del proceso.
+      webe nace de la unión de profesionales con experiencia en distintas áreas
+      del equipamiento corporativo.
     </p>
-  </PanelSacado>
 
-  {/* Sólo las cifras: el párrafo que las acompañaba se retiró. La rejilla se
-      queda porque es la que las deja en su columna. */}
-  <section class="historia" data-anima="grupo">
-    <ul class="historia__cifras">
+    <p class="nosotros__creencia">
+      Creemos que un buen proyecto no depende únicamente del mobiliario, sino de
+      las decisiones que lo hacen posible.
+    </p>
+
+    {/* Las cifras cuelgan del párrafo, en el mismo panel: antes vivían en una
+        sección aparte más abajo, que ya no tenía nada más dentro. */}
+    <ul class="nosotros__cifras">
       {cifras.map((cifra) => <li>{cifra}</li>)}
     </ul>
-  </section>
+  </PanelSacado>
 
   <section class="atributos">
     <div class="atributos__encabezado" data-anima="grupo">
@@ -93,21 +94,13 @@ import { cifras } from '../config/site';
     letter-spacing: -0.01em;
   }
 
-  .historia {
-    display: grid;
-    grid-template-columns: 53% 47%;
-    padding: 0 clamp(1.5rem, 6vw, 7rem) clamp(4rem, 10vw, 10rem)
-      clamp(1.5rem, 8vw, 9rem);
-  }
-
-  /* Dos columnas, llenando por filas como el diseño. Van en la segunda columna
-     de la sección, que es donde estaban cuando las acompañaba el párrafo. */
-  .historia__cifras {
-    grid-column: 2;
+  /* Dos columnas, llenando por filas como el diseño. */
+  .nosotros__cifras {
     display: grid;
     grid-template-columns: repeat(2, max-content);
     gap: 0.6rem clamp(1.5rem, 4vw, 4rem);
     align-content: start;
+    margin-top: clamp(2rem, 4.5vw, 3.5rem);
     font-size: clamp(0.75rem, 0.95vw, 0.9375rem);
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -139,16 +132,6 @@ import { cifras } from '../config/site';
   }
 
   @media (max-width: 860px) {
-    .historia {
-      grid-template-columns: 1fr;
-      gap: clamp(2rem, 8vw, 3rem);
-      padding-inline: clamp(1.5rem, 6vw, 2.5rem);
-    }
-
-    .historia__cifras {
-      grid-column: 1;
-    }
-
     .atributos__encabezado {
       padding-inline: clamp(1.5rem, 6vw, 2.5rem);
     }
