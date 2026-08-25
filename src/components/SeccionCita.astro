@@ -28,9 +28,9 @@
         caía en cuatro líneas o en dos según el viewport. Así son siempre tres,
         partidas donde corresponde por sentido. */}
     <p>
-      <span class="cita__comilla">&ldquo;</span>El espacio que diseñas<br />
+      <span class="cita__comilla cita__comilla--abre">&ldquo;</span>El espacio que diseñas<br />
       merece <strong>el mobiliario</strong><br />
-      que <strong>escogerías para tí</strong><span class="cita__comilla">&rdquo;</span>.
+      que <strong>escogerías para tí</strong><span class="cita__comilla cita__comilla--cierra">&rdquo;</span>.
     </p>
   </blockquote>
 </section>
@@ -103,10 +103,21 @@
     font-weight: 500;
   }
 
-  /* Las comillas no deben empujar el bloque fuera del centro óptico. */
   .cita__comilla {
     display: inline-block;
-    margin-inline: -0.08em;
+  }
+
+  /* Hacia dentro, un respiro para que la comilla no se pegue a la palabra;
+     hacia fuera siguen tirando del bloque, que es lo que lo deja en el centro
+     óptico y no en el geométrico. */
+  .cita__comilla--abre {
+    margin-left: -0.08em;
+    margin-right: 0.12em;
+  }
+
+  .cita__comilla--cierra {
+    margin-left: 0.12em;
+    margin-right: -0.08em;
   }
 </style>
 

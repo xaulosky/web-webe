@@ -167,6 +167,8 @@ const portada = marca.foto || '/marcas/fotos/novara-1.webp';
        movía también su borde izquierdo, que es el que tiene que seguir
        alineado con el párrafo de la ficha. */
     margin-right: clamp(0rem, 6vw, 7rem);
+    /* Y con tope: en pantallas anchas la foto se iba a un tamaño de portada. */
+    max-width: min(100%, 46rem);
   }
 
   .galeria__marco img {
@@ -255,6 +257,7 @@ const portada = marca.foto || '/marcas/fotos/novara-1.webp';
     .galeria__marco {
       grid-column: 1 / -1;
       margin-right: 0;
+      max-width: none;
     }
 
     .volver {
@@ -269,14 +272,51 @@ const portada = marca.foto || '/marcas/fotos/novara-1.webp';
   if (marco) {
     const fotos = Array.from(marco.querySelectorAll<HTMLElement>('[data-foto]'));
     const puntos = Array.from(marco.querySelectorAll<HTMLElement>('[data-ir]'));
+    const sinMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    let actual = 0;
+    let visible = false;
+    let reloj = 0;
+
+    const pintar = () => {
+      for (const foto of fotos) {
+        foto.toggleAttribute('data-activa', Number(foto.dataset.foto) === actual);
+      }
+      puntos.forEach((punto, j) =>
+        punto.setAttribute('aria-selected', String(j === actual)),
+      );
+    };
+
+    // Las láminas pasan solas, igual que en el slider de proyectos. El reloj
+    // se reinicia con cada salto a mano: no tiene sentido cambiarle la foto
+    // debajo a quien acaba de elegir una.
+    const reiniciar = () => {
+      window.clearInterval(reloj);
+      if (sinMovimiento.matches || fotos.length < 2) return;
+      reloj = window.setInterval(() => {
+        if (!visible) return;
+        actual = (actual + 1) % fotos.length;
+        pintar();
+      }, 3200);
+    };
 
     puntos.forEach((punto, i) => {
       punto.addEventListener('click', () => {
-        for (const foto of fotos) {
-          foto.toggleAttribute('data-activa', Number(foto.dataset.foto) === i);
-        }
-        puntos.forEach((otro, j) => otro.setAttribute('aria-selected', String(i === j)));
+        actual = i;
+        pintar();
+        reiniciar();
       });
     });
+
+    // Sólo corre con la galería a la vista.
+    const observador = new IntersectionObserver(
+      ([entrada]) => {
+        visible = entrada.isIntersecting;
+      },
+      { rootMargin: '100px' },
+    );
+    observador.observe(marco);
+
+    reiniciar();
   }
 </script>
