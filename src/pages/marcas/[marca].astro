@@ -162,6 +162,11 @@ const portada = marca.foto || '/marcas/fotos/novara-1.webp';
     position: relative;
     display: grid;
     grid-column: 2 / -1;
+    /* Algo más angosta que la columna del texto. Va como margen y no como
+       padding de la sección: el padding entra en la cuenta de las columnas y
+       movía también su borde izquierdo, que es el que tiene que seguir
+       alineado con el párrafo de la ficha. */
+    margin-right: clamp(0rem, 6vw, 7rem);
   }
 
   .galeria__marco img {
@@ -249,6 +254,7 @@ const portada = marca.foto || '/marcas/fotos/novara-1.webp';
 
     .galeria__marco {
       grid-column: 1 / -1;
+      margin-right: 0;
     }
 
     .volver {

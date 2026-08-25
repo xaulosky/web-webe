@@ -257,25 +257,6 @@ const taxonomia = [
     width: var(--canto);
   }
 
-  /* Desde la base de cada canto la línea sigue hasta el borde, como en el
-     diseño: la pestaña se lee montada sobre una línea continua. */
-  .proyectos__marco::before,
-  .proyectos__marco::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    width: 100vw;
-    border-top: 1px solid rgba(255, 255, 255, 0.45);
-  }
-
-  .proyectos__marco::before {
-    right: calc(100% + var(--canto, 0px));
-  }
-
-  .proyectos__marco::after {
-    left: calc(100% + var(--canto, 0px));
-  }
-
   /* --- Puntitos del loop de fotos --- */
   .proyectos__puntos {
     position: relative;
@@ -400,21 +381,13 @@ const taxonomia = [
     }
 
     /* La pestaña se queda de alto fijo —de ahí sale el ángulo de sus cantos—
-       pero el cajón crece con los tres datos apilados. Por eso los filetes que
-       salen de los cantos ya no van al pie del cajón sino a la base de la
-       pestaña, que es donde nacen. */
+       pero el cajón crece con los tres datos apilados. */
     .proyectos__marco {
       --alto-cajon: 3.25rem;
 
       height: auto;
       align-items: flex-start;
       max-width: min(92%, 92rem);
-    }
-
-    .proyectos__marco::before,
-    .proyectos__marco::after {
-      top: var(--alto-cajon);
-      bottom: auto;
     }
 
     .proyectos__ficha {
