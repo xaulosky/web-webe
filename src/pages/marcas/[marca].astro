@@ -25,7 +25,9 @@ const portada = marca.foto || '/marcas/fotos/novara-1.webp';
 >
   <HeroMarca slug={marca.slug} foto={portada} />
 
-  <section class="marca" data-anima="grupo">
+  {/* data-oculta-logo: sobre este blanco el logo del header no se lee y se
+      retira; vuelve solo en cuanto la sección queda atrás. */}
+  <section class="marca" data-anima="grupo" data-oculta-logo>
     <div class="marca__meta">
       <div>
         <p class="marca__rotulo">Partner</p>

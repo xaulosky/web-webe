@@ -142,6 +142,15 @@ const destacado = actual >= 0 ? actual : 0;
     opacity: var(--logo-opacity, 1);
   }
 
+  /* Fundido al retirarse y al volver, en vez de un salto. Se deja fuera el
+     morph del hero de la home: ahí `--logo-opacity` se escribe en cada
+     fotograma y una transición encima lo dejaría corriendo por detrás del
+     scroll. Cuando termina (`data-morph='done'`) ya puede fundir. */
+  .site-header:not([data-morph-inicial='oculto']) .site-header__logo,
+  .site-header[data-morph='done'] .site-header__logo {
+    transition: opacity 0.35s ease;
+  }
+
   .site-header[data-morph-inicial='oculto'] .site-header__logo {
     pointer-events: none;
   }
