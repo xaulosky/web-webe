@@ -98,13 +98,25 @@ const destacado = actual >= 0 ? actual : 0;
      es la que se convierte en la X. */
   :root[data-menu='abierto'] .site-header {
     z-index: 60;
+  }
+
+  /* Sobre el velo oscuro del menú todo va en blanco: el logo, el botón y
+     cualquier otra cosa del header. El `[data-variant]` de más no es adorno,
+     es peso: sin él estas reglas empatan con las de tema y las de ocultar, que
+     vienen después en la hoja y ganaban el desempate. El resultado era una X en
+     tinta sobre fondo oscuro y, en las secciones donde el logo se retira,
+     ningún logo. */
+  :root[data-menu='abierto'] .site-header[data-variant],
+  :root[data-menu='abierto'] .site-header[data-variant] .site-header__logo,
+  :root[data-menu='abierto'] .site-header[data-variant] .site-header__toggle {
     color: #fff;
   }
 
-  /* En la home el logo arranca invisible porque nace del morph del titular.
-     Con el menú abierto hay que mostrarlo igual: se pisa `opacity` y no la
-     variable, porque el hero la fija en estilo en línea y ganaría. */
-  :root[data-menu='abierto'] .site-header .site-header__logo {
+  /* En la home el logo arranca invisible porque nace del morph del titular, y
+     en varias secciones se retira a propósito. Con el menú abierto se muestra
+     igual: se pisa `opacity` y no la variable, porque el hero la fija en estilo
+     en línea y ganaría. */
+  :root[data-menu='abierto'] .site-header[data-variant] .site-header__logo {
     opacity: 1;
     pointer-events: auto;
   }
