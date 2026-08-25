@@ -10,6 +10,8 @@ import CortePaso from './CortePaso.astro';
 // tres.
 interface Props {
   id?: string;
+  /** Cualquier otro atributo pasa tal cual a la sección (p. ej. data-*). */
+  [dato: string]: unknown;
   /** Dónde queda el canto alto del escalón, en % del ancho. */
   quiebre?: string;
   /** Cuánto sube sobre la sección anterior. */
@@ -20,13 +22,14 @@ interface Props {
 // El solape sólo viaja como estilo en línea si alguien lo pide: con un valor
 // por omisión escrito ahí, ganaba siempre a la hoja y el ajuste de celu —donde
 // el corte sube mucho menos— no llegaba a aplicarse nunca.
-const { id, quiebre, solape, class: clase } = Astro.props;
+const { id, quiebre, solape, class: clase, ...resto } = Astro.props;
 ---
 
 <section
   class:list={['sobre-corte', clase]}
   id={id}
   style={solape ? `--solape:${solape}` : undefined}
+  {...resto}
 >
   <div class="sobre-corte__fondo" aria-hidden="true">
     <CortePaso quiebre={quiebre} />

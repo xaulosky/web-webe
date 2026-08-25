@@ -29,7 +29,10 @@ const conFicha = (p: (typeof proyectos)[number]) => Boolean(p.superficie);
 
   {/* El mismo escalón que separa el hero de la home: el blanco entra por
       encima de la portada en vez de cortar en recto. */}
-  <SeccionSobreCorte>
+  {/* data-oculta-logo: el logo del encabezado cae justo sobre este párrafo y
+      no hay sangría que lo despeje del todo; se retira mientras la sección
+      cruza y vuelve al quedar atrás. */}
+  <SeccionSobreCorte data-oculta-logo>
     <div class="intro" data-anima="grupo">
       {/* «el acompañamiento» va con espacio duro: suelto, el corte de línea
           dejaba un «el» colgando al final de la anterior. El comentario va
