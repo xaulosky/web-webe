@@ -160,8 +160,10 @@ const portada = marca.foto || '/marcas/fotos/novara-1.webp';
 
   .galeria__marco {
     position: relative;
-    display: grid;
     grid-column: 2 / -1;
+    /* Menos alta que las fotos, que son 1200×960: se recortan arriba y abajo
+       en vez de imponerle su proporción a la galería. */
+    aspect-ratio: 3 / 2;
     /* Algo más angosta que la columna del texto. Va como margen y no como
        padding de la sección: el padding entra en la cuenta de las columnas y
        movía también su borde izquierdo, que es el que tiene que seguir
@@ -171,10 +173,15 @@ const portada = marca.foto || '/marcas/fotos/novara-1.webp';
     max-width: min(100%, 46rem);
   }
 
+  /* Apiladas y absolutas: con el alto del marco saliendo de su proporción, unas
+     fotos en flujo que midieran el 100% de ese alto serían un cálculo circular
+     —el alto de la caja lo daría la foto y el de la foto la caja—. */
   .galeria__marco img {
-    grid-area: 1 / 1;
+    position: absolute;
+    inset: 0;
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover;
     border-radius: clamp(1rem, 1.8vw, 1.75rem);
     opacity: 0;
     visibility: hidden;
