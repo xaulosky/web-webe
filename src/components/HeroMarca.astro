@@ -144,43 +144,44 @@ const orden = (s: string) => marcas.findIndex((marca) => marca.slug === s);
     );
   }
 
-  /* La fila del pie ocupa el ancho y reparte: pestaña a la izquierda, logos
-     llenando lo que queda hasta el canto derecho. */
+  /* Las siete marcas en una sola fila y cada una en su sitio: la pestaña no va
+     siempre primera, sino en el lugar que le toca a la marca abierta. Así lo
+     único que se mueve al cambiar de ficha es la pestaña; los logos se quedan
+     donde estaban. Cuando no caben, la fila hace de slider. */
   .marca-portada__pie {
     position: relative;
     z-index: 3;
     display: flex;
     align-items: flex-end;
     width: 100%;
-  }
-
-  /* Las marcas inactivas arrancan justo a la derecha de la pestaña —el diseño
-     las quiere pegadas a ella, no descolgadas— y se reparten hasta el borde.
-     Cuando no caben, la fila hace de slider. */
-  .marca-portada__otras {
-    flex: 1;
-    display: flex;
-    /* Los logos se apoyan en la misma línea de base que el wordmark de la
-       pestaña: por eso el padding inferior es el mismo que el suyo. */
-    align-items: flex-end;
-    /* Agrupados con separación pareja en vez de repartidos por todo el ancho:
-       con space-between quedaban sueltos y desordenados. */
-    justify-content: flex-start;
     gap: clamp(1.25rem, 3.4vw, 3.5rem);
-    padding: 0 clamp(1.5rem, 3vw, 3rem) clamp(1.1rem, 2.2vw, 2.1rem)
-      clamp(1rem, 2.5vw, 2.5rem);
+    padding-inline: clamp(1.5rem, 10.6vw, 12rem) clamp(1.5rem, 3vw, 3rem);
     overflow-x: auto;
     scroll-snap-type: x proximity;
     scrollbar-width: none;
   }
 
-  .marca-portada__otras::-webkit-scrollbar {
+  .marca-portada__pie::-webkit-scrollbar {
     display: none;
   }
 
+  /* El nav deja de ser caja para que sus logos sean piezas de la misma fila que
+     la pestaña y puedan intercalarse con ella. */
+  .marca-portada__otras {
+    display: contents;
+  }
+
+  .marca-portada__pestana,
   .marca-portada__otras a {
+    order: var(--orden);
     flex: 0 0 auto;
     scroll-snap-align: center;
+  }
+
+  /* Los logos se apoyan en la misma línea de base que el wordmark: por eso el
+     padding inferior es el mismo que el suyo. */
+  .marca-portada__otras a {
+    padding-bottom: clamp(1.1rem, 2.2vw, 2.1rem);
   }
 
   .marca-portada__otras img {
@@ -206,14 +207,9 @@ const orden = (s: string) => marcas.findIndex((marca) => marca.slug === s);
     --alto-pestana: clamp(4rem, 6.2vw, 6.2rem);
 
     position: relative;
-    flex: none;
     display: flex;
     align-items: stretch;
     height: var(--alto-pestana);
-    /* El wordmark queda a la sangría del diseño, así que la pestaña arranca esa
-       distancia menos lo que ocupa su flanco; el max() evita que el flanco se
-       salga de pantalla cuando la sangría es menor que él. */
-    margin-left: max(0px, calc(10.6vw - var(--alto-pestana) * 103.02 / 165));
   }
 
   /* El blanco de en medio; los flancos traen el suyo en el propio trazado. */
@@ -243,25 +239,16 @@ const orden = (s: string) => marcas.findIndex((marca) => marca.slug === s);
       min-height: min(100vw + 3rem, 72vh);
     }
 
-    /* Las seis marcas en una sola tira que corre en horizontal, cada una en su
-       lugar y la pestaña entre ellas: es la del diseño. Antes los logos se iban
-       arriba, sueltos sobre la foto, porque no caben todos al lado de la
-       pestaña; en una tira que se desplaza sí caben. */
+    /* La misma fila, pero con media pantalla de aire a cada lado para que
+       cualquier marca —también la primera y la última— pueda quedar centrada.
+       El aire va como cajas de la propia tira: el padding de un contenedor con
+       scroll no siempre se respeta al final. */
     .marca-portada__pie {
-      align-items: flex-end;
       gap: clamp(1.25rem, 5vw, 2.5rem);
-      overflow-x: auto;
+      padding-inline: 0;
       scroll-snap-type: x mandatory;
-      scrollbar-width: none;
     }
 
-    .marca-portada__pie::-webkit-scrollbar {
-      display: none;
-    }
-
-    /* Media pantalla de aire a cada lado para que la primera y la última marca
-       también puedan quedar centradas. Van como cajas de la propia tira: el
-       padding de un contenedor con scroll no siempre se respeta al final. */
     .marca-portada__pie::before,
     .marca-portada__pie::after {
       content: '';
@@ -276,26 +263,10 @@ const orden = (s: string) => marcas.findIndex((marca) => marca.slug === s);
       order: 999;
     }
 
-    /* El nav deja de ser caja para que sus logos sean piezas de la misma tira
-       que la pestaña y puedan intercalarse con ella. */
-    .marca-portada__otras {
-      display: contents;
-    }
-
-    .marca-portada__pestana,
-    .marca-portada__otras a {
-      order: var(--orden);
-      flex: 0 0 auto;
-      scroll-snap-align: center;
-    }
-
     .marca-portada__pestana {
       --alto-pestana: clamp(4rem, 17vw, 5.5rem);
-
-      margin-left: 0;
     }
 
-    /* Los logos se apoyan en la misma línea de base que el wordmark. */
     .marca-portada__otras a {
       padding-bottom: clamp(1rem, 3.5vw, 1.5rem);
     }

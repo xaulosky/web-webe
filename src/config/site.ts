@@ -91,6 +91,9 @@ const alcanceReuniones =
 const alcanceBenchReuniones = 'Equipamiento de Mobiliario para Bench y Salas de Reunión.';
 const alcanceBenchRegulable =
   'Equipamiento de Mobiliario para Bench (Estaciones de trabajo con regulación altura).';
+// El casino de BTG no es una oficina y tiene el suyo propio.
+const alcanceCasino =
+  'Equipamiento de Mobiliario, Sillas, Taburetes y Soft Seating para Casino. Nubes acústicas 100% PET en el cielo del Casino.';
 
 // Carpetas de fotos que existen hoy. Un proyecto publicado necesita sus tres
 // láminas de 1920×900: son el fondo de la sección de la home y la galería de la
@@ -343,29 +346,29 @@ const fichas = [
     ano: '2023',
     fotos: fotosDe('ninez'),
   },
-  // Estos dos traen fotos pero no vinieron en el listado de fichas: se publican
-  // por sus fotos y sin la fila de datos.
+  // Estos dos llegaron aparte, con la tanda de «proyectos destacados»: de ahí
+  // salen su nombre completo y su ficha. Todavía sin año ni arquitectura.
   {
-    nombre: 'BTG Pactual',
-    slug: 'btg',
-    ubicacion: '',
-    superficie: '',
-    puestos: '',
-    alcance: '',
-    arquitectura: '',
-    ano: '',
-    fotos: fotosDe('btg'),
-  },
-  {
-    nombre: 'Lockton',
+    nombre: 'Lockton Chile Corredores de Seguro',
     slug: 'lockton',
     ubicacion: '',
-    superficie: '',
-    puestos: '',
-    alcance: '',
+    superficie: '850 m²',
+    puestos: '83',
+    alcance: alcanceSinSilleria,
     arquitectura: '',
     ano: '',
     fotos: fotosDe('lockton'),
+  },
+  {
+    nombre: 'BTG Pactual Casino',
+    slug: 'btg',
+    ubicacion: '',
+    superficie: '220 m²',
+    puestos: '35',
+    alcance: alcanceCasino,
+    arquitectura: '',
+    ano: '',
+    fotos: fotosDe('btg'),
   },
 ] as const;
 
@@ -562,13 +565,13 @@ export const marcas = [
     nombre: 'Rossi',
     slug: 'rossi',
     catalogo: { etiqueta: 'Catálogo Rossi 2025-26', archivo: '' },
-    fotos: [],
+    fotos: fotosMarca('rossi'),
     archivo: 'rossi.svg',
     blanco: 'rossi-blanco.svg',
     ancho: 230.28,
     alto: 33.06,
     escala: 5.75,
-    foto: '',
+    foto: portadaMarca('rossi'),
     descripcion:
       'Rossi es una marca argentina especializada en el diseño y fabricación de mobiliario para espacios de trabajo, con una trayectoria que se remonta a 1962. Su propuesta combina diseño, confort y ergonomía, desarrollando productos pensados para responder a distintas formas de trabajar y habitar la oficina. Su experiencia industrial, capacidad de desarrollo y variedad de configuraciones permiten ofrecer soluciones funcionales y versátiles para proyectos corporativos.',
     rotuloCategorias: 'Mobiliario',

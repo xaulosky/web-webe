@@ -14,7 +14,6 @@ const { marca } = Astro.props;
 
 // La portada es la imagen 1 de la marca y va a sangre arriba; la galería son
 // las cinco, esa incluida.
-// TODO: Rossi aún no manda fotos; mientras tanto usa las de Novara.
 const fotos = marca.fotos.length > 0 ? marca.fotos : [];
 const portada = marca.foto || '/marcas/fotos/novara-1.webp';
 ---
