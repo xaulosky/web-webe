@@ -4,7 +4,6 @@ import HeroPagina from '../components/HeroPagina.astro';
 import PanelSacado from '../components/PanelSacado.astro';
 import Acordeon from '../components/Acordeon.astro';
 import SeccionContacto from '../components/SeccionContacto.astro';
-import { cifras } from '../config/site';
 ---
 
 <Base
@@ -49,12 +48,6 @@ import { cifras } from '../config/site';
       Creemos que un buen proyecto no depende únicamente del mobiliario, sino de
       las decisiones que lo hacen posible.
     </p>
-
-    {/* Las cifras cuelgan del párrafo, en el mismo panel: antes vivían en una
-        sección aparte más abajo, que ya no tenía nada más dentro. */}
-    <ul class="nosotros__cifras">
-      {cifras.map((cifra) => <li>{cifra}</li>)}
-    </ul>
   </PanelSacado>
 
   <section class="atributos">
@@ -85,19 +78,6 @@ import { cifras } from '../config/site';
     font-weight: 300;
     line-height: 1.45;
     letter-spacing: -0.01em;
-  }
-
-  /* Dos columnas, llenando por filas como el diseño. */
-  .nosotros__cifras {
-    display: grid;
-    grid-template-columns: repeat(2, max-content);
-    gap: 0.6rem clamp(1.5rem, 4vw, 4rem);
-    align-content: start;
-    margin-top: clamp(2rem, 4.5vw, 3.5rem);
-    font-size: clamp(0.75rem, 0.95vw, 0.9375rem);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-muted);
   }
 
   .atributos {

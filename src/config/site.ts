@@ -404,15 +404,6 @@ export const clientes = [
   { nombre: 'TAB', archivo: 'tab.webp' },
 ] as const;
 
-// Cifras de la página "we are".
-export const cifras = [
-  '+6 años',
-  '+18 proyectos',
-  '+12 marcas',
-  '+6.500 m² equipados',
-  '+480 puestos de trabajo',
-] as const;
-
 // Acordeón de atributos. Copy definitivo.
 export const atributos = [
   {
