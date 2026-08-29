@@ -144,9 +144,15 @@ const resumen = (texto: string) =>
               del aro (2·π·36 ≈ 226): con dos repeticiones el texto llenaba el
               71% y quedaba un hueco. lengthAdjust reparte el sobrante en los
               espacios, no en los glifos, así que las letras no se deforman. */}
+          {/* Los dos espacios del final van duros: SVG colapsa el blanco del
+              final y sin él el guion quedaba pegado al «VER» del arranque, que
+              en un aro es justo el empalme que se ve. Van dos porque el último
+              hueco no recibe el reparto de lengthAdjust —sólo lo reciben los
+              que quedan entre glifos— y con uno solo se leía más apretado que
+              los otros tres. */}
           <text textLength="226" lengthAdjust="spacing"
             ><textPath href="#aro-ver-marca"
-              >VER MARCA — VER MARCA — VER MARCA — </textPath
+              >VER MARCA — VER MARCA — VER MARCA —&#160;&#160;</textPath
             ></text
           >
         </svg>
