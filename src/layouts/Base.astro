@@ -31,7 +31,13 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {/* El .ico trae 16, 32 y 48 para la pestaña y los accesos directos; los
+        PNG los prefieren los navegadores que saben elegir tamaño. Ya no hay
+        SVG: el que venía era el cohete de Astro y, por ser vectorial, le ganaba
+        al resto. */}
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="canonical" href={canonical} />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
