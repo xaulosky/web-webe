@@ -57,8 +57,10 @@ const Elemento = apagado ? 'span' : 'a';
     color: var(--color-muted);
   }
 
+  /* Inactivo se dibuja igual de oscuro que activo: en gris parecía apagado al
+     lado de las otras fichas. Lo que avisa de que no hay archivo es el cursor
+     y el title, no el color. */
   .descarga[aria-disabled='true'] {
-    color: var(--color-muted);
     cursor: not-allowed;
   }
 </style>
