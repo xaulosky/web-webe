@@ -22,3 +22,12 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Catálogos PDF. Entre todos pasan de 500 MB y el de Novara supera por sí solo
+# el tope de 100 MB por archivo de GitHub, así que no se versionan: se suben a
+# mano a public_html/catalogos/ en el servidor. Los cinco que ya estaban
+# seguidos por git siguen igual —.gitignore sólo afecta a lo que aún no sigue—,
+# para no romper las descargas que hoy funcionan en la preview.
+public/catalogos/*.pdf
+public/catalogos/novara/
+public/catalogos/bkcontract/

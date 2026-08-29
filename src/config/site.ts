@@ -467,12 +467,44 @@ const fotosMarca = (slug: string) =>
 // que muestra el espacio completo y la que pide el diseño.
 const portadaMarca = (slug: string) => `/marcas/fotos/${slug}-1.webp`;
 
+// Novara y BK Contract entregan, además del catálogo general, un PDF por línea
+// de producto. Las demás marcas traen sólo el general y dejan la lista vacía:
+// la ficha dibuja el bloque de líneas nada más si hay algo que listar.
+type Linea = { nombre: string; archivo: string };
+
+const SIN_LINEAS: Linea[] = [];
+
+const lineasNovara: Linea[] = [
+  { nombre: 'Altura regulable', archivo: '/catalogos/novara/altura-regulable.pdf' },
+  { nombre: 'Call center', archivo: '/catalogos/novara/call-center.pdf' },
+  { nombre: 'Cavinas', archivo: '/catalogos/novara/cavinas.pdf' },
+  { nombre: 'Colores y acabados', archivo: '/catalogos/novara/colores-y-acabados.pdf' },
+  { nombre: 'Encuentro', archivo: '/catalogos/novara/encuentro.pdf' },
+  { nombre: 'Equipamiento', archivo: '/catalogos/novara/equipamiento.pdf' },
+  { nombre: 'Escritorios', archivo: '/catalogos/novara/escritorios.pdf' },
+  { nombre: 'Gerencias', archivo: '/catalogos/novara/gerencias.pdf' },
+  { nombre: 'Guardado', archivo: '/catalogos/novara/guardado.pdf' },
+  { nombre: 'Reunión', archivo: '/catalogos/novara/reunion.pdf' },
+];
+
+const lineasBkContract: Linea[] = [
+  { nombre: 'A1', archivo: '/catalogos/bkcontract/a1.pdf' },
+  { nombre: 'A2', archivo: '/catalogos/bkcontract/a2.pdf' },
+  { nombre: 'Curve', archivo: '/catalogos/bkcontract/curve.pdf' },
+  { nombre: 'Ingravitta', archivo: '/catalogos/bkcontract/ingravitta.pdf' },
+  { nombre: 'Meet', archivo: '/catalogos/bkcontract/meet.pdf' },
+  { nombre: 'Receptions', archivo: '/catalogos/bkcontract/receptions.pdf' },
+  { nombre: 'Soft Meetings', archivo: '/catalogos/bkcontract/softmeetings.pdf' },
+  { nombre: 'VIS', archivo: '/catalogos/bkcontract/vis.pdf' },
+  { nombre: 'W', archivo: '/catalogos/bkcontract/w.pdf' },
+];
+
 export const marcas = [
   {
     nombre: 'Novara',
     slug: 'novara',
-    // TODO: falta su PDF; sin archivo el botón se dibuja inactivo. Igual Rossi.
-    catalogo: { etiqueta: 'Catálogo Novara 2025-26', archivo: '' },
+    catalogo: { etiqueta: 'Catálogo Novara 2025-26', archivo: '/catalogos/novara.pdf' },
+    lineas: lineasNovara,
     fotos: fotosMarca('novara'),
     archivo: 'novara.svg',
     blanco: 'novara-blanco.svg',
@@ -496,6 +528,7 @@ export const marcas = [
     nombre: 'Novus',
     slug: 'novus',
     catalogo: { etiqueta: 'Catálogo Novus 2025-26', archivo: '/catalogos/novus.pdf' },
+    lineas: SIN_LINEAS,
     fotos: fotosMarca('novus'),
     archivo: 'novus.svg',
     blanco: 'novus-blanco.svg',
@@ -519,6 +552,7 @@ export const marcas = [
     nombre: 'Trisoft',
     slug: 'trisoft',
     catalogo: { etiqueta: 'Catálogo Trisoft 2025-26', archivo: '/catalogos/trisoft.pdf' },
+    lineas: SIN_LINEAS,
     fotos: fotosMarca('trisoft'),
     archivo: 'trisoft.svg',
     blanco: 'trisoft-blanco.svg',
@@ -545,6 +579,7 @@ export const marcas = [
       etiqueta: 'Catálogo BK Contract 2025-26',
       archivo: '/catalogos/bkcontract.pdf',
     },
+    lineas: lineasBkContract,
     fotos: fotosMarca('bkcontract'),
     archivo: 'bkcontract.svg',
     blanco: 'bkcontract-blanco.svg',
@@ -567,7 +602,8 @@ export const marcas = [
   {
     nombre: 'Rossi',
     slug: 'rossi',
-    catalogo: { etiqueta: 'Catálogo Rossi 2025-26', archivo: '' },
+    catalogo: { etiqueta: 'Catálogo Rossi 2025-26', archivo: '/catalogos/rossi.pdf' },
+    lineas: SIN_LINEAS,
     fotos: fotosMarca('rossi'),
     archivo: 'rossi.svg',
     blanco: 'rossi-blanco.svg',
@@ -591,6 +627,7 @@ export const marcas = [
     nombre: 'Belgotex',
     slug: 'belgotex',
     catalogo: { etiqueta: 'Catálogo Belgotex 2025-26', archivo: '/catalogos/belgotex.pdf' },
+    lineas: SIN_LINEAS,
     fotos: fotosMarca('belgotex'),
     archivo: 'belgotex.svg',
     blanco: 'belgotex-blanco.svg',
@@ -614,6 +651,7 @@ export const marcas = [
     nombre: 'Frisokar',
     slug: 'frisokar',
     catalogo: { etiqueta: 'Catálogo Frisokar 2025-26', archivo: '/catalogos/frisokar.pdf' },
+    lineas: SIN_LINEAS,
     fotos: fotosMarca('frisokar'),
     archivo: 'frisokar.svg',
     blanco: 'frisokar-blanco.svg',

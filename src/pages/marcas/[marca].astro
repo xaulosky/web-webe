@@ -54,6 +54,25 @@ const portada = marca.foto || '/marcas/fotos/novara-1.webp';
     <div class="marca__catalogo">
       <p class="marca__rotulo">{marca.catalogo.etiqueta}</p>
       <BotonDescarga href={marca.catalogo.archivo} inactivo={!marca.catalogo.archivo} />
+
+      {/* Novara y BK Contract reparten su catálogo en cuadernillos por línea:
+          van bajo el botón general, que sigue siendo la descarga principal. */}
+      {
+        marca.lineas.length > 0 && (
+          <div class="lineas">
+            <p class="marca__rotulo">Catálogos por línea</p>
+            <ul class="lineas__lista">
+              {marca.lineas.map((linea) => (
+                <li>
+                  <a href={linea.archivo} download>
+                    {linea.nombre}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
     </div>
   </section>
 
@@ -147,6 +166,33 @@ const portada = marca.foto || '/marcas/fotos/novara-1.webp';
 
   .marca__catalogo {
     align-content: start;
+  }
+
+  /* Cuelga del botón y no de la columna: comparte su borde izquierdo y se
+     separa lo justo para no leerse como parte del rótulo de arriba. */
+  .lineas {
+    margin-top: clamp(1.75rem, 3vw, 2.75rem);
+  }
+
+  .lineas__lista {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .lineas__lista a {
+    display: inline-block;
+    font-size: clamp(0.9rem, 1.05vw, 1.05rem);
+    font-weight: 300;
+    line-height: 1.65;
+    color: var(--color-ink);
+    text-decoration: none;
+    transition: color 0.25s ease;
+  }
+
+  .lineas__lista a:hover {
+    color: var(--color-muted);
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
   }
 
   /* Mismas columnas que la ficha: la galería arranca donde arranca el texto,
