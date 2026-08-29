@@ -208,9 +208,10 @@ const portada = marca.foto || '/marcas/fotos/novara-1.webp';
   .galeria__marco {
     position: relative;
     grid-column: 2 / -1;
-    /* Menos alta que las fotos, que son 1200×960: se recortan arriba y abajo
-       en vez de imponerle su proporción a la galería. */
-    aspect-ratio: 16 / 9;
+    /* La proporción de las propias fotos, que son 1200×960: así entran enteras
+       y no se recorta nada. El `cover` de abajo queda de red por si alguna
+       llegara con otra medida. */
+    aspect-ratio: 5 / 4;
     /* Algo más angosta que la columna del texto. Va como margen y no como
        padding de la sección: el padding entra en la cuenta de las columnas y
        movía también su borde izquierdo, que es el que tiene que seguir
