@@ -11,33 +11,29 @@ import SeccionContacto from '../components/SeccionContacto.astro';
   description="WEBE nace de la unión de profesionales con experiencia en equipamiento corporativo."
   header="overlay"
 >
-  {/* Enroque pedido: en celu la portada es la vertical de los socios y la
-      apaisada del showroom baja al panel. En escritorio siguen al revés: la
-      vertical estirada a una portada a sangre les corta la cabeza. */}
+  {/* La apaisada del showroom hace de portada en todos los anchos. Antes se
+      enrocaba con la del panel, pero esa es apaisada y a sangre en celu se
+      quedaba con un tercio del ancho: dejaba fuera a dos de los tres socios. */}
   <HeroPagina
     imagen="/nosotros/hero.webp"
-    imagenAngosta="/nosotros/equipo.webp"
-    alt="Los tres socios de WEBE"
+    alt="Los tres socios de WEBE en el showroom"
     ancho={1900}
     alto={943}
     lineas={[{ fuerte: 'Nuestro' }, { suave: 'equipo' }]}
   />
 
   <PanelSacado>
-    <picture slot="izquierda" class="nosotros__foto">
-      {/* La que no salió de portada: en celu la apaisada, en escritorio la
-          vertical. */}
-      <source srcset="/nosotros/hero.webp" media="(max-width: 860px)" />
-      <img
-        class="nosotros__equipo"
-        src="/nosotros/equipo.webp"
-        alt="Los socios de WEBE en el showroom"
-        width="797"
-        height="854"
-        loading="lazy"
-        decoding="async"
-      />
-    </picture>
+    {/* Los socios salen sólo aquí, y enteros en cualquier ancho. */}
+    <img
+      slot="izquierda"
+      class="nosotros__foto nosotros__equipo"
+      src="/nosotros/equipo.webp"
+      alt="Los tres socios de WEBE"
+      width="1600"
+      height="1067"
+      loading="lazy"
+      decoding="async"
+    />
 
     <p class="nosotros__creencia">
       webe nace de la unión de profesionales con experiencia en distintas áreas
@@ -58,8 +54,7 @@ import SeccionContacto from '../components/SeccionContacto.astro';
 </Base>
 
 <style>
-  /* Sin esto la picture es en línea y el ancho de la foto no tendría contra
-     qué resolver su 100%. */
+  /* En línea, la foto no tendría contra qué resolver su 100% de ancho. */
   .nosotros__foto {
     display: block;
   }
