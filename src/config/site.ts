@@ -409,32 +409,32 @@ export const atributos = [
   {
     titulo: 'Atención directa',
     texto:
-      'Cada proyecto cuenta con la participación activa de los socios de WEBE. Esto permite tomar decisiones con mayor criterio, mantener una comunicación directa y asegurar un acompañamiento cercano desde la propuesta inicial hasta la postventa.',
+      'En cada proyecto participan directamente los socios de WEBE. Sin intermediarios. Acompañamos cada etapa, desde la primera propuesta hasta la postventa, con la cercanía de quien toma decisiones y las respalda.',
   },
   {
     titulo: 'Experiencia',
     texto:
-      'Años de experiencia en el equipamiento de oficinas permiten comprender las necesidades de arquitectos, empresas y equipos de proyecto. Esa experiencia se traduce en recomendaciones más acertadas, procesos más eficientes y soluciones mejor adaptadas a cada contexto.',
+      'Llevamos más de 7 años trabajando con arquitectos, empresas y equipos de proyecto en equipamiento de oficinas. Esa trayectoria nos permite recomendar con criterio, anticipar problemas y adaptar cada solución a su contexto real, no al catálogo.',
   },
   {
     titulo: 'Versatilidad',
     texto:
-      'Contamos con una amplia variedad de marcas, líneas y soluciones que nos permiten responder a distintos requerimientos, escalas y presupuestos. Esta diversidad nos ayuda a construir propuestas equilibradas entre diseño, funcionalidad, plazo y costo según las necesidades de cada proyecto.',
+      'Trabajamos con múltiples marcas y líneas, lo que nos permite armar propuestas sin forzar el proyecto hacia un solo proveedor. Cada recomendación busca el mejor equilibrio entre diseño, funcionalidad, plazo y presupuesto para lo que el proyecto realmente necesita.',
   },
   {
     titulo: 'Showroom',
     texto:
-      'Más que una exhibición de productos, el showroom es un espacio para conocer materiales, probar soluciones y visualizar distintas alternativas de equipamiento. Una instancia que facilita la toma de decisiones y aporta mayor seguridad durante el proceso.',
+      'Más que una exhibición de productos, el showroom es un espacio para tocar materiales, probar configuraciones y ver cómo funcionan las soluciones antes de definirlas. Un lugar donde las decisiones se toman con más claridad, porque se pueden ver y comparar en persona.',
   },
   {
     titulo: 'Acompañamiento',
     texto:
-      'webe participa en todo el proceso: selección de productos, desarrollo de propuestas, importación, logística, instalación y postventa. Un acompañamiento continuo que permite coordinar cada etapa bajo un mismo criterio y un único punto de contacto.',
+      'webe participa en todo el proceso: desde la selección de productos hasta la postventa, pasando por importación, logística e instalación. Un solo equipo, un solo criterio, un solo punto de contacto de principio a fin.',
   },
   {
     titulo: 'Continuidad',
     texto:
-      'Nuestro compromiso no termina con la instalación. Acompañamos cada proyecto con respaldo postventa y trabajamos con marcas que nos permiten asegurar continuidad, reposición y garantía a lo largo del tiempo.',
+      'Nuestro compromiso no termina con la instalación. Garantizamos continuidad, reposición y respaldo a lo largo del tiempo porque trabajamos con marcas que lo hacen posible y un equipo que se hace cargo.',
   },
 ] as const;
 
@@ -504,7 +504,7 @@ export const marcas = [
     escala: 5.9,
     foto: portadaMarca('novara'),
     descripcion:
-      'Novara desarrolla soluciones de mobiliario corporativo que combinan funcionalidad, diseño y bienestar para crear ambientes de trabajo más humanos y productivos. Su portafolio contempla sistemas de trabajo, mesas, almacenamiento y soluciones colaborativas, con propuestas versátiles y personalizables que se adaptan a distintas configuraciones y necesidades. La marca integra además diseño y sostenibilidad como parte de una propuesta orientada a la calidad y durabilidad.',
+      'Novara desarrolla mobiliario corporativo que combina funcionalidad, diseño y bienestar, pensado para espacios de trabajo donde las personas pasen mejor su día. Sus soluciones son versátiles, personalizables y se adaptan a distintas configuraciones. Como marca, integra sostenibilidad en su proceso productivo, con foco en calidad y durabilidad a largo plazo.',
     rotuloCategorias: 'Mobiliario',
     categorias: [
       'Escritorios',

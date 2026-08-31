@@ -2,12 +2,10 @@
 import BloqueMarco from './BloqueMarco.astro';
 ---
 
-{/* 37ch, uno más que el resto: a 36 «acompañamiento» no entraba en la segunda
-    línea y bajaba a la tercera dejando su artículo solo arriba. El espacio duro
-    los mantiene juntos si alguna vez no cupieran.
+{/* Vuelve al ancho por defecto: el 37ch era una excepción por «el
+    acompañamiento», que ya no está en el texto.
     data-oculta-logo: el logo del encabezado cae justo sobre este párrafo. */}
-<BloqueMarco id="we-work" ancho={37} data-oculta-logo>
-  Cada proyecto refleja una forma de trabajar basada en la experiencia,
-  el&nbsp;acompañamiento y la búsqueda de soluciones acordes a las necesidades
-  de cada cliente.
+<BloqueMarco id="we-work" data-oculta-logo>
+  Cada proyecto refleja nuestra forma de trabajar: escuchar, acompañar y
+  encontrar la solución que cada cliente necesita.
 </BloqueMarco>

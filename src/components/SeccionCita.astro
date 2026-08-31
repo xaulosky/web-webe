@@ -30,7 +30,7 @@
     <p>
       <span class="cita__comilla cita__comilla--abre">&ldquo;</span>El espacio que diseñas<br />
       merece <strong>el mobiliario</strong><br />
-      que <strong>escogerías para tí</strong><span class="cita__comilla cita__comilla--cierra">&rdquo;</span>.
+      que <strong>elegirías para ti</strong><span class="cita__comilla cita__comilla--cierra">&rdquo;</span>.
     </p>
   </blockquote>
 </section>
@@ -88,9 +88,10 @@
   .cita__texto p {
     margin: 0;
     /* Dos topes. El clamp pone el tamaño que toca por diseño; el segundo lo
-       baja si no cabe. La línea más larga —«que escogerías para tí”.»— mide
-       algo menos de 11.9 em, así que ese es el cuerpo máximo que entra en el
-       ancho disponible. Sin él, por debajo de unos 350 px mandaba el mínimo del
+       baja si no cabe. La línea más larga es ahora la primera —«“El espacio
+       que diseñas»—, que mide unos 11.6 em; el 11.9 le deja margen para las
+       diferencias de render. Ese es el cuerpo máximo que entra en el ancho
+       disponible. Sin él, por debajo de unos 350 px mandaba el mínimo del
        clamp, la línea no entraba y los tres saltos se partían en seis. */
     font-size: min(clamp(1.5rem, 4.2vw, 4rem), (92vw - 3rem) / 11.9);
     font-weight: 300;
