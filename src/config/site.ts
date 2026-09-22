@@ -468,7 +468,7 @@ const SIN_LINEAS: Linea[] = [];
 const lineasNovara: Linea[] = [
   { nombre: 'Altura regulable', archivo: '/catalogos/novara/altura-regulable.pdf' },
   { nombre: 'Call center', archivo: '/catalogos/novara/call-center.pdf' },
-  { nombre: 'Cavinas', archivo: '/catalogos/novara/cavinas.pdf' },
+  { nombre: 'Cabinas', archivo: '/catalogos/novara/cabinas.pdf' },
   { nombre: 'Colores y acabados', archivo: '/catalogos/novara/colores-y-acabados.pdf' },
   { nombre: 'Encuentro', archivo: '/catalogos/novara/encuentro.pdf' },
   { nombre: 'Equipamiento', archivo: '/catalogos/novara/equipamiento.pdf' },
