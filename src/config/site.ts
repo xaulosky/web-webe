@@ -15,10 +15,9 @@ export const site = {
   direccion: ['Avenida Vitacura 3439, Oficina 203', 'Vitacura, Santiago, Chile'],
   address: 'Avenida Vitacura 3439, Oficina 203, Vitacura, Santiago, Chile',
   creditos: { texto: 'the—concept.studio', url: 'https://the-concept.studio/' },
-  // TODO: URLs reales de los perfiles.
   social: [
-    { red: 'linkedin' as const, url: '#', nombre: 'LinkedIn' },
-    { red: 'instagram' as const, url: '#', nombre: 'Instagram' },
+    { red: 'linkedin' as const, url: 'https://www.linkedin.com/company/webe-chile/', nombre: 'LinkedIn' },
+    { red: 'instagram' as const, url: 'https://www.instagram.com/webe.cl', nombre: 'Instagram' },
   ],
 } as const;
 

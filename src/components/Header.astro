@@ -77,7 +77,7 @@ const destacado = actual >= 0 ? actual : 0;
   <div class="menu__foot">
     {
       site.social.map((red) => (
-        <a href={red.url} rel="noopener" aria-label={red.nombre}>
+        <a href={red.url} target="_blank" rel="noopener" aria-label={red.nombre}>
           <IconoRed red={red.red} />
         </a>
       ))

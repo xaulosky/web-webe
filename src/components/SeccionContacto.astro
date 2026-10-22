@@ -26,7 +26,7 @@ const mapaEnlace = `https://www.google.com/maps/search/?api=1&query=${consulta}`
         {
           site.social.map((red) => (
             <li>
-              <a href={red.url} rel="noopener" aria-label={red.nombre}>
+              <a href={red.url} target="_blank" rel="noopener" aria-label={red.nombre}>
                 <IconoRed red={red.red} />
               </a>
             </li>
