@@ -30,7 +30,7 @@ export const MARCA_PORTADA = 'novara';
 // Cada ítem se parte en dos: la primera palabra va en medium y la segunda en
 // light. El PDF de ajustes los pasó a español.
 export const nav = [
-  { fuerte: 'Nuestro', suave: 'equipo', label: 'Nuestro equipo', href: '/nosotros' },
+  { fuerte: 'Cómo', suave: 'Pensamos', label: 'Cómo Pensamos', href: '/nosotros' },
   { fuerte: 'Seamos', suave: 'partners', label: 'Seamos partners', href: '/be-partner' },
   {
     fuerte: 'Nuestras',

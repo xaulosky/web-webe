@@ -7,42 +7,40 @@ import SeccionContacto from '../components/SeccionContacto.astro';
 ---
 
 <Base
-  title="We are"
+  title="Cómo Pensamos"
   description="WEBE nace de profesionales que entienden el equipamiento corporativo desde distintas miradas: diseño, operación, gestión y servicio."
   header="overlay"
 >
-  {/* La apaisada del showroom hace de portada en todos los anchos. Antes se
-      enrocaba con la del panel, pero esa es apaisada y a sangre en celu se
-      quedaba con un tercio del ancho: dejaba fuera a dos de los tres socios. */}
+  {/* «Cómo» va en fino y «Pensamos» en fuerte, al revés que el resto de las
+      portadas: es el énfasis que pide el diseño de esta página. */}
   <HeroPagina
     imagen="/nosotros/hero.webp"
-    alt="Los tres socios de WEBE reunidos en la oficina"
+    alt="Equipo de WEBE en una reunión de trabajo"
     ancho={1920}
-    alto={1080}
-    lineas={[{ fuerte: 'Nuestro' }, { suave: 'equipo' }]}
+    alto={1081}
+    lineas={[{ suave: 'Cómo' }, { fuerte: 'Pensamos' }]}
   />
 
   <PanelSacado>
-    {/* Los socios salen sólo aquí, y enteros en cualquier ancho. */}
     <img
       slot="izquierda"
-      class="nosotros__foto nosotros__equipo"
-      src="/nosotros/equipo.webp"
-      alt="Los tres socios de WEBE"
-      width="1250"
-      height="1100"
+      class="nosotros__foto"
+      src="/nosotros/planos.webp"
+      alt="Planos y muestras de materiales sobre la mesa de trabajo de WEBE"
+      width="1086"
+      height="1448"
       loading="lazy"
       decoding="async"
     />
 
     <p class="nosotros__creencia">
-      webe nace de profesionales que entienden el equipamiento corporativo desde
-      distintas miradas: diseño, operación, gestión, servicio.
+      Un buen proyecto no depende solo del mobiliario, sino de cómo se piensa,
+      se acompaña y se resuelve cada decisión detrás de él.
     </p>
 
     <p class="nosotros__creencia">
-      Creemos que un buen proyecto no depende solo del mobiliario, sino de cómo
-      se piensa, se acompaña y se resuelve cada decisión detrás de él.
+      webe nace de profesionales que entienden el equipamiento corporativo desde
+      distintas miradas: diseño, operación, gestión, servicio.
     </p>
   </PanelSacado>
 
@@ -57,9 +55,6 @@ import SeccionContacto from '../components/SeccionContacto.astro';
   /* En línea, la foto no tendría contra qué resolver su 100% de ancho. */
   .nosotros__foto {
     display: block;
-  }
-
-  .nosotros__equipo {
     width: 100%;
     height: auto;
     /* Curva apenas insinuada: la de antes se notaba de más en la esquina. */
