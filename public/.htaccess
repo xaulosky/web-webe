@@ -15,10 +15,22 @@ ErrorDocument 404 /404.html
 
 <IfModule mod_expires.c>
   ExpiresActive On
-  # Los assets de Astro llevan hash en el nombre: se pueden cachear para siempre.
-  <FilesMatch "\.(js|css|woff2|woff|ttf|svg|png|jpg|jpeg|webp|avif|ico)$">
+  # Los assets de Astro llevan hash en el nombre —index.BLq98QoG.css—, asi que
+  # su contenido no puede cambiar sin cambiar la URL: esos si se cachean para
+  # siempre. El patron exige ese hash de ocho caracteres antes de la extension.
+  <FilesMatch "\.[A-Za-z0-9_-]{8}\.(js|css|woff2|woff|ttf)$">
     ExpiresDefault "access plus 1 year"
     Header set Cache-Control "public, immutable"
+  </FilesMatch>
+  # Las fotos y los logos de public/ conservan su nombre entre despliegues
+  # —hero.webp, planos.webp—, asi que no pueden ser immutable: esa cabecera le
+  # dice al navegador que no vuelva a preguntar, y al reemplazar una foto quien
+  # ya la tenia seguia viendo la antigua durante un ano. Se cachean un dia y
+  # despues se revalidan; si no cambio, el servidor responde 304 y no se
+  # descarga nada.
+  <FilesMatch "\.(svg|png|jpg|jpeg|webp|avif|ico|mp4|webm)$">
+    ExpiresDefault "access plus 1 day"
+    Header set Cache-Control "public, max-age=86400, must-revalidate"
   </FilesMatch>
   # El HTML siempre se revalida para que los deploys se vean al instante.
   <FilesMatch "\.html$">
